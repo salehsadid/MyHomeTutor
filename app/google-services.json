@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "181397478178",
+    "project_id": "myhometutor-5a226",
+    "storage_bucket": "myhometutor-5a226.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181397478178:android:a06d22370b62539f60a37b",
+        "android_client_info": {
+          "package_name": "com.sadid.myhometutor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0URFBa-4FL_0JbHhjfoDzqm5XyuGk3Xk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

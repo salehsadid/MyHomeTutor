@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/logo"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tutor Registration"
+                android:textColor="@color/teal_button"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create your tutor account to browse and apply for tuition opportunities"
+                android:textColor="@color/text_hint"
+                android:textSize="14sp"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <!-- Personal Information Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Personal Information"
+            android:textColor="@color/teal_button"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <Button
+            android:id="@+id/btnUploadPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upload Photo"
+            android:background="@drawable/bg_button_outline"
+            app:backgroundTint="@null"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Full Name *"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etFullName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_input"
+            android:hint="Enter your full name"
+            android:textColorHint="@color/text_hint"
+            android:textColor="@color/white"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email Address *"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_input"
+                android:hint="Enter your email"
+                android:textColorHint="@color/text_hint"
+                android:textColor="@color/white"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:inputType="textEmailAddress"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btnVerifyEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="Verify"
+                android:background="@drawable/bg_button_outline"
+                app:backgroundTint="@null"
+                android:textColor="@color/white"/>
+
+            <ImageView
+                android:id="@+id/ivEmailVerified"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_check_circle"
+                android:visibility="gone"
+                app:tint="@android:color/holo_green_light"
+                android:padding="12dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutOtpVerification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/etOtp"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_input"
+                android:hint="Enter OTP"
+                android:textColorHint="@color/text_hint"
+                android:textColor="@color/white"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:inputType="number"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btnConfirmOtp"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="Confirm"
+                android:backgroundTint="@color/teal_button"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone Number *"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etPhone"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_input"
+            android:hint="Enter your phone number"
+            android:textColorHint="@color/text_hint"
+            android:textColor="@color/white"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:inputType="phone"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gender *"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <RadioGroup
+            android:id="@+id/rgGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <RadioButton
+                android:id="@+id/rbMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Male"
+                android:textColor="@color/white"
+                android:buttonTint="@color/teal_button"
+                android:layout_marginEnd="24dp"/>
+
+            <RadioButton
+                android:id="@+id/rbFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Female"
+                android:textColor="@color/white"
+                android:buttonTint="@color/teal_button"/>
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password *"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:hintEnabled="false"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/text_hint"
+            app:boxBackgroundMode="none">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_input"
+                android:hint="Create a password"
+                android:textColorHint="@color/text_hint"
+                android:textColor="@color/white"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:inputType="textPassword"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Password Constraints -->
+        <TextView
+            android:id="@+id/tvConstraintLength"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✕ Minimum 8 characters"
+            android:textColor="#FF5252"
+            android:textSize="12sp"/>
+        <TextView
+            android:id="@+id/tvConstraintAlpha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✕ Contains alphabet"
+            android:textColor="#FF5252"
+            android:textSize="12sp"/>
+        <TextView
+            android:id="@+id/tvConstraintNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✕ Contains number"
+            android:textColor="#FF5252"
+            android:textSize="12sp"/>
+        <TextView
+            android:id="@+id/tvConstraintCase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✕ Mixed case (upper &amp; lower)"
+            android:textColor="#FF5252"
+            android:textSize="12sp"/>
+        <TextView
+            android:id="@+id/tvConstraintSymbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✕ Contains symbol"
+            android:textColor="#FF5252"
+            android:textSize="12sp"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirm Password *"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:hintEnabled="false"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/text_hint"
+            app:boxBackgroundMode="none">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_input"
+                android:hint="Confirm your password"
+                android:textColorHint="@color/text_hint"
+                android:textColor="@color/white"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:inputType="textPassword"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Educational Background Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Educational Background"
+            android:textColor="@color/teal_button"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="College Information"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="College Name *"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etCollegeName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_input"
+            android:hint="Enter college name"
+            android:textColorHint="@color/text_hint"
+            android:textColor="@color/white"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:inputType="text"
+            android:layout_marginBottom="16dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Group *"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="8dp"/>
+
+                <Spinner
+                    android:id="@+id/spCollegeGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_input"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="HSC Passing Year *"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="8dp"/>
+
+                <EditText
+                    android:id="@+id/etHscYear"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_input"
+                    android:hint="Year"
+                    android:textColorHint="@color/text_hint"
+                    android:textColor="@color/white"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:inputType="number"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="University Information"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="University Name *"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etUniversityName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_input"
+            android:hint="Enter university name"
+            android:textColorHint="@color/text_hint"
+            android:textColor="@color/white"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:inputType="text"
+            android:layout_marginBottom="16dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Department *"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="8dp"/>
+
+                <EditText
+                    android:id="@+id/etDepartment"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_input"
+                    android:hint="Department"
+                    android:textColorHint="@color/text_hint"
+                    android:textColor="@color/white"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:inputType="text"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Year/Semester *"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="8dp"/>
+
+                <EditText
+                    android:id="@+id/etYearSemester"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_input"
+                    android:hint="Year (e.g. 3rd)"
+                    android:textColorHint="@color/text_hint"
+                    android:textColor="@color/white"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:inputType="text"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Session *"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etSession"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_input"
+            android:hint="Session (e.g. 2020-21)"
+            android:textColorHint="@color/text_hint"
+            android:textColor="@color/white"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:inputType="text"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Tuition Preferences Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tuition Preferences"
+            android:textColor="@color/teal_button"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location *"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <Spinner
+                android:id="@+id/spDivision"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_input"
+                android:layout_marginEnd="8dp"/>
+
+            <Spinner
+                android:id="@+id/spDistrict"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_input"/>
+        </LinearLayout>
+
+        <Spinner
+            android:id="@+id/spArea"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_input"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Preferred Class *"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <Spinner
+            android:id="@+id/spPreferredClass"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_input"
+            android:layout_marginBottom="16dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Preferred Days *"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="8dp"/>
+
+                <EditText
+                    android:id="@+id/etPreferredDays"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_input"
+                    android:hint="e.g. Sun, Tue, Thu"
+                    android:textColorHint="@color/text_hint"
+                    android:textColor="@color/white"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:inputType="text"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Preferred Time *"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="8dp"/>
+
+                <EditText
+                    android:id="@+id/etPreferredTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_input"
+                    android:hint="e.g. 4 PM - 6 PM"
+                    android:textColorHint="@color/text_hint"
+                    android:textColor="@color/white"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:inputType="text"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Preferred Location Details *"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etLocationDetails"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_input"
+            android:hint="Specific areas or 'Online'"
+            android:textColorHint="@color/text_hint"
+            android:textColor="@color/white"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:inputType="text"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Preferred Fee (BDT) *"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etPreferredFee"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_input"
+            android:hint="Enter your preferred fee amount"
+            android:textColorHint="@color/text_hint"
+            android:textColor="@color/white"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:inputType="number"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tuition Experience *"
+            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etExperience"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_input"
+            android:hint="Enter years of experience (e.g., 2 years, 6 months)"
+            android:textColorHint="@color/text_hint"
+            android:textColor="@color/white"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:inputType="text"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Additional Information Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Additional Information"
+            android:textColor="@color/teal_button"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/etAbout"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@drawable/bg_input"
+            android:hint="Enter subjects you can teach, achievements, or any other relevant information"
+            android:textColorHint="@color/text_hint"
+            android:textColor="@color/white"
+            android:padding="16dp"
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="32dp">
+
+            <Button
+                android:id="@+id/btnBackToLogin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Back to Login"
+                android:background="@drawable/bg_button_outline"
+                app:backgroundTint="@null"
+                android:textColor="@color/white"
+                android:layout_marginEnd="16dp"/>
+
+            <Button
+                android:id="@+id/btnNext"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Next"
+                android:backgroundTint="@color/teal_button"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="© Copyright Saleh Sadid Mir"
+            android:textColor="@color/text_hint"
+            android:textSize="12sp"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,137 @@
+package com.sadid.myhometutor;
+
+import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class PostTuitionActivity extends AppCompatActivity {
+
+    private Spinner spSubject, spClass, spTuitionType, spGroup, spDivision, spDistrict, spThana;
+    private EditText etDaysPerWeek, etHoursPerDay, etPreferredTiming, etSalary, etArea, etDetailedAddress, etAdditionalReq;
+    private Button btnCancel, btnPostTuition;
+    private Switch switchUrgent;
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_post_tuition);
+
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+        initializeViews();
+        setupSpinners();
+        setupListeners();
+    }
+
+    private void initializeViews() {
+        spSubject = findViewById(R.id.spSubject);
+        spClass = findViewById(R.id.spClass);
+        spTuitionType = findViewById(R.id.spTuitionType);
+        spGroup = findViewById(R.id.spGroup);
+        spDivision = findViewById(R.id.spDivision);
+        spDistrict = findViewById(R.id.spDistrict);
+        spThana = findViewById(R.id.spThana);
+
+        etDaysPerWeek = findViewById(R.id.etDaysPerWeek);
+        etHoursPerDay = findViewById(R.id.etHoursPerDay);
+        etPreferredTiming = findViewById(R.id.etPreferredTiming);
+        etSalary = findViewById(R.id.etSalary);
+        etArea = findViewById(R.id.etArea);
+        etDetailedAddress = findViewById(R.id.etDetailedAddress);
+        etAdditionalReq = findViewById(R.id.etAdditionalReq);
+
+        btnCancel = findViewById(R.id.btnCancel);
+        btnPostTuition = findViewById(R.id.btnPostTuition);
+        switchUrgent = findViewById(R.id.switchUrgent);
+    }
+
+    private void setupSpinners() {
+        // Dummy data for spinners
+        setupSpinner(spSubject, new String[]{"Select Subject", "Bangla", "English", "Math", "Physics", "Chemistry", "Biology", "All Subjects"});
+        setupSpinner(spClass, new String[]{"Select Class", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10", "HSC"});
+        setupSpinner(spTuitionType, new String[]{"Select Type", "Offline", "Online"});
+        setupSpinner(spGroup, new String[]{"Select Group", "Science", "Commerce", "Arts", "N/A"});
+        setupSpinner(spDivision, new String[]{"Select Division", "Dhaka", "Chittagong", "Sylhet", "Khulna", "Rajshahi", "Barisal", "Rangpur", "Mymensingh"});
+        setupSpinner(spDistrict, new String[]{"Select District", "Dhaka", "Gazipur", "Narayanganj"});
+        setupSpinner(spThana, new String[]{"Select Thana", "Mirpur", "Uttara", "Dhanmondi", "Gulshan"});
+    }
+
+    private void setupSpinner(Spinner spinner, String[] items) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, items);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+    }
+
+    private void setupListeners() {
+        btnCancel.setOnClickListener(v -> finish());
+        btnPostTuition.setOnClickListener(v -> postTuition());
+    }
+
+    private void postTuition() {
+        if (spSubject.getSelectedItemPosition() == 0 || spClass.getSelectedItemPosition() == 0 ||
+            spTuitionType.getSelectedItemPosition() == 0 || spGroup.getSelectedItemPosition() == 0 ||
+            spDivision.getSelectedItemPosition() == 0 || spDistrict.getSelectedItemPosition() == 0 ||
+            spThana.getSelectedItemPosition() == 0) {
+            Toast.makeText(this, "Please select all dropdown fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String daysPerWeek = etDaysPerWeek.getText().toString();
+        String hoursPerDay = etHoursPerDay.getText().toString();
+        String preferredTiming = etPreferredTiming.getText().toString();
+        String salary = etSalary.getText().toString();
+        String area = etArea.getText().toString();
+        String detailedAddress = etDetailedAddress.getText().toString();
+        String additionalReq = etAdditionalReq.getText().toString();
+
+        if (daysPerWeek.isEmpty() || hoursPerDay.isEmpty() || preferredTiming.isEmpty() || salary.isEmpty() || area.isEmpty() || detailedAddress.isEmpty()) {
+            Toast.makeText(this, "Please fill all text fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Map<String, Object> post = new HashMap<>();
+        post.put("studentId", mAuth.getCurrentUser().getUid());
+        post.put("subject", spSubject.getSelectedItem().toString());
+        post.put("class", spClass.getSelectedItem().toString());
+        post.put("tuitionType", spTuitionType.getSelectedItem().toString());
+        post.put("group", spGroup.getSelectedItem().toString());
+        post.put("daysPerWeek", daysPerWeek);
+        post.put("hoursPerDay", hoursPerDay);
+        post.put("preferredTiming", preferredTiming);
+        post.put("salary", salary);
+        post.put("division", spDivision.getSelectedItem().toString());
+        post.put("district", spDistrict.getSelectedItem().toString());
+        post.put("thana", spThana.getSelectedItem().toString());
+        post.put("area", area);
+        post.put("detailedAddress", detailedAddress);
+        post.put("additionalReq", additionalReq);
+        post.put("isUrgent", switchUrgent.isChecked());
+        post.put("status", "open");
+        post.put("timestamp", System.currentTimeMillis());
+
+        db.collection("tuition_posts")
+                .add(post)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(PostTuitionActivity.this, "Post added successfully", Toast.LENGTH_SHORT).show();
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(PostTuitionActivity.this, "Error adding post: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+}

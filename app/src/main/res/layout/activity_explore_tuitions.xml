@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/dark_background">
+
+    <!-- Top Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:background="@color/card_background">
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Back"
+            android:background="@drawable/bg_button_outline"
+            app:backgroundTint="@null"
+            android:textColor="@color/teal_button"
+            android:layout_marginEnd="16dp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Explore Tuitions"
+            android:textColor="@color/teal_button"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <Switch
+            android:id="@+id/switchToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:trackTint="@color/teal_button"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Refresh"
+            android:backgroundTint="@color/teal_button"
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <!-- Filter Bar -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:padding="8dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spFilterClass"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_input"
+                android:layout_marginEnd="8dp"/>
+
+            <Spinner
+                android:id="@+id/spFilterSubject"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_input"
+                android:layout_marginEnd="8dp"/>
+
+            <Spinner
+                android:id="@+id/spFilterLocation"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_input"
+                android:layout_marginEnd="8dp"/>
+
+            <Spinner
+                android:id="@+id/spFilterSalary"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_input"
+                android:layout_marginEnd="8dp"/>
+
+            <Spinner
+                android:id="@+id/spFilterGender"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_input"
+                android:layout_marginEnd="8dp"/>
+
+            <Spinner
+                android:id="@+id/spFilterType"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_input"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btnApplyFilters"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Apply Filters"
+                android:backgroundTint="@color/teal_button"
+                android:textColor="@color/black"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btnClearFilters"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Clear"
+                android:background="@drawable/bg_button_outline"
+                app:backgroundTint="@null"
+                android:textColor="@color/white"/>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- Tuition List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTuitionPosts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:clipToPadding="false"/>
+
+</LinearLayout>

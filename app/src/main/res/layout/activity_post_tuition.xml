@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Post a Tuition Requirement"
+                android:textColor="@color/teal_button"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_centerInParent="true"/>
+
+            <Switch
+                android:id="@+id/switchUrgent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                app:trackTint="@color/teal_button"/>
+        </RelativeLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/card_background"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <!-- Row 1: Subject & Class -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Subject *"
+                            android:textColor="@color/white"
+                            android:layout_marginBottom="8dp"/>
+                        <Spinner
+                            android:id="@+id/spSubject"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@drawable/bg_input"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Class/Grade *"
+                            android:textColor="@color/white"
+                            android:layout_marginBottom="8dp"/>
+                        <Spinner
+                            android:id="@+id/spClass"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@drawable/bg_input"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Row 2: Tuition Type & Group -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tuition Type *"
+                            android:textColor="@color/white"
+                            android:layout_marginBottom="8dp"/>
+                        <Spinner
+                            android:id="@+id/spTuitionType"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@drawable/bg_input"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Group *"
+                            android:textColor="@color/white"
+                            android:layout_marginBottom="8dp"/>
+                        <Spinner
+                            android:id="@+id/spGroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@drawable/bg_input"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Row 3: Days per Week & Hours per Day -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Days per Week *"
+                            android:textColor="@color/white"
+                            android:layout_marginBottom="8dp"/>
+                        <EditText
+                            android:id="@+id/etDaysPerWeek"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@drawable/bg_input"
+                            android:hint="e.g. 3 days"
+                            android:textColorHint="@color/text_hint"
+                            android:textColor="@color/white"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:inputType="text"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hours per Day *"
+                            android:textColor="@color/white"
+                            android:layout_marginBottom="8dp"/>
+                        <EditText
+                            android:id="@+id/etHoursPerDay"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@drawable/bg_input"
+                            android:hint="e.g. 1.5 hours"
+                            android:textColorHint="@color/text_hint"
+                            android:textColor="@color/white"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:inputType="numberDecimal"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Row 4: Preferred Timing & Salary -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Preferred Timing *"
+                            android:textColor="@color/white"
+                            android:layout_marginBottom="8dp"/>
+                        <EditText
+                            android:id="@+id/etPreferredTiming"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@drawable/bg_input"
+                            android:hint="e.g. 5 PM - 7 PM"
+                            android:textColorHint="@color/text_hint"
+                            android:textColor="@color/white"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:inputType="text"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Salary (BDT) *"
+                            android:textColor="@color/white"
+                            android:layout_marginBottom="8dp"/>
+                        <EditText
+                            android:id="@+id/etSalary"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@drawable/bg_input"
+                            android:hint="e.g. 5000"
+                            android:textColorHint="@color/text_hint"
+                            android:textColor="@color/white"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:inputType="number"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Location Details -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Location Details *"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="8dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Division"
+                            android:textColor="@color/text_hint"
+                            android:textSize="12sp"
+                            android:layout_marginBottom="4dp"/>
+                        <Spinner
+                            android:id="@+id/spDivision"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@drawable/bg_input"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="District"
+                            android:textColor="@color/text_hint"
+                            android:textSize="12sp"
+                            android:layout_marginBottom="4dp"/>
+                        <Spinner
+                            android:id="@+id/spDistrict"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@drawable/bg_input"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Thana"
+                            android:textColor="@color/text_hint"
+                            android:textSize="12sp"
+                            android:layout_marginBottom="4dp"/>
+                        <Spinner
+                            android:id="@+id/spThana"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@drawable/bg_input"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Area/Street"
+                            android:textColor="@color/text_hint"
+                            android:textSize="12sp"
+                            android:layout_marginBottom="4dp"/>
+                        <EditText
+                            android:id="@+id/etArea"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@drawable/bg_input"
+                            android:hint="Enter Area/Street"
+                            android:textColorHint="@color/text_hint"
+                            android:textColor="@color/white"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:inputType="text"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Detailed Address"
+                    android:textColor="@color/text_hint"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+                <EditText
+                    android:id="@+id/etDetailedAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_input"
+                    android:hint="Enter detailed address"
+                    android:textColorHint="@color/text_hint"
+                    android:textColor="@color/white"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:inputType="text"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- Additional Requirements -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Additional Requirements"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="8dp"/>
+                <EditText
+                    android:id="@+id/etAdditionalReq"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:background="@drawable/bg_input"
+                    android:hint="Any specific requirements..."
+                    android:textColorHint="@color/text_hint"
+                    android:textColor="@color/white"
+                    android:padding="16dp"
+                    android:gravity="top|start"
+                    android:inputType="textMultiLine"
+                    android:layout_marginBottom="32dp"/>
+
+                <!-- Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/btnCancel"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:text="Cancel"
+                        android:background="@drawable/bg_button_outline"
+                        app:backgroundTint="@null"
+                        android:textColor="@color/white"
+                        android:layout_marginEnd="16dp"/>
+
+                    <Button
+                        android:id="@+id/btnPostTuition"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:text="Post Tuition"
+                        android:backgroundTint="@color/teal_button"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</ScrollView>
