@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_background"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,13 +28,6 @@
                 android:textStyle="bold"
                 android:layout_centerInParent="true"/>
 
-            <Switch
-                android:id="@+id/switchUrgent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                app:trackTint="@color/teal_button"/>
         </RelativeLayout>
 
         <androidx.cardview.widget.CardView
@@ -71,7 +65,7 @@
                         <Spinner
                             android:id="@+id/spSubject"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="56dp"
                             android:background="@drawable/bg_input"/>
                     </LinearLayout>
 
@@ -90,7 +84,7 @@
                         <Spinner
                             android:id="@+id/spClass"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="56dp"
                             android:background="@drawable/bg_input"/>
                     </LinearLayout>
                 </LinearLayout>
@@ -117,7 +111,7 @@
                         <Spinner
                             android:id="@+id/spTuitionType"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="56dp"
                             android:background="@drawable/bg_input"/>
                     </LinearLayout>
 
@@ -136,7 +130,7 @@
                         <Spinner
                             android:id="@+id/spGroup"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="56dp"
                             android:background="@drawable/bg_input"/>
                     </LinearLayout>
                 </LinearLayout>
@@ -163,7 +157,7 @@
                         <EditText
                             android:id="@+id/etDaysPerWeek"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="56dp"
                             android:background="@drawable/bg_input"
                             android:hint="e.g. 3 days"
                             android:textColorHint="@color/text_hint"
@@ -188,7 +182,7 @@
                         <EditText
                             android:id="@+id/etHoursPerDay"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="56dp"
                             android:background="@drawable/bg_input"
                             android:hint="e.g. 1.5 hours"
                             android:textColorHint="@color/text_hint"
@@ -221,7 +215,7 @@
                         <EditText
                             android:id="@+id/etPreferredTiming"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="56dp"
                             android:background="@drawable/bg_input"
                             android:hint="e.g. 5 PM - 7 PM"
                             android:textColorHint="@color/text_hint"
@@ -246,7 +240,7 @@
                         <EditText
                             android:id="@+id/etSalary"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="56dp"
                             android:background="@drawable/bg_input"
                             android:hint="e.g. 5000"
                             android:textColorHint="@color/text_hint"
@@ -286,7 +280,7 @@
                         <Spinner
                             android:id="@+id/spDivision"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="56dp"
                             android:background="@drawable/bg_input"/>
                     </LinearLayout>
                     <LinearLayout
@@ -305,7 +299,7 @@
                         <Spinner
                             android:id="@+id/spDistrict"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="56dp"
                             android:background="@drawable/bg_input"/>
                     </LinearLayout>
                 </LinearLayout>
@@ -331,7 +325,7 @@
                         <Spinner
                             android:id="@+id/spThana"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="56dp"
                             android:background="@drawable/bg_input"/>
                     </LinearLayout>
                     <LinearLayout
@@ -350,7 +344,7 @@
                         <EditText
                             android:id="@+id/etArea"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="56dp"
                             android:background="@drawable/bg_input"
                             android:hint="Enter Area/Street"
                             android:textColorHint="@color/text_hint"
@@ -371,7 +365,7 @@
                 <EditText
                     android:id="@+id/etDetailedAddress"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="56dp"
                     android:background="@drawable/bg_input"
                     android:hint="Enter detailed address"
                     android:textColorHint="@color/text_hint"
@@ -411,21 +405,24 @@
                     <Button
                         android:id="@+id/btnCancel"
                         android:layout_width="150dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="60dp"
                         android:text="Cancel"
-                        android:background="@drawable/bg_button_outline"
-                        app:backgroundTint="@null"
+                        android:backgroundTint="@android:color/holo_red_dark"
                         android:textColor="@color/white"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
                         android:layout_marginEnd="16dp"/>
 
                     <Button
                         android:id="@+id/btnPostTuition"
                         android:layout_width="150dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="60dp"
                         android:text="Post Tuition"
                         android:backgroundTint="@color/teal_button"
                         android:textColor="@color/black"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"/>
                 </LinearLayout>
 
             </LinearLayout>

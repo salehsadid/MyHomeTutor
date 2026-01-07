@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,6 +15,19 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyHomeTutor">
+
+        <!-- UNCOMMENT THIS TO TEST IF APP CAN LAUNCH AT ALL -->
+        <!--
+        <activity
+            android:name=".TestActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        -->
+
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -22,8 +37,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".RegisterActivity" />
+        <activity android:name=".TestActivity" />
         <activity android:name=".StudentRegistrationActivity" />
         <activity android:name=".TutorRegistrationActivity" />
         <activity android:name=".DocumentVerificationActivity" />
@@ -35,6 +49,12 @@
         <activity android:name=".MyPostsActivity" />
         <activity android:name=".MyApplicationsActivity" />
         <activity android:name=".TutorDashboardActivity" />
+        <activity android:name=".AdminLoginActivity" />
+        <activity android:name=".AdminDashboardActivity" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
     </application>
 
 </manifest>

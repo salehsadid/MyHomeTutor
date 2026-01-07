@@ -2,9 +2,22 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="dark_background">#1A1A2E</color>
+
+    <!-- Material Theme Colors - Dark Theme -->
+    <color name="purple_500">#4DB6AC</color>
+    <color name="purple_700">#00796B</color>
+    <color name="teal_200">#80CBC4</color>
+    <color name="teal_700">#00796B</color>
+
+    <!-- Dark Theme Colors -->
+    <color name="app_background">#1A1A2E</color>
     <color name="card_background">#16213E</color>
-    <color name="teal_button">#4DB6AC</color>
-    <color name="text_hint">#80FFFFFF</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#80FFFFFF</color>
     <color name="input_background">#252A40</color>
+    <color name="teal_button">#4DB6AC</color>
+
+    <!-- Mappings for existing usages -->
+    <color name="dark_background">@color/app_background</color>
+    <color name="text_hint">@color/text_secondary</color>
 </resources>

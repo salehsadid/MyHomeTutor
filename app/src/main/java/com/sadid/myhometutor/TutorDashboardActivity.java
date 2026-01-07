@@ -68,11 +68,15 @@ public class TutorDashboardActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        btnMenu.setOnClickListener(this::showPopupMenu);
-        btnExplore.setOnClickListener(v -> {
-            Intent intent = new Intent(TutorDashboardActivity.this, ExploreTuitionsActivity.class);
-            startActivity(intent);
-        });
+        if (btnMenu != null) {
+            btnMenu.setOnClickListener(this::showPopupMenu);
+        }
+        if (btnExplore != null) {
+            btnExplore.setOnClickListener(v -> {
+                Intent intent = new Intent(TutorDashboardActivity.this, ExploreTuitionsActivity.class);
+                startActivity(intent);
+            });
+        }
     }
 
     private void showPopupMenu(View view) {
@@ -149,47 +153,59 @@ public class TutorDashboardActivity extends AppCompatActivity {
     }
 
     private void loadUserInfo() {
-        if (mAuth.getCurrentUser() == null) return;
+        if (mAuth.getCurrentUser() == null) {
+            Toast.makeText(this, "Not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String userId = mAuth.getCurrentUser().getUid();
         db.collection("users").document(userId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            tvName.setText(document.getString("name"));
+                        if (document != null && document.exists()) {
+                            if (tvName != null) tvName.setText(document.getString("name") != null ? document.getString("name") : "-");
 
                             // Educational Info
-                            tvCollegeName.setText(document.getString("collegeName"));
-                            String groupHsc = document.getString("collegeGroup") + " | " + document.getString("hscYear");
-                            tvCollegeGroupHsc.setText(groupHsc);
-                            tvUniversityName.setText(document.getString("universityName"));
-                            String deptYear = document.getString("department") + " | " + document.getString("yearSemester");
-                            tvDeptYear.setText(deptYear);
-                            tvSession.setText(document.getString("session"));
+                            if (tvCollegeName != null) tvCollegeName.setText(document.getString("collegeName") != null ? document.getString("collegeName") : "-");
+                            String collegeGroup = document.getString("collegeGroup") != null ? document.getString("collegeGroup") : "";
+                            String hscYear = document.getString("hscYear") != null ? document.getString("hscYear") : "";
+                            String groupHsc = collegeGroup + " | " + hscYear;
+                            if (tvCollegeGroupHsc != null) tvCollegeGroupHsc.setText(groupHsc);
+                            if (tvUniversityName != null) tvUniversityName.setText(document.getString("universityName") != null ? document.getString("universityName") : "-");
+                            String department = document.getString("department") != null ? document.getString("department") : "";
+                            String yearSemester = document.getString("yearSemester") != null ? document.getString("yearSemester") : "";
+                            String deptYear = department + " | " + yearSemester;
+                            if (tvDeptYear != null) tvDeptYear.setText(deptYear);
+                            if (tvSession != null) tvSession.setText(document.getString("session") != null ? document.getString("session") : "-");
 
                             // Location Info
-                            tvDivision.setText(document.getString("division"));
-                            tvDistrict.setText(document.getString("district"));
-                            tvArea.setText(document.getString("area"));
+                            if (tvDivision != null) tvDivision.setText(document.getString("division") != null ? document.getString("division") : "-");
+                            if (tvDistrict != null) tvDistrict.setText(document.getString("district") != null ? document.getString("district") : "-");
+                            if (tvArea != null) tvArea.setText(document.getString("area") != null ? document.getString("area") : "-");
 
                             // Personal Info
-                            tvGender.setText(document.getString("gender"));
-                            tvEmail.setText(document.getString("email"));
-                            tvPhone.setText(document.getString("phone"));
+                            if (tvGender != null) tvGender.setText(document.getString("gender") != null ? document.getString("gender") : "-");
+                            if (tvEmail != null) tvEmail.setText(document.getString("email") != null ? document.getString("email") : "-");
+                            if (tvPhone != null) tvPhone.setText(document.getString("phone") != null ? document.getString("phone") : "-");
 
                             // Tuition Details
-                            tvExperience.setText(document.getString("experience"));
-                            tvPreferredDays.setText(document.getString("preferredDays"));
-                            tvPreferredTime.setText(document.getString("preferredTime"));
-                            tvPrefLocation.setText(document.getString("locationDetails"));
-                            tvPreferredFee.setText(document.getString("preferredFee") + " BDT");
-                            tvAdditionalInfo.setText(document.getString("about"));
+                            if (tvExperience != null) tvExperience.setText(document.getString("experience") != null ? document.getString("experience") : "-");
+                            if (tvPreferredDays != null) tvPreferredDays.setText(document.getString("preferredDays") != null ? document.getString("preferredDays") : "-");
+                            if (tvPreferredTime != null) tvPreferredTime.setText(document.getString("preferredTime") != null ? document.getString("preferredTime") : "-");
+                            if (tvPrefLocation != null) tvPrefLocation.setText(document.getString("locationDetails") != null ? document.getString("locationDetails") : "-");
+                            String preferredFee = document.getString("preferredFee");
+                            if (tvPreferredFee != null) tvPreferredFee.setText(preferredFee != null ? preferredFee + " BDT" : "- BDT");
+                            if (tvAdditionalInfo != null) tvAdditionalInfo.setText(document.getString("about") != null ? document.getString("about") : "-");
 
                             String profileImageUrl = document.getString("profileImageUrl");
-                            if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+                            if (profileImageUrl != null && !profileImageUrl.isEmpty() && ivProfile != null) {
                                 Glide.with(this).load(profileImageUrl).placeholder(R.mipmap.ic_launcher).into(ivProfile);
                             }
+                        } else {
+                            Toast.makeText(this, "User profile not found. Please complete registration.", Toast.LENGTH_LONG).show();
                         }
+                    } else {
+                        Toast.makeText(this, "Failed to load profile: " + (task.getException() != null ? task.getException().getMessage() : "Unknown error"), Toast.LENGTH_LONG).show();
                     }
                 });
     }

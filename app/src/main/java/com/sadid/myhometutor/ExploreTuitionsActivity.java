@@ -61,7 +61,7 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
         btnClearFilters = findViewById(R.id.btnClearFilters);
         btnBack = findViewById(R.id.btnBack);
         btnRefresh = findViewById(R.id.btnRefresh);
-        switchToggle = findViewById(R.id.switchToggle);
+
     }
 
     private void setupSpinners() {

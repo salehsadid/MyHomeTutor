@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_background"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,6 +23,37 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp"/>
 
+        <!-- Profile Picture Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginBottom="24dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ivProfilePhoto"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_person"
+                app:civ_border_width="2dp"
+                app:civ_border_color="@color/teal_button"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:id="@+id/tvChangePhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Change Profile Photo"
+                android:textColor="@color/teal_button"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="8dp"
+                android:background="?attr/selectableItemBackground"/>
+        </LinearLayout>
+
         <!-- Personal Information -->
         <TextView
             android:layout_width="wrap_content"
@@ -32,7 +64,7 @@
         <EditText
             android:id="@+id/etFullName"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="56dp"
             android:background="@drawable/bg_input"
             android:textColor="@color/white"
             android:padding="12dp"
@@ -47,7 +79,7 @@
         <EditText
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="56dp"
             android:background="@drawable/bg_input"
             android:textColor="@color/text_hint"
             android:padding="12dp"
@@ -63,7 +95,7 @@
         <EditText
             android:id="@+id/etSecondaryEmail"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="56dp"
             android:background="@drawable/bg_input"
             android:textColor="@color/white"
             android:padding="12dp"
@@ -78,7 +110,7 @@
         <EditText
             android:id="@+id/etPhone"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="56dp"
             android:background="@drawable/bg_input"
             android:textColor="@color/white"
             android:padding="12dp"
@@ -93,7 +125,7 @@
         <Spinner
             android:id="@+id/spGender"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="56dp"
             android:background="@drawable/bg_input"
             android:layout_marginBottom="16dp"/>
 
@@ -128,7 +160,7 @@
                 <Spinner
                     android:id="@+id/spDivision"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="56dp"
                     android:background="@drawable/bg_input"/>
             </LinearLayout>
             <LinearLayout
@@ -146,7 +178,7 @@
                 <Spinner
                     android:id="@+id/spDistrict"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="56dp"
                     android:background="@drawable/bg_input"/>
             </LinearLayout>
         </LinearLayout>
@@ -160,7 +192,7 @@
         <Spinner
             android:id="@+id/spArea"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="56dp"
             android:background="@drawable/bg_input"
             android:layout_marginBottom="16dp"/>
 
@@ -191,7 +223,7 @@
             <EditText
                 android:id="@+id/etInstitute"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="56dp"
                 android:background="@drawable/bg_input"
                 android:textColor="@color/white"
                 android:padding="12dp"
@@ -217,7 +249,7 @@
                     <Spinner
                         android:id="@+id/spClass"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="56dp"
                         android:background="@drawable/bg_input"/>
                 </LinearLayout>
                 <LinearLayout
@@ -235,7 +267,7 @@
                     <Spinner
                         android:id="@+id/spGroup"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="56dp"
                         android:background="@drawable/bg_input"/>
                 </LinearLayout>
             </LinearLayout>
@@ -279,7 +311,7 @@
                     <EditText
                         android:id="@+id/etCollegeName"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="56dp"
                         android:background="@drawable/bg_input"
                         android:textColor="@color/white"
                         android:padding="12dp"/>
@@ -299,7 +331,7 @@
                     <EditText
                         android:id="@+id/etHscYear"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="56dp"
                         android:background="@drawable/bg_input"
                         android:textColor="@color/white"
                         android:padding="12dp"/>
@@ -315,7 +347,7 @@
             <Spinner
                 android:id="@+id/spCollegeGroup"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="56dp"
                 android:background="@drawable/bg_input"
                 android:layout_marginBottom="16dp"/>
 
@@ -338,7 +370,7 @@
             <EditText
                 android:id="@+id/etUniversityName"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="56dp"
                 android:background="@drawable/bg_input"
                 android:textColor="@color/white"
                 android:padding="12dp"
@@ -364,7 +396,7 @@
                     <EditText
                         android:id="@+id/etDepartment"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="56dp"
                         android:background="@drawable/bg_input"
                         android:textColor="@color/white"
                         android:padding="12dp"/>
@@ -384,7 +416,7 @@
                     <EditText
                         android:id="@+id/etYearSemester"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="56dp"
                         android:background="@drawable/bg_input"
                         android:textColor="@color/white"
                         android:padding="12dp"/>
@@ -400,7 +432,7 @@
             <EditText
                 android:id="@+id/etSession"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="56dp"
                 android:background="@drawable/bg_input"
                 android:textColor="@color/white"
                 android:padding="12dp"
@@ -425,7 +457,7 @@
             <Spinner
                 android:id="@+id/spPreferredClass"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="56dp"
                 android:background="@drawable/bg_input"
                 android:layout_marginBottom="16dp"/>
 
@@ -438,7 +470,7 @@
             <EditText
                 android:id="@+id/etPreferredDays"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="56dp"
                 android:background="@drawable/bg_input"
                 android:textColor="@color/white"
                 android:padding="12dp"
@@ -453,7 +485,7 @@
             <EditText
                 android:id="@+id/etPreferredTime"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="56dp"
                 android:background="@drawable/bg_input"
                 android:textColor="@color/white"
                 android:padding="12dp"
@@ -468,7 +500,7 @@
             <EditText
                 android:id="@+id/etPreferredFee"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="56dp"
                 android:background="@drawable/bg_input"
                 android:textColor="@color/white"
                 android:padding="12dp"
@@ -484,7 +516,7 @@
             <EditText
                 android:id="@+id/etExperience"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="56dp"
                 android:background="@drawable/bg_input"
                 android:textColor="@color/white"
                 android:padding="12dp"
@@ -499,7 +531,7 @@
             <EditText
                 android:id="@+id/etLocationDetails"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="56dp"
                 android:background="@drawable/bg_input"
                 android:textColor="@color/white"
                 android:padding="12dp"
@@ -533,22 +565,27 @@
 
             <Button
                 android:id="@+id/btnCancel"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
                 android:text="Cancel"
-                android:background="@drawable/bg_button_outline"
-                app:backgroundTint="@null"
+                android:backgroundTint="@android:color/holo_red_dark"
                 android:textColor="@color/white"
-                android:layout_marginEnd="16dp"/>
+                android:layout_marginEnd="16dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"/>
 
             <Button
                 android:id="@+id/btnSaveChanges"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
                 android:text="Save Changes"
                 android:backgroundTint="@color/teal_button"
                 android:textColor="@color/black"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"/>
         </LinearLayout>
 
     </LinearLayout>

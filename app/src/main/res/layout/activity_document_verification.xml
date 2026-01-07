@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_background"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +18,8 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/logo"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="24dp"
+            android:contentDescription="@string/app_name"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -59,7 +61,7 @@
                 <Spinner
                     android:id="@+id/spDocumentType"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="56dp"
                     android:background="@drawable/bg_input"
                     android:layout_marginBottom="24dp"/>
 
@@ -105,7 +107,7 @@
                 <Button
                     android:id="@+id/btnFinishRegistration"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="60dp"
                     android:text="Submit"
                     android:backgroundTint="@color/teal_button"
                     android:textColor="@color/black"

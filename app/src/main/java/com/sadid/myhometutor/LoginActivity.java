@@ -31,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private Button btnLogin, btnGoogleLogin;
-    private TextView tvRegister;
+    private TextView tvRegister, tvAdminLogin;
     private RadioGroup rgUserType;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -60,35 +60,71 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
+        // Initialize views
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnGoogleLogin = findViewById(R.id.btnGoogleLogin);
         tvRegister = findViewById(R.id.tvRegister);
+        tvAdminLogin = findViewById(R.id.tvAdminLogin);
         rgUserType = findViewById(R.id.rgUserType);
 
-        btnLogin.setOnClickListener(v -> loginUser());
-        btnGoogleLogin.setOnClickListener(v -> signInWithGoogle());
-        tvRegister.setOnClickListener(v -> {
-            String userType = getSelectedUserType();
-            Intent intent;
-            if ("Student".equals(userType)) {
-                intent = new Intent(LoginActivity.this, StudentRegistrationActivity.class);
-            } else {
-                intent = new Intent(LoginActivity.this, TutorRegistrationActivity.class);
-            }
-            startActivity(intent);
-        });
+        // Set up click listeners
+        if (btnLogin != null) {
+            btnLogin.setOnClickListener(v -> loginUser());
+        }
+
+        if (btnGoogleLogin != null) {
+            btnGoogleLogin.setOnClickListener(v -> signInWithGoogle());
+        }
+
+        if (tvRegister != null) {
+            tvRegister.setOnClickListener(v -> {
+                try {
+                    String userType = getSelectedUserType();
+                    Intent intent;
+                    if ("Student".equals(userType)) {
+                        intent = new Intent(LoginActivity.this, StudentRegistrationActivity.class);
+                    } else {
+                        intent = new Intent(LoginActivity.this, TutorRegistrationActivity.class);
+                    }
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(LoginActivity.this, "Error opening registration: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+            });
+        }
+
+        if (tvAdminLogin != null) {
+            tvAdminLogin.setOnClickListener(v -> {
+                try {
+                    Intent intent = new Intent(LoginActivity.this, AdminLoginActivity.class);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(LoginActivity.this, "Error opening admin login: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+            });
+        }
+
+        // Configure Google Sign In
+        try {
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
+            mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        } catch (Exception e) {
+            Toast.makeText(this, "Google Sign-In setup failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void signInWithGoogle() {
+        if (mGoogleSignInClient == null) {
+            Toast.makeText(this, "Google Sign-In not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         googleSignInLauncher.launch(signInIntent);
     }
@@ -136,13 +172,30 @@ public class LoginActivity extends AppCompatActivity {
 
     private void checkUserRoleAndRedirect() {
         FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null) return;
+        if (user == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String userId = user.getUid();
+        String selectedUserType = getSelectedUserType(); // Get what user selected
 
         db.collection("users").document(userId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         String userType = documentSnapshot.getString("userType");
+                        if (userType == null) {
+                            Toast.makeText(LoginActivity.this, "User type not found. Please complete registration.", Toast.LENGTH_LONG).show();
+                            mAuth.signOut(); // Sign out user
+                            return;
+                        }
+                        
+                        // Check if selected user type matches actual user type
+                        if (!selectedUserType.equals(userType)) {
+                            mAuth.signOut(); // Sign out user
+                            Toast.makeText(LoginActivity.this, "This email is registered as a " + userType + " account. Please select " + userType + " and try again.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        
                         Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                         Intent intent;
                         if ("Student".equals(userType)) {
@@ -159,7 +212,14 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(LoginActivity.this, "Error checking user: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    String errorMessage = e.getMessage();
+                    if (errorMessage != null && errorMessage.contains("offline")) {
+                        Toast.makeText(LoginActivity.this, "No internet connection. Please check your network and try again.", Toast.LENGTH_LONG).show();
+                    } else if (errorMessage != null && errorMessage.contains("PERMISSION_DENIED")) {
+                        Toast.makeText(LoginActivity.this, "Database access denied. Please contact support.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Database error: " + errorMessage + "\n\nPlease check your internet connection.", Toast.LENGTH_LONG).show();
+                    }
                 });
     }
 

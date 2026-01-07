@@ -12,7 +12,20 @@
           "package_name": "com.sadid.myhometutor"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "181397478178-6r8fvsaof1nfmhuu0l8udn14dg0pi283.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sadid.myhometutor",
+            "certificate_hash": "e7fc6c5ba43cfc4fae0e8f241477698185578cf8"
+          }
+        },
+        {
+          "client_id": "181397478178-o2okml21ha3kg6gqvl4vkral4reop1q9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyB0URFBa-4FL_0JbHhjfoDzqm5XyuGk3Xk"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181397478178-o2okml21ha3kg6gqvl4vkral4reop1q9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

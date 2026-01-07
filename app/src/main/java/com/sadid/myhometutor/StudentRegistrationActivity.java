@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.ArrayAdapter;
@@ -14,6 +15,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -23,13 +25,20 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import androidx.core.content.ContextCompat;
+import com.yalantis.ucrop.UCrop;
+import java.io.File;
 import java.util.Random;
 
 public class StudentRegistrationActivity extends AppCompatActivity {
@@ -38,7 +47,9 @@ public class StudentRegistrationActivity extends AppCompatActivity {
     private TextInputEditText etPassword, etConfirmPassword;
     private Spinner spDivision, spDistrict, spArea, spClass, spGroup;
     private RadioGroup rgGender;
-    private Button btnUploadPhoto, btnVerifyEmail, btnBackToLogin, btnNext, btnConfirmOtp;
+    private Button btnVerifyEmail, btnBackToLogin, btnNext, btnConfirmOtp;
+    private ImageView ivProfilePhoto;
+    private TextView tvUploadPhoto, tvPasswordMatch, tvOtpTimer;
     private TextView tvConstraintLength, tvConstraintAlpha, tvConstraintNumber, tvConstraintCase, tvConstraintSymbol;
     private LinearLayout layoutOtpVerification;
     private ImageView ivEmailVerified;
@@ -48,28 +59,36 @@ public class StudentRegistrationActivity extends AppCompatActivity {
     private Uri profileImageUri;
     private String generatedOtp;
     private boolean isEmailVerified = false;
+    private CountDownTimer otpTimer;
+    private boolean canResendOtp = true;
+    
+    private LinkedHashMap<String, LinkedHashMap<String, List<String>>> locationData;
 
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             uri -> {
                 if (uri != null) {
-                    profileImageUri = uri;
-                    btnUploadPhoto.setText("Photo Selected");
-                    btnUploadPhoto.setBackgroundColor(Color.GREEN);
+                    startCrop(uri);
                 }
             });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_registration);
+        try {
+            setContentView(R.layout.activity_student_registration);
 
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+            mAuth = FirebaseAuth.getInstance();
+            db = FirebaseFirestore.getInstance();
 
-        initializeViews();
-        setupSpinners();
-        setupPasswordValidation();
-        setupButtons();
+            initializeViews();
+            setupSpinners();
+            setupPasswordValidation();
+            setupButtons();
+        } catch (Exception e) {
+            Toast.makeText(this, "Error initializing registration: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+            finish();
+        }
     }
 
     private void initializeViews() {
@@ -90,7 +109,9 @@ public class StudentRegistrationActivity extends AppCompatActivity {
 
         rgGender = findViewById(R.id.rgGender);
 
-        btnUploadPhoto = findViewById(R.id.btnUploadPhoto);
+        ivProfilePhoto = findViewById(R.id.ivProfilePhoto);
+        tvUploadPhoto = findViewById(R.id.tvUploadPhoto);
+        tvOtpTimer = findViewById(R.id.tvOtpTimer);
         btnVerifyEmail = findViewById(R.id.btnVerifyEmail);
         btnBackToLogin = findViewById(R.id.btnBackToLogin);
         btnNext = findViewById(R.id.btnNext);
@@ -101,35 +122,140 @@ public class StudentRegistrationActivity extends AppCompatActivity {
         tvConstraintNumber = findViewById(R.id.tvConstraintNumber);
         tvConstraintCase = findViewById(R.id.tvConstraintCase);
         tvConstraintSymbol = findViewById(R.id.tvConstraintSymbol);
+        tvPasswordMatch = findViewById(R.id.tvPasswordMatch);
 
         layoutOtpVerification = findViewById(R.id.layoutOtpVerification);
         ivEmailVerified = findViewById(R.id.ivEmailVerified);
+        
+        initializeLocationData();
+    }
+
+    private void initializeLocationData() {
+        locationData = LocationDataHelper.getLocationData();
     }
 
     private void setupSpinners() {
-        // Dummy data for spinners
-        ArrayAdapter<String> divisionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"Select Division", "Dhaka", "Chittagong", "Sylhet"});
-        divisionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spDivision.setAdapter(divisionAdapter);
+        // Setup Division Spinner
+        if (spDivision != null) {
+            List<String> divisions = new ArrayList<>();
+            divisions.add("Select Division");
+            divisions.addAll(locationData.keySet());
+            ArrayAdapter<String> divisionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, divisions);
+            divisionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spDivision.setAdapter(divisionAdapter);
+            
+            spDivision.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    String selectedDivision = parent.getItemAtPosition(position).toString();
+                    if (!selectedDivision.equals("Select Division") && locationData.containsKey(selectedDivision)) {
+                        updateDistrictSpinner(selectedDivision);
+                    } else {
+                        // Reset district and area spinners
+                        if (spDistrict != null) {
+                            ArrayAdapter<String> emptyAdapter = new ArrayAdapter<>(StudentRegistrationActivity.this, 
+                                android.R.layout.simple_spinner_item, Arrays.asList("Select District"));
+                            emptyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spDistrict.setAdapter(emptyAdapter);
+                        }
+                        if (spArea != null) {
+                            ArrayAdapter<String> emptyAdapter = new ArrayAdapter<>(StudentRegistrationActivity.this, 
+                                android.R.layout.simple_spinner_item, Arrays.asList("Select Area"));
+                            emptyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spArea.setAdapter(emptyAdapter);
+                        }
+                    }
+                }
+                
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {}
+            });
+        }
 
-        ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"Select District", "Dhaka", "Gazipur", "Narayanganj"});
-        districtAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spDistrict.setAdapter(districtAdapter);
+        // Setup District Spinner with listener
+        if (spDistrict != null) {
+            ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Arrays.asList("Select District"));
+            districtAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spDistrict.setAdapter(districtAdapter);
+            
+            spDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    String selectedDistrict = parent.getItemAtPosition(position).toString();
+                    if (!selectedDistrict.equals("Select District")) {
+                        updateAreaSpinner(selectedDistrict);
+                    } else {
+                        if (spArea != null) {
+                            ArrayAdapter<String> emptyAdapter = new ArrayAdapter<>(StudentRegistrationActivity.this, 
+                                android.R.layout.simple_spinner_item, Arrays.asList("Select Area"));
+                            emptyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spArea.setAdapter(emptyAdapter);
+                        }
+                    }
+                }
+                
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {}
+            });
+        }
 
-        ArrayAdapter<String> areaAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"Select Area", "Mirpur", "Uttara", "Dhanmondi"});
-        areaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spArea.setAdapter(areaAdapter);
+        // Setup Area Spinner
+        if (spArea != null) {
+            ArrayAdapter<String> areaAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Arrays.asList("Select Area"));
+            areaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spArea.setAdapter(areaAdapter);
+        }
 
-        ArrayAdapter<String> classAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"Select Class", "Class 1", "Class 2", "Class 3", "SSC", "HSC"});
-        classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spClass.setAdapter(classAdapter);
+        // Setup Class Spinner with expanded options
+        if (spClass != null) {
+            List<String> classes = Arrays.asList("Select Class", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", 
+                "Class 6", "Class 7", "Class 8", "Class 9", "Class 10", "SSC", "HSC", 
+                "Intermediate 1st Year", "Intermediate 2nd Year", "Admission");
+            ArrayAdapter<String> classAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, classes);
+            classAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spClass.setAdapter(classAdapter);
+        }
 
-        ArrayAdapter<String> groupAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"Select Group", "Science", "Commerce", "Arts", "N/A"});
-        groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spGroup.setAdapter(groupAdapter);
+        if (spGroup != null) {
+            ArrayAdapter<String> groupAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, 
+                new String[]{"Select Group", "Science", "Commerce", "Arts", "N/A"});
+            groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spGroup.setAdapter(groupAdapter);
+        }
+    }
+    
+    private void updateDistrictSpinner(String division) {
+        if (spDistrict != null && locationData.containsKey(division)) {
+            List<String> districts = new ArrayList<>();
+            districts.add("Select District");
+            districts.addAll(locationData.get(division).keySet());
+            ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, districts);
+            districtAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spDistrict.setAdapter(districtAdapter);
+        }
+    }
+    
+    private void updateAreaSpinner(String district) {
+        if (spArea != null) {
+            List<String> areas = new ArrayList<>();
+            areas.add("Select Area");
+            
+            // Find the district in all divisions
+            for (LinkedHashMap<String, List<String>> division : locationData.values()) {
+                if (division.containsKey(district)) {
+                    areas.addAll(division.get(district));
+                    break;
+                }
+            }
+            
+            ArrayAdapter<String> areaAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, areas);
+            areaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spArea.setAdapter(areaAdapter);
+        }
     }
 
     private void setupPasswordValidation() {
+        if (etPassword == null) return;
         etPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -137,75 +263,222 @@ public class StudentRegistrationActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 validatePassword(s.toString());
+                checkPasswordMatch();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+        
+        if (etConfirmPassword == null) return;
+        etConfirmPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                checkPasswordMatch();
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
         });
     }
-
-    private void validatePassword(String password) {
-        updateConstraint(tvConstraintLength, password.length() >= 8);
-        updateConstraint(tvConstraintAlpha, Pattern.compile("[a-zA-Z]").matcher(password).find());
-        updateConstraint(tvConstraintNumber, Pattern.compile("[0-9]").matcher(password).find());
-        updateConstraint(tvConstraintCase, Pattern.compile("[a-z]").matcher(password).find() && Pattern.compile("[A-Z]").matcher(password).find());
-        updateConstraint(tvConstraintSymbol, Pattern.compile("[^a-zA-Z0-9]").matcher(password).find());
+    
+    private void checkPasswordMatch() {
+        if (etPassword == null || etConfirmPassword == null || tvPasswordMatch == null) return;
+        
+        String password = etPassword.getText() != null ? etPassword.getText().toString() : "";
+        String confirmPassword = etConfirmPassword.getText() != null ? etConfirmPassword.getText().toString() : "";
+        
+        if (confirmPassword.isEmpty()) {
+            tvPasswordMatch.setText("");
+            return;
+        }
+        
+        if (password.equals(confirmPassword)) {
+            tvPasswordMatch.setText("✓ Password matched");
+            tvPasswordMatch.setTextColor(Color.GREEN);
+        } else {
+            tvPasswordMatch.setText("✕ Password doesn't match");
+            tvPasswordMatch.setTextColor(Color.parseColor("#FF5252"));
+        }
     }
 
-    private void updateConstraint(TextView textView, boolean isValid) {
+    private void validatePassword(String password) {
+        updateConstraintUI(tvConstraintLength, password.length() >= 8);
+        updateConstraintUI(tvConstraintAlpha, Pattern.compile("[a-zA-Z]").matcher(password).find());
+        updateConstraintUI(tvConstraintNumber, Pattern.compile("[0-9]").matcher(password).find());
+        updateConstraintUI(tvConstraintCase, Pattern.compile("[a-z]").matcher(password).find() && Pattern.compile("[A-Z]").matcher(password).find());
+        updateConstraintUI(tvConstraintSymbol, Pattern.compile("[^a-zA-Z0-9]").matcher(password).find());
+    }
+
+    private void updateConstraintUI(TextView textView, boolean isValid) {
+        if (textView == null || textView.getText() == null) return;
+        String text = textView.getText().toString();
+        // Remove any existing prefix (✓ or ✕)
+        if (text.length() > 2 && (text.startsWith("✓ ") || text.startsWith("✕ "))) {
+            text = text.substring(2);
+        }
         if (isValid) {
-            textView.setText("✓ " + textView.getText().toString().substring(2));
+            textView.setText("✓ " + text);
             textView.setTextColor(Color.GREEN);
         } else {
-            textView.setText("✕ " + textView.getText().toString().substring(2));
+            textView.setText("✕ " + text);
             textView.setTextColor(Color.parseColor("#FF5252"));
         }
     }
 
     private void setupButtons() {
-        btnBackToLogin.setOnClickListener(v -> finish());
+        if (btnBackToLogin != null) {
+            btnBackToLogin.setOnClickListener(v -> finish());
+        }
 
-        btnNext.setOnClickListener(v -> registerUser());
+        if (btnNext != null) {
+            btnNext.setOnClickListener(v -> registerUser());
+        }
 
-        btnUploadPhoto.setOnClickListener(v -> mGetContent.launch("image/*"));
+        if (ivProfilePhoto != null) {
+            ivProfilePhoto.setOnClickListener(v -> mGetContent.launch("image/*"));
+        }
+        if (tvUploadPhoto != null) {
+            tvUploadPhoto.setOnClickListener(v -> mGetContent.launch("image/*"));
+        }
 
-        btnVerifyEmail.setOnClickListener(v -> {
-            String email = etEmail.getText().toString();
-            if (email.isEmpty()) {
-                Toast.makeText(this, "Please enter email first", Toast.LENGTH_SHORT).show();
-                return;
+        if (btnVerifyEmail != null) {
+            btnVerifyEmail.setOnClickListener(v -> {
+                if (etEmail == null) {
+                    Toast.makeText(this, "Email field not found", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                
+                if (!canResendOtp) {
+                    Toast.makeText(this, "Please wait before resending OTP", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                
+                String email = etEmail.getText().toString();
+                if (email.isEmpty()) {
+                    Toast.makeText(this, "Please enter email first", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                // Generate 6 digit OTP
+                Random random = new Random();
+                int otp = 100000 + random.nextInt(900000);
+                generatedOtp = String.valueOf(otp);
+
+                // Show OTP layout
+                if (layoutOtpVerification != null) {
+                    layoutOtpVerification.setVisibility(View.VISIBLE);
+                }
+
+                // Send OTP via Email
+                com.sadid.myhometutor.utils.EmailSender.sendOTP(this, email, generatedOtp);
+                
+                // Start 30-second countdown timer
+                startOtpTimer();
+            });
+        }
+
+        if (btnConfirmOtp != null) {
+            btnConfirmOtp.setOnClickListener(v -> {
+                if (etOtp == null) return;
+                String enteredOtp = etOtp.getText().toString();
+                if (enteredOtp.equals(generatedOtp)) {
+                    isEmailVerified = true;
+                    // Cancel the timer when OTP is verified
+                    if (otpTimer != null) {
+                        otpTimer.cancel();
+                    }
+                    if (tvOtpTimer != null) tvOtpTimer.setVisibility(View.GONE);
+                    if (layoutOtpVerification != null) layoutOtpVerification.setVisibility(View.GONE);
+                    if (btnVerifyEmail != null) btnVerifyEmail.setVisibility(View.GONE);
+                    if (ivEmailVerified != null) ivEmailVerified.setVisibility(View.VISIBLE);
+                    if (etEmail != null) etEmail.setEnabled(false);
+                    Toast.makeText(this, "Email Verified Successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Invalid OTP", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+    
+    private void startOtpTimer() {
+        canResendOtp = false;
+        btnVerifyEmail.setEnabled(false);
+        btnVerifyEmail.setAlpha(0.5f);
+        tvOtpTimer.setVisibility(View.VISIBLE);
+        
+        if (otpTimer != null) {
+            otpTimer.cancel();
+        }
+        
+        otpTimer = new CountDownTimer(30000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                long secondsRemaining = millisUntilFinished / 1000;
+                tvOtpTimer.setText("Resend OTP in " + secondsRemaining + " seconds");
             }
-            // Generate 6 digit OTP
-            Random random = new Random();
-            int otp = 100000 + random.nextInt(900000);
-            generatedOtp = String.valueOf(otp);
 
-            // Show OTP layout
-            layoutOtpVerification.setVisibility(View.VISIBLE);
-
-            // Simulate sending email
-            Toast.makeText(this, "OTP sent to " + email + ": " + generatedOtp, Toast.LENGTH_LONG).show();
-            // In a real app, call your backend API to send email here
-        });
-
-        btnConfirmOtp.setOnClickListener(v -> {
-            String enteredOtp = etOtp.getText().toString();
-            if (enteredOtp.equals(generatedOtp)) {
-                isEmailVerified = true;
-                layoutOtpVerification.setVisibility(View.GONE);
-                btnVerifyEmail.setVisibility(View.GONE);
-                ivEmailVerified.setVisibility(View.VISIBLE);
-                etEmail.setEnabled(false);
-                Toast.makeText(this, "Email Verified Successfully", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Invalid OTP", Toast.LENGTH_SHORT).show();
+            @Override
+            public void onFinish() {
+                canResendOtp = true;
+                btnVerifyEmail.setEnabled(true);
+                btnVerifyEmail.setAlpha(1.0f);
+                btnVerifyEmail.setText("Resend OTP");
+                tvOtpTimer.setVisibility(View.GONE);
             }
-        });
+        }.start();
+    }
+
+    private void startCrop(Uri uri) {
+        String destinationFileName = "SampleCropImage.jpg";
+        UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), destinationFileName)));
+        uCrop.withAspectRatio(1, 1);
+        uCrop.withMaxResultSize(450, 450);
+        uCrop.withOptions(getCropOptions());
+        uCrop.start(this);
+    }
+
+    private UCrop.Options getCropOptions() {
+        UCrop.Options options = new UCrop.Options();
+        options.setCircleDimmedLayer(true);
+        options.setShowCropFrame(false);
+        options.setShowCropGrid(false);
+        options.setCompressionQuality(80);
+        options.setToolbarColor(ContextCompat.getColor(this, R.color.teal_button));
+        options.setStatusBarColor(ContextCompat.getColor(this, android.R.color.transparent));
+        options.setActiveControlsWidgetColor(ContextCompat.getColor(this, R.color.teal_button));
+        options.setFreeStyleCropEnabled(false);
+        options.setHideBottomControls(false);
+        options.setToolbarWidgetColor(ContextCompat.getColor(this, R.color.white));
+        return options;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+            final Uri resultUri = UCrop.getOutput(data);
+            if (resultUri != null) {
+                profileImageUri = resultUri;
+                ivProfilePhoto.setImageURI(resultUri);
+                tvUploadPhoto.setText("Photo Selected");
+                tvUploadPhoto.setTextColor(Color.GREEN);
+            }
+        } else if (resultCode == UCrop.RESULT_ERROR) {
+            final Throwable cropError = UCrop.getError(data);
+            Toast.makeText(this, "Crop error: " + cropError.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void registerUser() {
         if (!isEmailVerified) {
-            Toast.makeText(this, "Please verify your email first", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please verify your email with OTP first!", Toast.LENGTH_LONG).show();
+            // Scroll to email field to make it visible
+            if (etEmail != null) {
+                etEmail.requestFocus();
+            }
             return;
         }
 
@@ -222,7 +495,7 @@ public class StudentRegistrationActivity extends AppCompatActivity {
         String about = etAbout.getText().toString();
 
         if (fullName.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty() || institute.isEmpty()) {
-            Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill all required fields (Name, Email, Phone, Password, Institute)", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -250,6 +523,9 @@ public class StudentRegistrationActivity extends AppCompatActivity {
             userData.put("gender", rbGender.getText().toString());
         }
 
+        // Log for debugging
+        Toast.makeText(this, "Proceeding to Document Verification...", Toast.LENGTH_SHORT).show();
+
         Intent intent = new Intent(StudentRegistrationActivity.this, DocumentVerificationActivity.class);
         intent.putExtra("userData", userData);
         intent.putExtra("password", password);
@@ -257,5 +533,13 @@ public class StudentRegistrationActivity extends AppCompatActivity {
             intent.putExtra("profileImageUri", profileImageUri.toString());
         }
         startActivity(intent);
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (otpTimer != null) {
+            otpTimer.cancel();
+        }
     }
 }

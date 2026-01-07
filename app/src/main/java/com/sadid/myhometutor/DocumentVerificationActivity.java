@@ -16,12 +16,15 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.yalantis.ucrop.UCrop;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -45,10 +48,7 @@ public class DocumentVerificationActivity extends AppCompatActivity {
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             uri -> {
                 if (uri != null) {
-                    documentUri = uri;
-                    ivDocumentPreview.setImageURI(uri);
-                    ivDocumentPreview.setVisibility(View.VISIBLE);
-                    tvUploadPlaceholder.setVisibility(View.GONE);
+                    startDocumentCrop(uri);
                 }
             });
 
@@ -70,6 +70,13 @@ public class DocumentVerificationActivity extends AppCompatActivity {
             if (profileUriString != null) {
                 profileImageUri = Uri.parse(profileUriString);
             }
+        }
+        
+        // Validate that we received the necessary data
+        if (userData == null || password == null) {
+            Toast.makeText(this, "Error: Registration data is missing. Please try again.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
         }
 
         initializeViews();
@@ -96,7 +103,55 @@ public class DocumentVerificationActivity extends AppCompatActivity {
     private void setupListeners() {
         flUploadDocument.setOnClickListener(v -> mGetContent.launch("image/*"));
 
+        btnFinishRegistration.setEnabled(false);
+        btnFinishRegistration.setAlpha(0.5f);
+        cbTerms.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            btnFinishRegistration.setEnabled(isChecked);
+            btnFinishRegistration.setAlpha(isChecked ? 1.0f : 0.5f);
+        });
+
         btnFinishRegistration.setOnClickListener(v -> finishRegistration());
+    }
+    
+    private void startDocumentCrop(Uri uri) {
+        String destinationFileName = "SampleCropDocument.jpg";
+        UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), destinationFileName)));
+        uCrop.withAspectRatio(16, 9);  // Document aspect ratio
+        uCrop.withMaxResultSize(1920, 1080);
+        uCrop.withOptions(getDocumentCropOptions());
+        uCrop.start(this);
+    }
+
+    private UCrop.Options getDocumentCropOptions() {
+        UCrop.Options options = new UCrop.Options();
+        options.setCircleDimmedLayer(false);
+        options.setShowCropFrame(true);
+        options.setShowCropGrid(true);
+        options.setCompressionQuality(80);
+        options.setToolbarColor(ContextCompat.getColor(this, R.color.teal_button));
+        options.setStatusBarColor(ContextCompat.getColor(this, android.R.color.transparent));
+        options.setActiveControlsWidgetColor(ContextCompat.getColor(this, R.color.teal_button));
+        options.setFreeStyleCropEnabled(true);  // Allow free rotation and cropping
+        options.setToolbarWidgetColor(ContextCompat.getColor(this, R.color.white));
+        options.setToolbarTitle("Crop Document");
+        return options;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+            final Uri resultUri = UCrop.getOutput(data);
+            if (resultUri != null) {
+                documentUri = resultUri;
+                ivDocumentPreview.setImageURI(resultUri);
+                ivDocumentPreview.setVisibility(View.VISIBLE);
+                tvUploadPlaceholder.setVisibility(View.GONE);
+            }
+        } else if (resultCode == UCrop.RESULT_ERROR) {
+            final Throwable cropError = UCrop.getError(data);
+            Toast.makeText(this, "Crop error: " + (cropError != null ? cropError.getMessage() : "Unknown error"), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void finishRegistration() {
@@ -173,14 +228,11 @@ public class DocumentVerificationActivity extends AppCompatActivity {
         db.collection("users").document(userId)
                 .set(userData)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(DocumentVerificationActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
-                    Intent intent;
-                    String userType = (String) userData.get("userType");
-                    if ("Student".equals(userType)) {
-                        intent = new Intent(DocumentVerificationActivity.this, StudentDashboardActivity.class);
-                    } else {
-                        intent = new Intent(DocumentVerificationActivity.this, TutorDashboardActivity.class);
-                    }
+                    Toast.makeText(DocumentVerificationActivity.this, "Registration Successful! Please login to continue.", Toast.LENGTH_LONG).show();
+                    // Sign out user after successful registration
+                    mAuth.signOut();
+                    // Redirect to login page
+                    Intent intent = new Intent(DocumentVerificationActivity.this, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();

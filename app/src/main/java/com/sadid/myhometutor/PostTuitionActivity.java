@@ -1,6 +1,8 @@
 package com.sadid.myhometutor;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,7 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PostTuitionActivity extends AppCompatActivity {
@@ -57,18 +61,112 @@ public class PostTuitionActivity extends AppCompatActivity {
 
         btnCancel = findViewById(R.id.btnCancel);
         btnPostTuition = findViewById(R.id.btnPostTuition);
-        switchUrgent = findViewById(R.id.switchUrgent);
+        // switchUrgent is optional - commented out since it doesn't exist in layout
+        // switchUrgent = findViewById(R.id.switchUrgent);
     }
 
     private void setupSpinners() {
-        // Dummy data for spinners
+        // Setup basic spinners with static data
         setupSpinner(spSubject, new String[]{"Select Subject", "Bangla", "English", "Math", "Physics", "Chemistry", "Biology", "All Subjects"});
         setupSpinner(spClass, new String[]{"Select Class", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10", "HSC"});
         setupSpinner(spTuitionType, new String[]{"Select Type", "Offline", "Online"});
         setupSpinner(spGroup, new String[]{"Select Group", "Science", "Commerce", "Arts", "N/A"});
-        setupSpinner(spDivision, new String[]{"Select Division", "Dhaka", "Chittagong", "Sylhet", "Khulna", "Rajshahi", "Barisal", "Rangpur", "Mymensingh"});
-        setupSpinner(spDistrict, new String[]{"Select District", "Dhaka", "Gazipur", "Narayanganj"});
-        setupSpinner(spThana, new String[]{"Select Thana", "Mirpur", "Uttara", "Dhanmondi", "Gulshan"});
+        
+        // Setup location spinners with LocationDataHelper
+        setupLocationSpinners();
+    }
+
+    private void setupLocationSpinners() {
+        // Setup Division dropdown
+        List<String> divisions = new ArrayList<>();
+        divisions.add("Select Division");
+        divisions.addAll(LocationDataHelper.getDivisions());
+        ArrayAdapter<String> divisionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, divisions);
+        divisionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spDivision.setAdapter(divisionAdapter);
+
+        // Setup District dropdown (initially empty, will populate when division is selected)
+        List<String> districts = new ArrayList<>();
+        districts.add("Select District");
+        ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, districts);
+        districtAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spDistrict.setAdapter(districtAdapter);
+
+        // Setup Thana dropdown (initially empty, will populate when district is selected)
+        List<String> thanas = new ArrayList<>();
+        thanas.add("Select Thana");
+        ArrayAdapter<String> thanaAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, thanas);
+        thanaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spThana.setAdapter(thanaAdapter);
+
+        // Division selection listener
+        spDivision.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+                    String selectedDivision = divisions.get(position);
+                    List<String> districtList = new ArrayList<>();
+                    districtList.add("Select District");
+                    districtList.addAll(LocationDataHelper.getDistricts(selectedDivision));
+                    
+                    ArrayAdapter<String> newDistrictAdapter = new ArrayAdapter<>(PostTuitionActivity.this, 
+                            android.R.layout.simple_spinner_item, districtList);
+                    newDistrictAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spDistrict.setAdapter(newDistrictAdapter);
+                    spDistrict.setSelection(0);
+                } else {
+                    // Reset district and thana if no division selected
+                    List<String> emptyDistricts = new ArrayList<>();
+                    emptyDistricts.add("Select District");
+                    ArrayAdapter<String> emptyAdapter = new ArrayAdapter<>(PostTuitionActivity.this, 
+                            android.R.layout.simple_spinner_item, emptyDistricts);
+                    emptyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spDistrict.setAdapter(emptyAdapter);
+                    
+                    List<String> emptyThanas = new ArrayList<>();
+                    emptyThanas.add("Select Thana");
+                    ArrayAdapter<String> emptyThanaAdapter = new ArrayAdapter<>(PostTuitionActivity.this, 
+                            android.R.layout.simple_spinner_item, emptyThanas);
+                    emptyThanaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spThana.setAdapter(emptyThanaAdapter);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        // District selection listener
+        spDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0 && spDivision.getSelectedItemPosition() > 0) {
+                    String selectedDivision = spDivision.getSelectedItem().toString();
+                    String selectedDistrict = spDistrict.getSelectedItem().toString();
+                    
+                    List<String> thanaList = new ArrayList<>();
+                    thanaList.add("Select Thana");
+                    thanaList.addAll(LocationDataHelper.getThanas(selectedDivision, selectedDistrict));
+                    
+                    ArrayAdapter<String> newThanaAdapter = new ArrayAdapter<>(PostTuitionActivity.this, 
+                            android.R.layout.simple_spinner_item, thanaList);
+                    newThanaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spThana.setAdapter(newThanaAdapter);
+                    spThana.setSelection(0);
+                } else {
+                    // Reset thana if no district selected
+                    List<String> emptyThanas = new ArrayList<>();
+                    emptyThanas.add("Select Thana");
+                    ArrayAdapter<String> emptyAdapter = new ArrayAdapter<>(PostTuitionActivity.this, 
+                            android.R.layout.simple_spinner_item, emptyThanas);
+                    emptyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spThana.setAdapter(emptyAdapter);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
 
     private void setupSpinner(Spinner spinner, String[] items) {
@@ -120,7 +218,7 @@ public class PostTuitionActivity extends AppCompatActivity {
         post.put("area", area);
         post.put("detailedAddress", detailedAddress);
         post.put("additionalReq", additionalReq);
-        post.put("isUrgent", switchUrgent.isChecked());
+        post.put("isUrgent", switchUrgent != null && switchUrgent.isChecked());
         post.put("status", "open");
         post.put("timestamp", System.currentTimeMillis());
 

@@ -56,7 +56,11 @@ public class StudentDashboardActivity extends AppCompatActivity {
     }
 
     private void setupMenu() {
-        btnMenu.setOnClickListener(this::showPopupMenu);
+        if (btnMenu != null) {
+            btnMenu.setOnClickListener(this::showPopupMenu);
+        } else {
+            Toast.makeText(this, "Menu button not found in layout", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showPopupMenu(View view) {
@@ -136,30 +140,37 @@ public class StudentDashboardActivity extends AppCompatActivity {
     }
 
     private void loadUserInfo() {
-        if (mAuth.getCurrentUser() == null) return;
+        if (mAuth.getCurrentUser() == null) {
+            Toast.makeText(this, "Not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String userId = mAuth.getCurrentUser().getUid();
         db.collection("users").document(userId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            tvName.setText(document.getString("name"));
-                            tvInstitute.setText(document.getString("institute"));
-                            tvClass.setText(document.getString("class"));
-                            tvGroup.setText(document.getString("group"));
-                            tvDivision.setText(document.getString("division"));
-                            tvDistrict.setText(document.getString("district"));
-                            tvArea.setText(document.getString("area"));
-                            tvGender.setText(document.getString("gender"));
-                            tvEmail.setText(document.getString("email"));
-                            tvPhone.setText(document.getString("phone"));
-                            tvAbout.setText(document.getString("about"));
+                        if (document != null && document.exists()) {
+                            if (tvName != null) tvName.setText(document.getString("name") != null ? document.getString("name") : "-");
+                            if (tvInstitute != null) tvInstitute.setText(document.getString("institute") != null ? document.getString("institute") : "-");
+                            if (tvClass != null) tvClass.setText(document.getString("class") != null ? document.getString("class") : "-");
+                            if (tvGroup != null) tvGroup.setText(document.getString("group") != null ? document.getString("group") : "-");
+                            if (tvDivision != null) tvDivision.setText(document.getString("division") != null ? document.getString("division") : "-");
+                            if (tvDistrict != null) tvDistrict.setText(document.getString("district") != null ? document.getString("district") : "-");
+                            if (tvArea != null) tvArea.setText(document.getString("area") != null ? document.getString("area") : "-");
+                            if (tvGender != null) tvGender.setText(document.getString("gender") != null ? document.getString("gender") : "-");
+                            if (tvEmail != null) tvEmail.setText(document.getString("email") != null ? document.getString("email") : "-");
+                            if (tvPhone != null) tvPhone.setText(document.getString("phone") != null ? document.getString("phone") : "-");
+                            if (tvAbout != null) tvAbout.setText(document.getString("about") != null ? document.getString("about") : "-");
 
                             String profileImageUrl = document.getString("profileImageUrl");
-                            if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+                            if (profileImageUrl != null && !profileImageUrl.isEmpty() && ivProfile != null) {
                                 Glide.with(this).load(profileImageUrl).placeholder(R.mipmap.ic_launcher).into(ivProfile);
                             }
+                        } else {
+                            Toast.makeText(this, "User profile not found. Please complete registration.", Toast.LENGTH_LONG).show();
                         }
+                    } else {
+                        Toast.makeText(this, "Failed to load profile: " + (task.getException() != null ? task.getException().getMessage() : "Unknown error"), Toast.LENGTH_LONG).show();
                     }
                 });
     }

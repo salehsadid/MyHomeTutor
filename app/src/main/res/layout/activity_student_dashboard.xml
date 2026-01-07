@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_background"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
     <!-- Top Bar -->
     <LinearLayout
@@ -20,7 +21,8 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="12dp"
-            android:src="@drawable/logo" />
+            android:src="@drawable/logo"
+            android:contentDescription="@string/app_name"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -44,6 +46,7 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
+
         <ImageView
             android:id="@+id/btnMenu"
             android:layout_width="wrap_content"
@@ -51,7 +54,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
             android:src="@android:drawable/ic_menu_more"
-            app:tint="@color/white" />
+            app:tint="@color/text_primary" />
 
     </LinearLayout>
 
@@ -68,19 +71,15 @@
             android:padding="16dp">
 
             <!-- Profile Image -->
-            <androidx.cardview.widget.CardView
+            <ImageView
+                android:id="@+id/ivProfile"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginBottom="16dp"
-                app:cardCornerRadius="50dp">
-
-                <ImageView
-                    android:id="@+id/ivProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@mipmap/ic_launcher" />
-            </androidx.cardview.widget.CardView>
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher"
+                android:padding="2dp"
+                android:contentDescription="Profile Picture"/>
 
             <TextView
                 android:id="@+id/tvName"
@@ -88,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:text="LOADING..."
-                android:textColor="@color/white"
+                android:textColor="@color/text_primary"
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
