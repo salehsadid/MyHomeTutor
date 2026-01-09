@@ -23,6 +23,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.sadid.myhometutor.utils.Base64ImageHelper;
 import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.UCrop;
 
@@ -211,9 +212,15 @@ public class EditProfileActivity extends AppCompatActivity {
         etPhone.setText(document.getString("phone"));
         etAbout.setText(document.getString("about"));
 
-        // Load profile image
+        // Load profile image - support both Base64 and URL (for backward compatibility)
+        String profileImageBase64 = document.getString("profileImageBase64");
         String profileImageUrl = document.getString("profileImageUrl");
-        if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+        
+        if (profileImageBase64 != null && !profileImageBase64.isEmpty()) {
+            // Load from Base64
+            Base64ImageHelper.loadBase64IntoImageView(ivProfilePhoto, profileImageBase64, R.drawable.ic_person);
+        } else if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+            // Fallback to URL for backward compatibility
             Picasso.get().load(profileImageUrl).placeholder(R.drawable.ic_person).into(ivProfilePhoto);
         }
 
@@ -277,22 +284,31 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void uploadProfileImageAndSave(String userId) {
-        StorageReference profileImageRef = storage.getReference()
-                .child("profile_images")
-                .child(userId + "_profile.jpg");
-
-        profileImageRef.putFile(newProfileImageUri)
-                .addOnSuccessListener(taskSnapshot -> 
-                    profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> 
-                        saveProfileData(userId, uri.toString())
-                    ))
-                .addOnFailureListener(e -> 
-                    Toast.makeText(this, "Failed to upload image: " + e.getMessage(), 
-                            Toast.LENGTH_SHORT).show()
-                );
+        // Convert image to Base64
+        String profileImageBase64 = Base64ImageHelper.convertUriToBase64(this, newProfileImageUri, 800, 75);
+        
+        if (profileImageBase64 != null) {
+            // Validate size
+            if (Base64ImageHelper.isBase64SizeValid(profileImageBase64, 1500)) {
+                saveProfileData(userId, profileImageBase64);
+            } else {
+                Toast.makeText(this, "Image too large. Compressing...", Toast.LENGTH_SHORT).show();
+                // Try with lower quality
+                profileImageBase64 = Base64ImageHelper.convertUriToBase64(this, newProfileImageUri, 600, 60);
+                if (profileImageBase64 != null && Base64ImageHelper.isBase64SizeValid(profileImageBase64, 1500)) {
+                    saveProfileData(userId, profileImageBase64);
+                } else {
+                    Toast.makeText(this, "Failed to upload image - too large", Toast.LENGTH_SHORT).show();
+                    saveProfileData(userId, null);
+                }
+            }
+        } else {
+            Toast.makeText(this, "Failed to convert image", Toast.LENGTH_SHORT).show();
+            saveProfileData(userId, null);
+        }
     }
 
-    private void saveProfileData(String userId, String newProfileImageUrl) {
+    private void saveProfileData(String userId, String newProfileImageBase64) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("name", etFullName.getText().toString());
         updates.put("secondaryEmail", etSecondaryEmail.getText().toString());
@@ -303,8 +319,8 @@ public class EditProfileActivity extends AppCompatActivity {
         updates.put("district", spDistrict.getSelectedItem().toString());
         updates.put("area", spArea.getSelectedItem().toString());
 
-        if (newProfileImageUrl != null) {
-            updates.put("profileImageUrl", newProfileImageUrl);
+        if (newProfileImageBase64 != null) {
+            updates.put("profileImageBase64", newProfileImageBase64);
         }
 
         if ("Student".equals(userType)) {

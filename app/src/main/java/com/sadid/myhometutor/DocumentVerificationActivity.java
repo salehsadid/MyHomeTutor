@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.sadid.myhometutor.utils.Base64ImageHelper;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -203,33 +204,53 @@ public class DocumentVerificationActivity extends AppCompatActivity {
     }
 
     private void uploadImagesAndSaveData(String userId) {
+        // Convert profile image to Base64
         if (profileImageUri != null) {
-            StorageReference profileRef = storage.getReference().child("profile_images/" + userId + ".jpg");
-            profileRef.putFile(profileImageUri)
-                    .addOnSuccessListener(taskSnapshot -> profileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        userData.put("profileImageUrl", uri.toString());
-                        uploadDocumentImage(userId);
-                    }))
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Failed to upload profile image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        uploadDocumentImage(userId); // Continue even if profile upload fails
-                    });
-        } else {
-            uploadDocumentImage(userId);
+            String profileImageBase64 = Base64ImageHelper.convertUriToBase64(this, profileImageUri, 800, 75);
+            if (profileImageBase64 != null) {
+                // Validate size (keep under 1.5MB for better performance)
+                if (Base64ImageHelper.isBase64SizeValid(profileImageBase64, 1500)) {
+                    userData.put("profileImageBase64", profileImageBase64);
+                    Toast.makeText(this, "Profile image converted successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Profile image too large. Using lower quality.", Toast.LENGTH_SHORT).show();
+                    // Try with lower quality
+                    profileImageBase64 = Base64ImageHelper.convertUriToBase64(this, profileImageUri, 600, 60);
+                    if (profileImageBase64 != null && Base64ImageHelper.isBase64SizeValid(profileImageBase64, 1500)) {
+                        userData.put("profileImageBase64", profileImageBase64);
+                    }
+                }
+            } else {
+                Toast.makeText(this, "Failed to convert profile image", Toast.LENGTH_SHORT).show();
+            }
         }
+        uploadDocumentImage(userId);
     }
 
     private void uploadDocumentImage(String userId) {
-        StorageReference docRef = storage.getReference().child("documents/" + userId + "_" + UUID.randomUUID().toString() + ".jpg");
-        docRef.putFile(documentUri)
-                .addOnSuccessListener(taskSnapshot -> docRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    userData.put("documentImageUrl", uri.toString());
-                    saveDataToFirestore(userId);
-                }))
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to upload document: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    saveDataToFirestore(userId);
-                });
+        // Convert document image to Base64
+        if (documentUri != null) {
+            String documentImageBase64 = Base64ImageHelper.convertUriToBase64(this, documentUri, 1200, 80);
+            if (documentImageBase64 != null) {
+                // Validate size (keep under 2MB for documents)
+                if (Base64ImageHelper.isBase64SizeValid(documentImageBase64, 2000)) {
+                    userData.put("documentImageBase64", documentImageBase64);
+                    Toast.makeText(this, "Document converted successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Document image too large. Using lower quality.", Toast.LENGTH_SHORT).show();
+                    // Try with lower quality
+                    documentImageBase64 = Base64ImageHelper.convertUriToBase64(this, documentUri, 1000, 65);
+                    if (documentImageBase64 != null && Base64ImageHelper.isBase64SizeValid(documentImageBase64, 2000)) {
+                        userData.put("documentImageBase64", documentImageBase64);
+                    } else {
+                        Toast.makeText(this, "Failed to convert document image - too large", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } else {
+                Toast.makeText(this, "Failed to convert document image", Toast.LENGTH_SHORT).show();
+            }
+        }
+        saveDataToFirestore(userId);
     }
 
     private void saveDataToFirestore(String userId) {

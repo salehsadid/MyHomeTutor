@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.sadid.myhometutor.utils.Base64ImageHelper;
 
 public class TutorDashboardActivity extends AppCompatActivity {
 
@@ -192,8 +193,15 @@ public class TutorDashboardActivity extends AppCompatActivity {
                             if (tvPreferredFee != null) tvPreferredFee.setText(preferredFee != null ? preferredFee + " BDT" : "- BDT");
                             if (tvAdditionalInfo != null) tvAdditionalInfo.setText(document.getString("about") != null ? document.getString("about") : "-");
 
+                            // Load profile image - support both Base64 and URL
+                            String profileImageBase64 = document.getString("profileImageBase64");
                             String profileImageUrl = document.getString("profileImageUrl");
-                            if (profileImageUrl != null && !profileImageUrl.isEmpty() && ivProfile != null) {
+                            
+                            if (profileImageBase64 != null && !profileImageBase64.isEmpty() && ivProfile != null) {
+                                // Load from Base64
+                                Base64ImageHelper.loadBase64IntoImageViewWithGlide(this, ivProfile, profileImageBase64, R.mipmap.ic_launcher);
+                            } else if (profileImageUrl != null && !profileImageUrl.isEmpty() && ivProfile != null) {
+                                // Fallback to URL for backward compatibility
                                 Glide.with(this).load(profileImageUrl).placeholder(R.mipmap.ic_launcher).into(ivProfile);
                             }
                         } else {
