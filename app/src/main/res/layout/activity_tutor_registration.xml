@@ -10,6 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/card_background"
         android:orientation="vertical"
         android:padding="24dp">
 
@@ -17,44 +18,44 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
             android:gravity="center"
-            android:orientation="vertical"
-            android:layout_marginBottom="24dp">
+            android:orientation="vertical">
 
             <ImageView
-                android:layout_width="100dp"
+                android:layout_width="140dp"
                 android:layout_height="100dp"
-                android:src="@drawable/logo"
                 android:layout_marginBottom="16dp"
-                android:contentDescription="@string/app_name"/>
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/logo1" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="Tutor Registration"
                 android:textColor="@color/teal_button"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
+                android:textSize="28sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="Create your tutor account to browse and apply for tuition opportunities"
                 android:textColor="@color/text_hint"
-                android:textSize="14sp"
-                android:gravity="center"/>
+                android:textSize="14sp" />
         </LinearLayout>
 
         <!-- Personal Information Section -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="Personal Information"
             android:textColor="@color/teal_button"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/ivProfilePhoto"
@@ -62,66 +63,66 @@
             android:layout_height="120dp"
             android:layout_gravity="center"
             android:layout_marginBottom="8dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_background"
+            android:contentDescription="Profile Photo"
             android:padding="2dp"
-            android:contentDescription="Profile Photo"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_person" />
 
         <TextView
             android:id="@+id/tvUploadPhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Upload Photo"
-            android:textColor="@color/teal_button"
             android:layout_gravity="center"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="24dp"
+            android:text="Upload Photo"
+            android:textColor="@color/teal_button" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Full Name *"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="@color/white" />
 
         <EditText
             android:id="@+id/etFullName"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/bg_input"
             android:hint="Enter your full name"
-            android:textColorHint="@color/text_hint"
-            android:textColor="@color/white"
+            android:inputType="textPersonName"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:inputType="textPersonName"
-            android:layout_marginBottom="16dp"/>
+            android:textColor="@color/white"
+            android:textColorHint="@color/text_hint" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Email Address *"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="@color/white" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="40dp">
+            android:layout_marginBottom="40dp"
+            android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/etEmail"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_input"
                 android:hint="Enter your email"
-                android:textColorHint="@color/text_hint"
-                android:textColor="@color/white"
+                android:inputType="textEmailAddress"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:inputType="textEmailAddress"
-                android:layout_marginEnd="8dp"/>
+                android:textColor="@color/white"
+                android:textColorHint="@color/text_hint" />
 
             <Button
                 android:id="@+id/btnVerifyEmail"
@@ -139,121 +140,121 @@
                 android:id="@+id/ivEmailVerified"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:padding="12dp"
                 android:src="@drawable/ic_check_circle"
                 android:visibility="gone"
-                app:tint="@android:color/holo_green_light"
-                android:padding="12dp"/>
+                app:tint="@android:color/holo_green_light" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/tvOtpTimer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text=""
             android:textColor="@color/teal_button"
             android:textSize="12sp"
-            android:visibility="gone"
-            android:layout_marginBottom="16dp"/>
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/layoutOtpVerification"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
             android:visibility="gone">
 
             <EditText
                 android:id="@+id/etOtp"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_input"
                 android:hint="Enter OTP"
-                android:textColorHint="@color/text_hint"
-                android:textColor="@color/white"
+                android:inputType="number"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:inputType="number"
-                android:layout_marginEnd="8dp"/>
+                android:textColor="@color/white"
+                android:textColorHint="@color/text_hint" />
 
             <Button
                 android:id="@+id/btnConfirmOtp"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="Confirm"
                 android:backgroundTint="@color/teal_button"
+                android:text="Confirm"
                 android:textColor="@color/black"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Phone Number *"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="@color/white" />
 
         <EditText
             android:id="@+id/etPhone"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/bg_input"
             android:hint="Enter your phone number"
-            android:textColorHint="@color/text_hint"
-            android:textColor="@color/white"
+            android:inputType="phone"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:inputType="phone"
-            android:layout_marginBottom="16dp"/>
+            android:textColor="@color/white"
+            android:textColorHint="@color/text_hint" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Gender *"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="@color/white" />
 
         <RadioGroup
             android:id="@+id/rgGender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/rbMale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Male"
-                android:textColor="@color/white"
+                android:layout_marginEnd="24dp"
                 android:buttonTint="@color/teal_button"
-                android:layout_marginEnd="24dp"/>
+                android:text="Male"
+                android:textColor="@color/white" />
 
             <RadioButton
                 android:id="@+id/rbFemale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:buttonTint="@color/teal_button"
                 android:text="Female"
-                android:textColor="@color/white"
-                android:buttonTint="@color/teal_button"/>
+                android:textColor="@color/white" />
         </RadioGroup>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Password *"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="@color/white" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            app:boxBackgroundMode="none"
             app:hintEnabled="false"
             app:passwordToggleEnabled="true"
-            app:passwordToggleTint="@color/text_hint"
-            app:boxBackgroundMode="none">
+            app:passwordToggleTint="@color/text_hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPassword"
@@ -261,11 +262,11 @@
                 android:layout_height="56dp"
                 android:background="@drawable/bg_input"
                 android:hint="Create a password"
-                android:textColorHint="@color/text_hint"
-                android:textColor="@color/white"
+                android:inputType="textPassword"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:inputType="textPassword"/>
+                android:textColor="@color/white"
+                android:textColorHint="@color/text_hint" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Password Constraints -->
@@ -275,52 +276,56 @@
             android:layout_height="wrap_content"
             android:text="✕ Minimum 8 characters"
             android:textColor="#FF5252"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
+
         <TextView
             android:id="@+id/tvConstraintAlpha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="✕ Contains alphabet"
             android:textColor="#FF5252"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
+
         <TextView
             android:id="@+id/tvConstraintNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="✕ Contains number"
             android:textColor="#FF5252"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
+
         <TextView
             android:id="@+id/tvConstraintCase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="✕ Mixed case (upper &amp; lower)"
             android:textColor="#FF5252"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
+
         <TextView
             android:id="@+id/tvConstraintSymbol"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="✕ Contains symbol"
             android:textColor="#FF5252"
-            android:textSize="12sp"
-            android:layout_marginBottom="16dp"/>
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Confirm Password *"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="@color/white" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            app:boxBackgroundMode="none"
             app:hintEnabled="false"
             app:passwordToggleEnabled="true"
-            app:passwordToggleTint="@color/text_hint"
-            app:boxBackgroundMode="none">
+            app:passwordToggleTint="@color/text_hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etConfirmPassword"
@@ -328,84 +333,84 @@
                 android:layout_height="56dp"
                 android:background="@drawable/bg_input"
                 android:hint="Confirm your password"
-                android:textColorHint="@color/text_hint"
-                android:textColor="@color/white"
+                android:inputType="textPassword"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:inputType="textPassword"/>
+                android:textColor="@color/white"
+                android:textColorHint="@color/text_hint" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/tvPasswordMatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
             android:text=""
-            android:textSize="14sp"
-            android:layout_marginBottom="24dp"/>
+            android:textSize="14sp" />
 
         <!-- Educational Background Section -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="Educational Background"
             android:textColor="@color/teal_button"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="College Information"
             android:textColor="@color/white"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="College Name *"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="@color/white" />
 
         <EditText
             android:id="@+id/etCollegeName"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/bg_input"
             android:hint="Enter college name"
-            android:textColorHint="@color/text_hint"
-            android:textColor="@color/white"
+            android:inputType="text"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:inputType="text"
-            android:layout_marginBottom="16dp"/>
+            android:textColor="@color/white"
+            android:textColorHint="@color/text_hint" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginEnd="8dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:text="Group *"
-                    android:textColor="@color/white"
-                    android:layout_marginBottom="8dp"/>
+                    android:textColor="@color/white" />
 
                 <Spinner
                     android:id="@+id/spCollegeGroup"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="@drawable/bg_input"/>
+                    android:background="@drawable/bg_input" />
             </LinearLayout>
 
             <LinearLayout
@@ -417,9 +422,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:text="HSC Passing Year *"
-                    android:textColor="@color/white"
-                    android:layout_marginBottom="8dp"/>
+                    android:textColor="@color/white" />
 
                 <EditText
                     android:id="@+id/etHscYear"
@@ -427,61 +432,61 @@
                     android:layout_height="56dp"
                     android:background="@drawable/bg_input"
                     android:hint="Year"
-                    android:textColorHint="@color/text_hint"
-                    android:textColor="@color/white"
+                    android:inputType="number"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:inputType="number"/>
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/text_hint" />
             </LinearLayout>
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="University Information"
             android:textColor="@color/white"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="University Name *"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="@color/white" />
 
         <EditText
             android:id="@+id/etUniversityName"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/bg_input"
             android:hint="Enter university name"
-            android:textColorHint="@color/text_hint"
-            android:textColor="@color/white"
+            android:inputType="text"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:inputType="text"
-            android:layout_marginBottom="16dp"/>
+            android:textColor="@color/white"
+            android:textColorHint="@color/text_hint" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginEnd="8dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:text="Department *"
-                    android:textColor="@color/white"
-                    android:layout_marginBottom="8dp"/>
+                    android:textColor="@color/white" />
 
                 <EditText
                     android:id="@+id/etDepartment"
@@ -489,11 +494,11 @@
                     android:layout_height="56dp"
                     android:background="@drawable/bg_input"
                     android:hint="Department"
-                    android:textColorHint="@color/text_hint"
-                    android:textColor="@color/white"
+                    android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:inputType="text"/>
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/text_hint" />
             </LinearLayout>
 
             <LinearLayout
@@ -505,9 +510,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:text="Year/Semester *"
-                    android:textColor="@color/white"
-                    android:layout_marginBottom="8dp"/>
+                    android:textColor="@color/white" />
 
                 <EditText
                     android:id="@+id/etYearSemester"
@@ -515,113 +520,113 @@
                     android:layout_height="56dp"
                     android:background="@drawable/bg_input"
                     android:hint="Year (e.g. 3rd)"
-                    android:textColorHint="@color/text_hint"
-                    android:textColor="@color/white"
+                    android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:inputType="text"/>
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/text_hint" />
             </LinearLayout>
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Session *"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="@color/white" />
 
         <EditText
             android:id="@+id/etAddress"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:layout_marginBottom="24dp"
             android:background="@drawable/bg_input"
             android:hint="Session (e.g. 2020-21)"
-            android:textColorHint="@color/text_hint"
-            android:textColor="@color/white"
+            android:inputType="text"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:inputType="text"
-            android:layout_marginBottom="24dp"/>
+            android:textColor="@color/white"
+            android:textColorHint="@color/text_hint" />
 
         <!-- Tuition Preferences Section -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="Tuition Preferences"
             android:textColor="@color/teal_button"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Location *"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="@color/white" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
 
             <Spinner
                 android:id="@+id/spDivision"
                 android:layout_width="0dp"
                 android:layout_height="56dp"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_input"
-                android:layout_marginEnd="8dp"/>
+                android:background="@drawable/bg_input" />
 
             <Spinner
                 android:id="@+id/spDistrict"
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_input"/>
+                android:background="@drawable/bg_input" />
         </LinearLayout>
 
         <Spinner
             android:id="@+id/spArea"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="@drawable/bg_input"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_input" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Preferred Class *"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="@color/white" />
 
         <Spinner
             android:id="@+id/spPreferredClass"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="@drawable/bg_input"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_input" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginEnd="8dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:text="Preferred Days *"
-                    android:textColor="@color/white"
-                    android:layout_marginBottom="8dp"/>
+                    android:textColor="@color/white" />
 
                 <EditText
                     android:id="@+id/etPreferredDays"
@@ -629,11 +634,11 @@
                     android:layout_height="56dp"
                     android:background="@drawable/bg_input"
                     android:hint="e.g. Sun, Tue, Thu"
-                    android:textColorHint="@color/text_hint"
-                    android:textColor="@color/white"
+                    android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:inputType="text"/>
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/text_hint" />
             </LinearLayout>
 
             <LinearLayout
@@ -645,9 +650,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:text="Preferred Time *"
-                    android:textColor="@color/white"
-                    android:layout_marginBottom="8dp"/>
+                    android:textColor="@color/white" />
 
                 <EditText
                     android:id="@+id/etPreferredTime"
@@ -655,138 +660,138 @@
                     android:layout_height="56dp"
                     android:background="@drawable/bg_input"
                     android:hint="e.g. 4 PM - 6 PM"
-                    android:textColorHint="@color/text_hint"
-                    android:textColor="@color/white"
+                    android:inputType="text"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:inputType="text"/>
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/text_hint" />
             </LinearLayout>
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Preferred Location Details *"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="@color/white" />
 
         <EditText
             android:id="@+id/etQualification"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/bg_input"
             android:hint="Specific areas or 'Online'"
-            android:textColorHint="@color/text_hint"
-            android:textColor="@color/white"
+            android:inputType="text"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:inputType="text"
-            android:layout_marginBottom="16dp"/>
+            android:textColor="@color/white"
+            android:textColorHint="@color/text_hint" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Preferred Fee (BDT) *"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="@color/white" />
 
         <EditText
             android:id="@+id/etPreferredFee"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/bg_input"
             android:hint="Enter your preferred fee amount"
-            android:textColorHint="@color/text_hint"
-            android:textColor="@color/white"
+            android:inputType="number"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:inputType="number"
-            android:layout_marginBottom="16dp"/>
+            android:textColor="@color/white"
+            android:textColorHint="@color/text_hint" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Tuition Experience *"
-            android:textColor="@color/white"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="@color/white" />
 
         <EditText
             android:id="@+id/etExperience"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:layout_marginBottom="24dp"
             android:background="@drawable/bg_input"
             android:hint="Enter years of experience (e.g., 2 years, 6 months)"
-            android:textColorHint="@color/text_hint"
-            android:textColor="@color/white"
+            android:inputType="text"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:inputType="text"
-            android:layout_marginBottom="24dp"/>
+            android:textColor="@color/white"
+            android:textColorHint="@color/text_hint" />
 
         <!-- Additional Information Section -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="Additional Information"
             android:textColor="@color/teal_button"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/etAbout"
             android:layout_width="match_parent"
             android:layout_height="120dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/bg_input"
-            android:hint="Enter subjects you can teach, achievements, or any other relevant information"
-            android:textColorHint="@color/text_hint"
-            android:textColor="@color/white"
-            android:padding="16dp"
             android:gravity="top|start"
+            android:hint="Enter subjects you can teach, achievements, or any other relevant information"
             android:inputType="textMultiLine"
             android:minLines="4"
-            android:layout_marginBottom="32dp"/>
+            android:padding="16dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/text_hint" />
 
         <!-- Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="32dp"
             android:gravity="center"
-            android:layout_marginBottom="32dp">
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btnBackToLogin"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
-                android:layout_weight="1"
-                android:text="Back to Login"
-                android:backgroundTint="@android:color/holo_red_dark"
-                android:textColor="@color/white"
                 android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:backgroundTint="@android:color/holo_red_dark"
                 android:insetTop="0dp"
-                android:insetBottom="0dp"/>
+                android:insetBottom="0dp"
+                android:text="Back to Login"
+                android:textColor="@color/white" />
 
             <Button
                 android:id="@+id/btnNext"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_weight="1"
-                android:text="Next"
                 android:backgroundTint="@color/teal_button"
-                android:textColor="@color/black"
-                android:textStyle="bold"
                 android:insetTop="0dp"
-                android:insetBottom="0dp"/>
+                android:insetBottom="0dp"
+                android:text="Next"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="© Copyright Saleh Sadid Mir"
             android:textColor="@color/text_hint"
-            android:textSize="12sp"
-            android:layout_gravity="center"/>
+            android:textSize="12sp" />
 
     </LinearLayout>
 

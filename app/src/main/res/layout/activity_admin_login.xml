@@ -123,13 +123,13 @@
                         android:id="@+id/tvBackToLogin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="← Back to User Login"
-                        android:textColor="@color/teal_button"
-                        android:textStyle="bold"
+                        android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true"
-                        android:background="?attr/selectableItemBackground"
-                        android:padding="8dp"/>
+                        android:padding="8dp"
+                        android:text="Back to User Login"
+                        android:textColor="@android:color/holo_red_light"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
             </LinearLayout>

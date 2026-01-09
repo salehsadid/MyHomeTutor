@@ -55,6 +55,11 @@ public class DocumentVerificationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Add logging at the very beginning
+        Toast.makeText(this, "DocumentVerificationActivity started", Toast.LENGTH_SHORT).show();
+        android.util.Log.d("DocumentVerification", "onCreate started");
+        
         setContentView(R.layout.activity_document_verification);
 
         mAuth = FirebaseAuth.getInstance();
@@ -72,9 +77,13 @@ public class DocumentVerificationActivity extends AppCompatActivity {
             }
         }
         
+        android.util.Log.d("DocumentVerification", "userData: " + (userData != null ? "exists" : "null"));
+        android.util.Log.d("DocumentVerification", "password: " + (password != null ? "exists" : "null"));
+        
         // Validate that we received the necessary data
         if (userData == null || password == null) {
             Toast.makeText(this, "Error: Registration data is missing. Please try again.", Toast.LENGTH_LONG).show();
+            android.util.Log.e("DocumentVerification", "userData or password is null - finishing activity");
             finish();
             return;
         }
@@ -82,6 +91,9 @@ public class DocumentVerificationActivity extends AppCompatActivity {
         initializeViews();
         setupSpinner();
         setupListeners();
+        
+        Toast.makeText(this, "Document Verification page loaded successfully", Toast.LENGTH_SHORT).show();
+        android.util.Log.d("DocumentVerification", "onCreate completed successfully");
     }
 
     private void initializeViews() {

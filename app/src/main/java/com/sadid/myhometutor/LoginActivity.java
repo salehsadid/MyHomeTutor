@@ -125,8 +125,11 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Google Sign-In not available", Toast.LENGTH_SHORT).show();
             return;
         }
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        googleSignInLauncher.launch(signInIntent);
+        // Sign out first to force account selection dialog
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            googleSignInLauncher.launch(signInIntent);
+        });
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
@@ -192,7 +195,7 @@ public class LoginActivity extends AppCompatActivity {
                         // Check if selected user type matches actual user type
                         if (!selectedUserType.equals(userType)) {
                             mAuth.signOut(); // Sign out user
-                            Toast.makeText(LoginActivity.this, "This email is registered as a " + userType + " account. Please select " + userType + " and try again.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, "This account is registered as " + userType + ". Please select " + userType + " and try again, or use a different email.", Toast.LENGTH_LONG).show();
                             return;
                         }
                         

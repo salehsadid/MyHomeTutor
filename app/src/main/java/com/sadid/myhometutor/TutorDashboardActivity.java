@@ -26,7 +26,6 @@ public class TutorDashboardActivity extends AppCompatActivity {
     private TextView tvDivision, tvDistrict, tvArea, tvGender, tvEmail, tvPhone;
     private TextView tvExperience, tvPreferredDays, tvPreferredTime, tvPrefLocation, tvPreferredFee, tvAdditionalInfo;
     private ImageView btnMenu, ivProfile;
-    private Button btnExplore;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
@@ -63,19 +62,12 @@ public class TutorDashboardActivity extends AppCompatActivity {
         tvPreferredFee = findViewById(R.id.tvPreferredFee);
         tvAdditionalInfo = findViewById(R.id.tvAdditionalInfo);
         btnMenu = findViewById(R.id.btnMenu);
-        btnExplore = findViewById(R.id.btnExplore);
         ivProfile = findViewById(R.id.ivProfile);
     }
 
     private void setupListeners() {
         if (btnMenu != null) {
             btnMenu.setOnClickListener(this::showPopupMenu);
-        }
-        if (btnExplore != null) {
-            btnExplore.setOnClickListener(v -> {
-                Intent intent = new Intent(TutorDashboardActivity.this, ExploreTuitionsActivity.class);
-                startActivity(intent);
-            });
         }
     }
 
@@ -88,7 +80,10 @@ public class TutorDashboardActivity extends AppCompatActivity {
 
     private boolean onMenuItemClick(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_my_applications) {
+        if (id == R.id.action_explore) {
+            startActivity(new Intent(this, ExploreTuitionsActivity.class));
+            return true;
+        } else if (id == R.id.action_my_applications) {
             startActivity(new Intent(this, MyApplicationsActivity.class));
             return true;
         } else if (id == R.id.action_edit_profile) {
