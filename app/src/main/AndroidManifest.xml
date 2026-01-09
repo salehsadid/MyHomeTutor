@@ -51,6 +51,10 @@
         <activity android:name=".TutorDashboardActivity" />
         <activity android:name=".AdminLoginActivity" />
         <activity android:name=".AdminDashboardActivity" />
+        <activity android:name=".AdminStudentsActivity" />
+        <activity android:name=".AdminTutorsActivity" />
+        <activity android:name=".AdminViewUserActivity" />
+        <activity android:name=".AdminTuitionPostsActivity" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"

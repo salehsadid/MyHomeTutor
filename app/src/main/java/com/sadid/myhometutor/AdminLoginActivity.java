@@ -60,37 +60,15 @@ public class AdminLoginActivity extends AppCompatActivity {
             return;
         }
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // Check if user is admin
-                        String userId = mAuth.getCurrentUser().getUid();
-                        db.collection("users").document(userId).get()
-                                .addOnSuccessListener(documentSnapshot -> {
-                                    if (documentSnapshot.exists()) {
-                                        String userType = documentSnapshot.getString("userType");
-                                        if ("Admin".equals(userType)) {
-                                            Toast.makeText(this, "Admin login successful", Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(this, AdminDashboardActivity.class));
-                                            finish();
-                                        } else {
-                                            Toast.makeText(this, "You are not an admin", Toast.LENGTH_SHORT).show();
-                                            mAuth.signOut();
-                                        }
-                                    } else {
-                                        Toast.makeText(this, "User data not found", Toast.LENGTH_SHORT).show();
-                                        mAuth.signOut();
-                                    }
-                                })
-                                .addOnFailureListener(e -> {
-                                    Toast.makeText(this, "Error checking admin status: " + e.getMessage(), 
-                                            Toast.LENGTH_SHORT).show();
-                                    mAuth.signOut();
-                                });
-                    } else {
-                        Toast.makeText(this, "Login failed: " + task.getException().getMessage(), 
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+        // Hardcoded admin credentials
+        if ("myhometutor.manager@gmail.com".equals(email) && "admin".equals(password)) {
+            Toast.makeText(this, "Admin login successful", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, AdminDashboardActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        } else {
+            Toast.makeText(this, "Invalid admin credentials", Toast.LENGTH_SHORT).show();
+        }
     }
 }

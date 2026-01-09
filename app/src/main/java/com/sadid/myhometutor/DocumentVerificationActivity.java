@@ -257,11 +257,15 @@ public class DocumentVerificationActivity extends AppCompatActivity {
         // Add document info to user data
         userData.put("documentType", spDocumentType.getSelectedItem().toString());
         userData.put("documentStatus", "pending");
+        
+        // Add approval status - users need admin approval before they can login
+        userData.put("approvalStatus", "pending");
+        userData.put("registrationTimestamp", System.currentTimeMillis());
 
         db.collection("users").document(userId)
                 .set(userData)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(DocumentVerificationActivity.this, "Registration Successful! Please login to continue.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(DocumentVerificationActivity.this, "Registration Successful! Please wait for admin approval. You will receive an email once approved.", Toast.LENGTH_LONG).show();
                     // Sign out user after successful registration
                     mAuth.signOut();
                     // Redirect to login page

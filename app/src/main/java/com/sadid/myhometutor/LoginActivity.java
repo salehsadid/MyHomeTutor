@@ -192,6 +192,18 @@ public class LoginActivity extends AppCompatActivity {
                             return;
                         }
                         
+                        // Check approval status
+                        String approvalStatus = documentSnapshot.getString("approvalStatus");
+                        if ("pending".equals(approvalStatus)) {
+                            mAuth.signOut();
+                            Toast.makeText(LoginActivity.this, "Your account is pending admin approval. Please wait for approval email.", Toast.LENGTH_LONG).show();
+                            return;
+                        } else if ("rejected".equals(approvalStatus)) {
+                            mAuth.signOut();
+                            Toast.makeText(LoginActivity.this, "Your account has been rejected by admin. Please contact support.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        
                         // Check if selected user type matches actual user type
                         if (!selectedUserType.equals(userType)) {
                             mAuth.signOut(); // Sign out user
@@ -232,20 +244,16 @@ public class LoginActivity extends AppCompatActivity {
         userData.put("name", user.getDisplayName());
         userData.put("email", user.getEmail());
         userData.put("userType", userType);
+        userData.put("approvalStatus", "pending");
+        userData.put("registrationTimestamp", System.currentTimeMillis());
         // Add other default fields if necessary
 
         db.collection("users").document(user.getUid())
                 .set(userData)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(LoginActivity.this, "Account Created Successfully", Toast.LENGTH_SHORT).show();
-                    Intent intent;
-                    if ("Student".equals(userType)) {
-                        intent = new Intent(LoginActivity.this, StudentDashboardActivity.class);
-                    } else {
-                        intent = new Intent(LoginActivity.this, TutorDashboardActivity.class);
-                    }
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
+                    mAuth.signOut();
+                    Toast.makeText(LoginActivity.this, "Account Created Successfully! Please complete your profile via registration page.", Toast.LENGTH_LONG).show();
+                    // Don't redirect, stay on login page
                     finish();
                 })
                 .addOnFailureListener(e -> {

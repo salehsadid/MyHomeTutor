@@ -2,73 +2,216 @@ package com.sadid.myhometutor;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
-    private TextView tvWelcome;
+    private TextView tvTotalPosts, tvPendingPosts, tvApprovedPosts, tvTotalConnections;
+    private TextView tvTotalStudents, tvPendingStudents, tvTotalTutors, tvPendingTutors;
+    private TextView menuDashboard, menuConnections, menuTutors, menuStudents, menuTuitionPosts;
+    private TextView menuReports, menuBannedUsers, menuLogout;
+    private CardView cardTotalTutors;
+
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_dashboard);
+        setContentView(R.layout.activity_admin_dashboard_new);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        tvWelcome = findViewById(R.id.tvWelcome);
-
-        loadUserData();
+        initializeViews();
+        setupMenuListeners();
+        loadDashboardStatistics();
     }
 
-    private void loadUserData() {
-        if (mAuth.getCurrentUser() != null) {
-            String userId = mAuth.getCurrentUser().getUid();
-            db.collection("users").document(userId).get()
-                    .addOnSuccessListener(document -> {
-                        if (document.exists()) {
-                            String name = document.getString("name");
-                            tvWelcome.setText("Welcome, Admin " + (name != null ? name : ""));
-                        }
-                    })
-                    .addOnFailureListener(e -> 
-                        Toast.makeText(this, "Error loading data: " + e.getMessage(), 
-                                Toast.LENGTH_SHORT).show()
-                    );
-        }
-    }
+    private void initializeViews() {
+        // Statistics TextViews
+        tvTotalPosts = findViewById(R.id.tvTotalPosts);
+        tvPendingPosts = findViewById(R.id.tvPendingPosts);
+        tvApprovedPosts = findViewById(R.id.tvApprovedPosts);
+        tvTotalConnections = findViewById(R.id.tvTotalConnections);
+        tvTotalStudents = findViewById(R.id.tvTotalStudents);
+        tvPendingStudents = findViewById(R.id.tvPendingStudents);
+        tvTotalTutors = findViewById(R.id.tvTotalTutors);
+        tvPendingTutors = findViewById(R.id.tvPendingTutors);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.admin_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        // Menu items
+        menuDashboard = findViewById(R.id.menuDashboard);
+        menuConnections = findViewById(R.id.menuConnections);
+        menuTutors = findViewById(R.id.menuTutors);
+        menuStudents = findViewById(R.id.menuStudents);
+        menuTuitionPosts = findViewById(R.id.menuTuitionPosts);
+        menuReports = findViewById(R.id.menuReports);
+        menuBannedUsers = findViewById(R.id.menuBannedUsers);
+        menuLogout = findViewById(R.id.menuLogout);
         
-        if (id == R.id.action_logout) {
+        cardTotalTutors = findViewById(R.id.cardTotalTutors);
+    }
+
+    private void setupMenuListeners() {
+        menuDashboard.setOnClickListener(v -> {
+            // Already on dashboard, just reload stats
+            loadDashboardStatistics();
+        });
+
+        menuStudents.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminDashboardActivity.this, AdminStudentsActivity.class);
+            startActivity(intent);
+        });
+
+        menuTutors.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminDashboardActivity.this, AdminTutorsActivity.class);
+            startActivity(intent);
+        });
+
+        menuTuitionPosts.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminDashboardActivity.this, AdminTuitionPostsActivity.class);
+            startActivity(intent);
+        });
+
+        menuConnections.setOnClickListener(v -> {
+            Toast.makeText(this, "Connections view coming soon", Toast.LENGTH_SHORT).show();
+        });
+
+        menuReports.setOnClickListener(v -> {
+            Toast.makeText(this, "Reports view coming soon", Toast.LENGTH_SHORT).show();
+        });
+
+        menuBannedUsers.setOnClickListener(v -> {
+            Toast.makeText(this, "Banned users view coming soon", Toast.LENGTH_SHORT).show();
+        });
+
+        menuLogout.setOnClickListener(v -> {
             mAuth.signOut();
-            startActivity(new Intent(this, LoginActivity.class));
+            Intent intent = new Intent(AdminDashboardActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
             finish();
-            return true;
-        }
-        
-        return super.onOptionsItemSelected(item);
+        });
+    }
+
+    private void loadDashboardStatistics() {
+        // Load total and pending students
+        loadStudentStatistics();
+
+        // Load total and pending tutors
+        loadTutorStatistics();
+
+        // Load tuition posts statistics
+        loadTuitionPostStatistics();
+
+        // Load connections (successful applications)
+        loadConnectionsStatistics();
+    }
+
+    private void loadStudentStatistics() {
+        db.collection("users")
+                .whereEqualTo("userType", "Student")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    int total = 0;
+                    int pending = 0;
+
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        total++;
+                        String status = document.getString("approvalStatus");
+                        if ("pending".equals(status)) {
+                            pending++;
+                        }
+                    }
+
+                    tvTotalStudents.setText(String.valueOf(total));
+                    tvPendingStudents.setText(String.valueOf(pending));
+                })
+                .addOnFailureListener(e -> 
+                    Toast.makeText(this, "Error loading student statistics", Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    private void loadTutorStatistics() {
+        db.collection("users")
+                .whereEqualTo("userType", "Tutor")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    int total = 0;
+                    int pending = 0;
+
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        total++;
+                        String status = document.getString("approvalStatus");
+                        if ("pending".equals(status)) {
+                            pending++;
+                        }
+                    }
+
+                    tvTotalTutors.setText(String.valueOf(total));
+                    tvPendingTutors.setText(String.valueOf(pending));
+                })
+                .addOnFailureListener(e -> 
+                    Toast.makeText(this, "Error loading tutor statistics", Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    private void loadTuitionPostStatistics() {
+        db.collection("tuitions")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    int total = queryDocumentSnapshots.size();
+                    int pending = 0;
+                    int approved = 0;
+
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        String status = document.getString("status");
+                        if ("pending".equals(status)) {
+                            pending++;
+                        } else if ("active".equals(status) || "approved".equals(status)) {
+                            approved++;
+                        }
+                    }
+
+                    tvTotalPosts.setText(String.valueOf(total));
+                    tvPendingPosts.setText(String.valueOf(pending));
+                    tvApprovedPosts.setText(String.valueOf(approved));
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error loading tuition statistics", Toast.LENGTH_SHORT).show();
+                    // Set defaults
+                    tvTotalPosts.setText("0");
+                    tvPendingPosts.setText("0");
+                    tvApprovedPosts.setText("0");
+                });
+    }
+
+    private void loadConnectionsStatistics() {
+        db.collection("applications")
+                .whereEqualTo("status", "accepted")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    int connections = queryDocumentSnapshots.size();
+                    tvTotalConnections.setText(String.valueOf(connections));
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error loading connections statistics", Toast.LENGTH_SHORT).show();
+                    tvTotalConnections.setText("0");
+                });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Reload statistics when returning to this activity
+        loadDashboardStatistics();
     }
 }
