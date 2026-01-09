@@ -21,12 +21,13 @@ public class AdminViewUserActivity extends AppCompatActivity {
     private TextView tvUserName, tvUserTypeLabel, tvInstitute, tvClass, tvGroup;
     private TextView tvGender, tvEmail, tvPhone, tvDivision, tvDistrict, tvArea;
     private TextView tvAdditionalInfo;
-    private Button btnApprove, btnReject, btnClose;
+    private Button btnApprove, btnReject, btnClose, btnBanUser;
 
     private FirebaseFirestore db;
     private String userId;
     private String userType;
     private String userEmail;
+    private boolean isBanned = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +69,14 @@ public class AdminViewUserActivity extends AppCompatActivity {
         btnApprove = findViewById(R.id.btnApprove);
         btnReject = findViewById(R.id.btnReject);
         btnClose = findViewById(R.id.btnClose);
+        btnBanUser = findViewById(R.id.btnBanUser);
     }
 
     private void setupListeners() {
         btnApprove.setOnClickListener(v -> approveUser());
         btnReject.setOnClickListener(v -> rejectUser());
         btnClose.setOnClickListener(v -> finish());
+        btnBanUser.setOnClickListener(v -> toggleBanStatus());
     }
 
     private void loadUserData() {
@@ -102,6 +105,10 @@ public class AdminViewUserActivity extends AppCompatActivity {
         String district = document.getString("district");
         String area = document.getString("area");
         String status = document.getString("approvalStatus");
+        
+        // Check if user is banned
+        Boolean bannedStatus = document.getBoolean("isBanned");
+        isBanned = bannedStatus != null && bannedStatus;
 
         tvUserName.setText(name != null ? name.toUpperCase() : "N/A");
         tvUserTypeLabel.setText(userType);
@@ -164,6 +171,15 @@ public class AdminViewUserActivity extends AppCompatActivity {
         } else {
             btnApprove.setVisibility(View.VISIBLE);
             btnReject.setVisibility(View.VISIBLE);
+        }
+        
+        // Update ban button text based on ban status
+        if (isBanned) {
+            btnBanUser.setText("Unban User");
+            btnBanUser.setBackgroundColor(getResources().getColor(android.R.color.holo_green_dark));
+        } else {
+            btnBanUser.setText("Ban User");
+            btnBanUser.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
         }
     }
 
@@ -244,5 +260,30 @@ public class AdminViewUserActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }).start();
+    }
+    
+    private void toggleBanStatus() {
+        boolean newBanStatus = !isBanned;
+        
+        db.collection("users").document(userId)
+                .update("isBanned", newBanStatus)
+                .addOnSuccessListener(aVoid -> {
+                    isBanned = newBanStatus;
+                    String message = newBanStatus ? "User banned successfully" : "User unbanned successfully";
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                    
+                    // Update button appearance
+                    if (isBanned) {
+                        btnBanUser.setText("Unban User");
+                        btnBanUser.setBackgroundColor(getResources().getColor(android.R.color.holo_green_dark));
+                    } else {
+                        btnBanUser.setText("Ban User");
+                        btnBanUser.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
+                    }
+                })
+                .addOnFailureListener(e -> 
+                    Toast.makeText(this, "Error updating ban status: " + e.getMessage(), 
+                            Toast.LENGTH_SHORT).show()
+                );
     }
 }

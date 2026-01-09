@@ -14,17 +14,31 @@
         <!-- Header with Profile Image -->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="230dp"
             android:background="#16213e"
             android:padding="24dp">
+
+            <TextView
+                android:id="@+id/tvUserTypeLabel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/tvUserName"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="14dp"
+                android:text="Student"
+                android:textAlignment="center"
+                android:textColor="#4ade80"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/ivProfileImage"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:layout_alignParentTop="true"
                 android:layout_centerInParent="true"
-                android:src="@drawable/ic_person"
-                android:background="@drawable/circular_background"/>
+                android:background="@drawable/circular_background"
+                android:src="@drawable/ic_person" />
 
             <TextView
                 android:id="@+id/tvUserName"
@@ -35,19 +49,8 @@
                 android:layout_marginTop="16dp"
                 android:text="SALEH SADID MIR"
                 android:textColor="#ffffff"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/tvUserTypeLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvUserName"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="4dp"
-                android:text="Student"
-                android:textColor="#4ade80"
-                android:textSize="14sp"/>
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
         </RelativeLayout>
 
@@ -426,40 +429,51 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal"
-            android:padding="16dp"
-            android:gravity="center">
+            android:padding="16dp">
 
             <Button
                 android:id="@+id/btnApprove"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
+                android:backgroundTint="#20FF07"
                 android:text="Approve"
-                android:textColor="#ffffff"
-                android:background="@color/teal_button"
-                android:layout_marginEnd="8dp"/>
+                android:textColor="#ffffff" />
 
             <Button
                 android:id="@+id/btnReject"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:backgroundTint="#F60A0A"
                 android:text="Reject"
-                android:textColor="#ffffff"
-                android:backgroundTint="#ef4444"/>
+                android:textColor="#ffffff" />
 
             <Button
                 android:id="@+id/btnClose"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:text="Close"
-                android:textColor="#ffffff"
                 android:backgroundTint="#64748b"
-                android:layout_marginStart="8dp"/>
+                android:text="Close"
+                android:textColor="#ffffff" />
 
         </LinearLayout>
+        
+        <!-- Ban User Button -->
+        <Button
+            android:id="@+id/btnBanUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:text="Ban User"
+            android:textColor="#ffffff"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 

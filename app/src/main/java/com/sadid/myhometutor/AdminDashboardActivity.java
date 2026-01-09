@@ -2,6 +2,9 @@ package com.sadid.myhometutor;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +22,9 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private TextView menuDashboard, menuConnections, menuTutors, menuStudents, menuTuitionPosts;
     private TextView menuReports, menuBannedUsers, menuLogout;
     private CardView cardTotalTutors;
+    private LinearLayout llSideMenu;
+    private ImageView btnMenu;
+    private boolean isMenuVisible = false;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -58,11 +64,19 @@ public class AdminDashboardActivity extends AppCompatActivity {
         menuLogout = findViewById(R.id.menuLogout);
         
         cardTotalTutors = findViewById(R.id.cardTotalTutors);
+        llSideMenu = findViewById(R.id.llSideMenu);
+        btnMenu = findViewById(R.id.btnMenu);
+        
+        // Setup menu button click listener
+        btnMenu.setOnClickListener(v -> toggleMenu());
     }
 
     private void setupMenuListeners() {
         menuDashboard.setOnClickListener(v -> {
-            // Already on dashboard, just reload stats
+            // Already on dashboard, just reload stats and close menu
+            if (isMenuVisible) {
+                toggleMenu();
+            }
             loadDashboardStatistics();
         });
 
@@ -82,15 +96,18 @@ public class AdminDashboardActivity extends AppCompatActivity {
         });
 
         menuConnections.setOnClickListener(v -> {
-            Toast.makeText(this, "Connections view coming soon", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(AdminDashboardActivity.this, AdminConnectionsActivity.class);
+            startActivity(intent);
         });
 
         menuReports.setOnClickListener(v -> {
-            Toast.makeText(this, "Reports view coming soon", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(AdminDashboardActivity.this, AdminReportsActivity.class);
+            startActivity(intent);
         });
 
         menuBannedUsers.setOnClickListener(v -> {
-            Toast.makeText(this, "Banned users view coming soon", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(AdminDashboardActivity.this, AdminBannedUsersActivity.class);
+            startActivity(intent);
         });
 
         menuLogout.setOnClickListener(v -> {
@@ -165,7 +182,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
     }
 
     private void loadTuitionPostStatistics() {
-        db.collection("tuitions")
+        db.collection("tuition_posts")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     int total = queryDocumentSnapshots.size();
@@ -206,6 +223,16 @@ public class AdminDashboardActivity extends AppCompatActivity {
                     Toast.makeText(this, "Error loading connections statistics", Toast.LENGTH_SHORT).show();
                     tvTotalConnections.setText("0");
                 });
+    }
+
+    private void toggleMenu() {
+        if (isMenuVisible) {
+            llSideMenu.setVisibility(View.GONE);
+            isMenuVisible = false;
+        } else {
+            llSideMenu.setVisibility(View.VISIBLE);
+            isMenuVisible = true;
+        }
     }
 
     @Override

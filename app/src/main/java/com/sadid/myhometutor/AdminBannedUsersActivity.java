@@ -3,10 +3,7 @@ package com.sadid.myhometutor;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,109 +19,76 @@ import com.sadid.myhometutor.models.PendingUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminStudentsActivity extends AppCompatActivity {
+public class AdminBannedUsersActivity extends AppCompatActivity {
 
-    private RecyclerView rvStudents;
+    private RecyclerView rvBannedUsers;
     private TextView tvEmptyState;
     private ImageView btnBack;
-    private Spinner spinnerFilter;
     private AdminUserAdapter adapter;
     private FirebaseFirestore db;
-    private List<PendingUser> studentsList;
-    private String currentFilter = "All";
+    private List<PendingUser> bannedUsersList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_students_new);
+        setContentView(R.layout.activity_admin_banned_users);
 
         db = FirebaseFirestore.getInstance();
-        studentsList = new ArrayList<>();
+        bannedUsersList = new ArrayList<>();
 
         initializeViews();
-        setupSpinner();
         setupRecyclerView();
-        loadStudents("All");
+        loadBannedUsers();
     }
 
     private void initializeViews() {
-        rvStudents = findViewById(R.id.rvStudents);
+        rvBannedUsers = findViewById(R.id.rvBannedUsers);
         tvEmptyState = findViewById(R.id.tvEmptyState);
         btnBack = findViewById(R.id.btnBack);
-        spinnerFilter = findViewById(R.id.spinnerFilter);
 
         btnBack.setOnClickListener(v -> finish());
     }
 
-    private void setupSpinner() {
-        String[] filters = {"All", "Pending", "Approved", "Rejected"};
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
-                this, 
-                android.R.layout.simple_spinner_item, 
-                filters
-        );
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerFilter.setAdapter(spinnerAdapter);
-
-        spinnerFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                currentFilter = filters[position];
-                loadStudents(currentFilter);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-    }
-
     private void setupRecyclerView() {
-        adapter = new AdminUserAdapter(this, studentsList, user -> {
-            Intent intent = new Intent(AdminStudentsActivity.this, AdminViewUserActivity.class);
+        adapter = new AdminUserAdapter(this, bannedUsersList, user -> {
+            Intent intent = new Intent(AdminBannedUsersActivity.this, AdminViewUserActivity.class);
             intent.putExtra("userId", user.getUserId());
-            intent.putExtra("userType", "Student");
+            intent.putExtra("userType", user.getUserType());
             startActivity(intent);
         });
 
-        rvStudents.setLayoutManager(new LinearLayoutManager(this));
-        rvStudents.setAdapter(adapter);
+        rvBannedUsers.setLayoutManager(new LinearLayoutManager(this));
+        rvBannedUsers.setAdapter(adapter);
     }
 
-    private void loadStudents(String filter) {
-        studentsList.clear();
+    private void loadBannedUsers() {
+        bannedUsersList.clear();
         
-        var query = db.collection("users")
-                .whereEqualTo("userType", "Student");
-
-        if (!filter.equals("All")) {
-            String status = filter.toLowerCase();
-            query = query.whereEqualTo("approvalStatus", status);
-        }
-
-        query.get()
+        db.collection("users")
+                .whereEqualTo("isBanned", true)
+                .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         PendingUser user = documentToPendingUser(document);
                         if (user != null) {
-                            studentsList.add(user);
+                            bannedUsersList.add(user);
                         }
                     }
 
-                    if (studentsList.isEmpty()) {
+                    if (bannedUsersList.isEmpty()) {
                         tvEmptyState.setVisibility(View.VISIBLE);
-                        rvStudents.setVisibility(View.GONE);
+                        rvBannedUsers.setVisibility(View.GONE);
                     } else {
                         tvEmptyState.setVisibility(View.GONE);
-                        rvStudents.setVisibility(View.VISIBLE);
+                        rvBannedUsers.setVisibility(View.VISIBLE);
                     }
                     
                     adapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error loading students", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error loading banned users", Toast.LENGTH_SHORT).show();
                     tvEmptyState.setVisibility(View.VISIBLE);
-                    rvStudents.setVisibility(View.GONE);
+                    rvBannedUsers.setVisibility(View.GONE);
                 });
     }
 
@@ -135,15 +99,10 @@ public class AdminStudentsActivity extends AppCompatActivity {
         user.setEmail(document.getString("email"));
         user.setPhone(document.getString("phone"));
         user.setUserType(document.getString("userType"));
-        user.setStatus(document.getString("approvalStatus"));
+        user.setStatus("BANNED");
         user.setProfileImageBase64(document.getString("profileImageBase64"));
         user.setDocumentImageBase64(document.getString("documentImageBase64"));
         user.setDocumentType(document.getString("documentType"));
-        
-        // Student specific fields
-        user.setInstitute(document.getString("institute"));
-        user.setStudentClass(document.getString("class"));
-        user.setGroup(document.getString("group"));
         
         Long timestamp = document.getLong("registrationTimestamp");
         if (timestamp != null) {
@@ -156,6 +115,6 @@ public class AdminStudentsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadStudents(currentFilter);
+        loadBannedUsers();
     }
 }

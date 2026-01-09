@@ -2,11 +2,15 @@ package com.sadid.myhometutor;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,40 +25,58 @@ import java.util.List;
 public class AdminTutorsActivity extends AppCompatActivity {
 
     private RecyclerView rvTutors;
-    private Button btnAllTutors, btnPendingTutors;
+    private TextView tvEmptyState;
+    private ImageView btnBack;
+    private Spinner spinnerFilter;
     private AdminUserAdapter adapter;
     private FirebaseFirestore db;
     private List<PendingUser> tutorsList;
-    private boolean showingPending = false;
+    private String currentFilter = "All";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_students);
+        setContentView(R.layout.activity_admin_tutors);
 
         db = FirebaseFirestore.getInstance();
         tutorsList = new ArrayList<>();
 
         initializeViews();
+        setupSpinner();
         setupRecyclerView();
-        setupListeners();
-        loadAllTutors();
+        loadTutors("All");
     }
 
     private void initializeViews() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Tutors Management");
-        }
+        rvTutors = findViewById(R.id.rvTutors);
+        tvEmptyState = findViewById(R.id.tvEmptyState);
+        btnBack = findViewById(R.id.btnBack);
+        spinnerFilter = findViewById(R.id.spinnerFilter);
 
-        rvTutors = findViewById(R.id.rvStudents);
-        btnAllTutors = findViewById(R.id.btnAllStudents);
-        btnPendingTutors = findViewById(R.id.btnPendingStudents);
-        
-        btnAllTutors.setText("All Tutors");
-        btnPendingTutors.setText("Pending Tutors");
+        btnBack.setOnClickListener(v -> finish());
+    }
+
+    private void setupSpinner() {
+        String[] filters = {"All", "Pending", "Approved", "Rejected"};
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
+                this, 
+                android.R.layout.simple_spinner_item, 
+                filters
+        );
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerFilter.setAdapter(spinnerAdapter);
+
+        spinnerFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                currentFilter = filters[position];
+                loadTutors(currentFilter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void setupRecyclerView() {
@@ -69,35 +91,18 @@ public class AdminTutorsActivity extends AppCompatActivity {
         rvTutors.setAdapter(adapter);
     }
 
-    private void setupListeners() {
-        btnAllTutors.setOnClickListener(v -> {
-            showingPending = false;
-            updateButtonStyles();
-            loadAllTutors();
-        });
+    private void loadTutors(String filter) {
+        tutorsList.clear();
+        
+        var query = db.collection("users")
+                .whereEqualTo("userType", "Tutor");
 
-        btnPendingTutors.setOnClickListener(v -> {
-            showingPending = true;
-            updateButtonStyles();
-            loadPendingTutors();
-        });
-    }
-
-    private void updateButtonStyles() {
-        if (showingPending) {
-            btnPendingTutors.setBackgroundColor(getResources().getColor(R.color.teal_button));
-            btnAllTutors.setBackgroundResource(R.drawable.bg_button_outline);
-        } else {
-            btnAllTutors.setBackgroundColor(getResources().getColor(R.color.teal_button));
-            btnPendingTutors.setBackgroundResource(R.drawable.bg_button_outline);
+        if (!filter.equals("All")) {
+            String status = filter.toLowerCase();
+            query = query.whereEqualTo("approvalStatus", status);
         }
-    }
 
-    private void loadAllTutors() {
-        tutorsList.clear();
-        db.collection("users")
-                .whereEqualTo("userType", "Tutor")
-                .get()
+        query.get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         PendingUser user = documentToPendingUser(document);
@@ -105,35 +110,22 @@ public class AdminTutorsActivity extends AppCompatActivity {
                             tutorsList.add(user);
                         }
                     }
-                    adapter.notifyDataSetChanged();
-                })
-                .addOnFailureListener(e -> 
-                    Toast.makeText(this, "Error loading tutors", Toast.LENGTH_SHORT).show()
-                );
-    }
 
-    private void loadPendingTutors() {
-        tutorsList.clear();
-        db.collection("users")
-                .whereEqualTo("userType", "Tutor")
-                .whereEqualTo("approvalStatus", "pending")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        PendingUser user = documentToPendingUser(document);
-                        if (user != null) {
-                            tutorsList.add(user);
-                        }
-                    }
-                    adapter.notifyDataSetChanged();
-                    
                     if (tutorsList.isEmpty()) {
-                        Toast.makeText(this, "No pending tutors", Toast.LENGTH_SHORT).show();
+                        tvEmptyState.setVisibility(View.VISIBLE);
+                        rvTutors.setVisibility(View.GONE);
+                    } else {
+                        tvEmptyState.setVisibility(View.GONE);
+                        rvTutors.setVisibility(View.VISIBLE);
                     }
+                    
+                    adapter.notifyDataSetChanged();
                 })
-                .addOnFailureListener(e -> 
-                    Toast.makeText(this, "Error loading pending tutors", Toast.LENGTH_SHORT).show()
-                );
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error loading tutors", Toast.LENGTH_SHORT).show();
+                    tvEmptyState.setVisibility(View.VISIBLE);
+                    rvTutors.setVisibility(View.GONE);
+                });
     }
 
     private PendingUser documentToPendingUser(QueryDocumentSnapshot document) {
@@ -164,16 +156,6 @@ public class AdminTutorsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (showingPending) {
-            loadPendingTutors();
-        } else {
-            loadAllTutors();
-        }
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
+        loadTutors(currentFilter);
     }
 }
