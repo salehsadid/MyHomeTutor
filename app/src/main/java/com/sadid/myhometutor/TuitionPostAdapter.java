@@ -15,6 +15,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
+/**
+ * TuitionPostAdapter for ExploreTuitionsActivity
+ * 
+ * PRIVACY: This adapter is used by tutors to browse available tuition posts.
+ * Student contact information (name, email, phone, profile) should NOT be visible
+ * until a connection is established (application status = "approved").
+ * 
+ * Only these fields are shown:
+ * - Subject, Class, Group, Gender preference
+ * - Medium, Type, Days, Timing, Salary
+ * - General location (district/area only, not detailed address)
+ */
 public class TuitionPostAdapter extends RecyclerView.Adapter<TuitionPostAdapter.ViewHolder> {
 
     private Context context;
@@ -62,39 +74,24 @@ public class TuitionPostAdapter extends RecyclerView.Adapter<TuitionPostAdapter.
         holder.tvTiming.setText(post.getPreferredTiming() != null ? post.getPreferredTiming() : "N/A");
         holder.tvSalary.setText((post.getSalary() != null ? post.getSalary() : "0") + " BDT");
         
-        String address = post.getDetailedAddress() != null ? post.getDetailedAddress() : "N/A";
+        // PRIVACY: Only show general location (district/area), not detailed address
         String area = post.getArea() != null ? post.getArea() : "";
         String district = post.getDistrict() != null ? post.getDistrict() : "";
         
         if (area.isEmpty() && district.isEmpty()) {
-            holder.tvLocation.setText(address);
+            holder.tvLocation.setText("Location not specified");
         } else if (area.isEmpty()) {
-            holder.tvLocation.setText(String.format("%s, %s", address, district));
+            holder.tvLocation.setText(district);
         } else if (district.isEmpty()) {
-            holder.tvLocation.setText(String.format("%s, %s", address, area));
+            holder.tvLocation.setText(area);
         } else {
-            holder.tvLocation.setText(String.format("%s, %s, %s", address, area, district));
+            holder.tvLocation.setText(String.format("%s, %s", area, district));
         }
 
-        // Load and display student name
+        // PRIVACY: Hide student name - show "Anonymous Student" instead
+        // Student identity is only revealed after admin approval
         holder.tvPostedBy.setVisibility(View.VISIBLE);
-        String studentId = post.getStudentId();
-        if (studentId != null) {
-            holder.tvPostedBy.setText("Loading...");
-            db.collection("users").document(studentId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String studentName = documentSnapshot.getString("fullName");
-                        holder.tvPostedBy.setText(studentName != null ? studentName : "Unknown Student");
-                    } else {
-                        holder.tvPostedBy.setText("Unknown Student");
-                    }
-                })
-                .addOnFailureListener(e -> holder.tvPostedBy.setText("Unknown Student"));
-        } else {
-            holder.tvPostedBy.setText("Unknown Student");
-        }
+        holder.tvPostedBy.setText("Anonymous Student");
 
         holder.btnApply.setOnClickListener(v -> {
             if (onApplyClickListener != null) {
@@ -102,14 +99,8 @@ public class TuitionPostAdapter extends RecyclerView.Adapter<TuitionPostAdapter.
             }
         });
 
-        holder.btnViewProfile.setOnClickListener(v -> {
-            if (studentId != null) {
-                Intent intent = new Intent(context, AdminViewUserActivity.class);
-                intent.putExtra("userId", studentId);
-                intent.putExtra("userType", "Student");
-                context.startActivity(intent);
-            }
-        });
+        // PRIVACY: Hide View Profile button - student profile is not visible before connection
+        holder.btnViewProfile.setVisibility(View.GONE);
     }
 
     @Override

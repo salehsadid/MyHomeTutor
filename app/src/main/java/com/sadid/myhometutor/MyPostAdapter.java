@@ -11,18 +11,34 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+/**
+ * MyPostAdapter for MyPostsActivity
+ * Displays student's own tuition posts with View Applications and Delete actions
+ */
 public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.ViewHolder> {
 
     private List<TuitionPost> postList;
     private OnDeleteClickListener onDeleteClickListener;
+    private OnViewApplicationsClickListener onViewApplicationsClickListener;
 
     public interface OnDeleteClickListener {
         void onDeleteClick(TuitionPost post);
+    }
+    
+    public interface OnViewApplicationsClickListener {
+        void onViewApplicationsClick(TuitionPost post);
     }
 
     public MyPostAdapter(List<TuitionPost> postList, OnDeleteClickListener onDeleteClickListener) {
         this.postList = postList;
         this.onDeleteClickListener = onDeleteClickListener;
+    }
+    
+    public MyPostAdapter(List<TuitionPost> postList, OnDeleteClickListener onDeleteClickListener, 
+                         OnViewApplicationsClickListener onViewApplicationsClickListener) {
+        this.postList = postList;
+        this.onDeleteClickListener = onDeleteClickListener;
+        this.onViewApplicationsClickListener = onViewApplicationsClickListener;
     }
 
     public void updateList(List<TuitionPost> newList) {
@@ -73,6 +89,12 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.ViewHolder
                 onDeleteClickListener.onDeleteClick(post);
             }
         });
+        
+        holder.btnViewApplications.setOnClickListener(v -> {
+            if (onViewApplicationsClickListener != null) {
+                onViewApplicationsClickListener.onViewApplicationsClick(post);
+            }
+        });
     }
 
     @Override
@@ -82,7 +104,7 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.ViewHolder
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvSubjectClass, tvStatusDate, tvGroup, tvGender, tvMedium, tvType, tvDays, tvTiming, tvSalary, tvLocation;
-        Button btnDelete;
+        Button btnDelete, btnViewApplications;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -97,6 +119,7 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.ViewHolder
             tvSalary = itemView.findViewById(R.id.tvSalary);
             tvLocation = itemView.findViewById(R.id.tvLocation);
             btnDelete = itemView.findViewById(R.id.btnDelete);
+            btnViewApplications = itemView.findViewById(R.id.btnViewApplications);
         }
     }
 }

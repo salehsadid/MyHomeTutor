@@ -30,6 +30,7 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
     private RecyclerView rvTuitionPosts;
     private TuitionPostAdapter adapter;
     private List<TuitionPost> postList;
+    private List<TuitionPost> allPostList; // Store all posts for filtering
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
 
@@ -38,6 +39,9 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
 
     // Filter spinners (from dialog)
     private Spinner spFilterClass, spFilterSubject, spFilterLocation, spFilterSalary, spFilterGender, spFilterType;
+    
+    // Store post IDs that have approved connections
+    private List<String> connectedPostIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,7 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        connectedPostIds = new ArrayList<>();
 
         initializeViews();
         setupRecyclerView();
@@ -115,6 +120,7 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
     private void setupRecyclerView() {
         rvTuitionPosts.setLayoutManager(new LinearLayoutManager(this));
         postList = new ArrayList<>();
+        allPostList = new ArrayList<>();
         adapter = new TuitionPostAdapter(this, postList, this::applyForTuition);
         rvTuitionPosts.setAdapter(adapter);
     }
@@ -125,23 +131,46 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
     }
 
     private void loadTuitionPosts() {
-        db.collection("tuition_posts")
-                .whereIn("status", Arrays.asList("approved", "active"))
-                .orderBy("timestamp", Query.Direction.DESCENDING)
+        // First, get all post IDs that have approved connections
+        db.collection("applications")
+                .whereEqualTo("status", "approved")
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    postList.clear();
-                    for (DocumentSnapshot document : queryDocumentSnapshots) {
-                        TuitionPost post = document.toObject(TuitionPost.class);
-                        if (post != null) {
-                            post.setId(document.getId());
-                            postList.add(post);
+                .addOnSuccessListener(connectionSnapshot -> {
+                    connectedPostIds.clear();
+                    for (DocumentSnapshot doc : connectionSnapshot.getDocuments()) {
+                        String postId = doc.getString("postId");
+                        if (postId != null && !connectedPostIds.contains(postId)) {
+                            connectedPostIds.add(postId);
                         }
                     }
-                    adapter.notifyDataSetChanged();
+                    
+                    // Now load all approved tuition posts
+                    db.collection("tuition_posts")
+                            .whereIn("status", Arrays.asList("approved", "active"))
+                            .orderBy("timestamp", Query.Direction.DESCENDING)
+                            .get()
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                postList.clear();
+                                allPostList.clear();
+                                for (DocumentSnapshot document : queryDocumentSnapshots) {
+                                    TuitionPost post = document.toObject(TuitionPost.class);
+                                    if (post != null) {
+                                        post.setId(document.getId());
+                                        // Only add posts that don't have approved connections
+                                        if (!connectedPostIds.contains(document.getId())) {
+                                            postList.add(post);
+                                            allPostList.add(post);
+                                        }
+                                    }
+                                }
+                                adapter.notifyDataSetChanged();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(ExploreTuitionsActivity.this, "Error loading posts: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(ExploreTuitionsActivity.this, "Error loading posts: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ExploreTuitionsActivity.this, "Error checking connections: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -153,7 +182,7 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
         String selectedType = spFilterType.getSelectedItem().toString();
 
         List<TuitionPost> filteredList = new ArrayList<>();
-        for (TuitionPost post : postList) {
+        for (TuitionPost post : allPostList) {
             boolean matches = true;
             if (!selectedClass.equals("Class") && !post.getGrade().equals(selectedClass)) matches = false;
             if (!selectedSubject.equals("Subject") && !post.getSubject().equals(selectedSubject)) matches = false;

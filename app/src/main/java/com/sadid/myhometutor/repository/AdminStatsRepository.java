@@ -174,24 +174,35 @@ public class AdminStatsRepository {
     
     /**
      * Calculate application statistics from snapshot
+     * 
+     * Status values:
+     * - pending: Tutor applied, waiting for student
+     * - student_approved: Student accepted, waiting for admin
+     * - approved: Admin approved (this counts as a connection!)
+     * - rejected: Student rejected
+     * - admin_rejected: Admin rejected
      */
     private void calculateApplicationStats(com.google.firebase.firestore.QuerySnapshot snapshot, DashboardStats stats) {
         int total = snapshot.size();
-        int accepted = 0;
+        int approved = 0;  // Admin-approved = actual connections
         int pending = 0;
+        int studentApproved = 0;  // Awaiting admin approval
         
         for (QueryDocumentSnapshot document : snapshot) {
             String status = document.getString("status");
-            if ("accepted".equals(status)) {
-                accepted++;
+            if ("approved".equals(status)) {
+                // Admin approved = connection established
+                approved++;
             } else if ("pending".equals(status)) {
                 pending++;
+            } else if ("student_approved".equals(status)) {
+                studentApproved++;
             }
         }
         
         stats.setTotalApplications(total);
-        stats.setAcceptedApplications(accepted);
-        stats.setPendingApplications(pending);
+        stats.setAcceptedApplications(approved);  // This represents actual connections
+        stats.setPendingApplications(pending + studentApproved);  // Total needing action
     }
     
     /**

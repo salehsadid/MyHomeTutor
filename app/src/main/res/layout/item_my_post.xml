@@ -197,12 +197,23 @@
             android:background="@color/text_hint"
             android:layout_marginBottom="12dp"/>
 
-        <!-- Footer: Delete Button -->
+        <!-- Footer: View Applications and Delete Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="end">
+
+            <Button
+                android:id="@+id/btnViewApplications"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginEnd="8dp"
+                android:text="View Applications"
+                android:backgroundTint="@color/teal_button"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="12sp"/>
 
             <Button
                 android:id="@+id/btnDelete"

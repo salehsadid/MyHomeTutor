@@ -244,11 +244,11 @@
             android:id="@+id/btnViewProfile"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
-            android:text="View Student Profile"
             android:backgroundTint="@color/teal_button"
+            android:text="View Student Profile"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

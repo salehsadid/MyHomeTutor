@@ -1,5 +1,6 @@
 package com.sadid.myhometutor;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -16,6 +17,14 @@ import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * MyPostsActivity - Shows student's tuition posts
+ * 
+ * Students can:
+ * - View all their posts
+ * - View applications for each post (to accept/reject tutors)
+ * - Delete posts
+ */
 public class MyPostsActivity extends AppCompatActivity {
 
     private RecyclerView rvMyPosts;
@@ -47,7 +56,7 @@ public class MyPostsActivity extends AppCompatActivity {
     private void setupRecyclerView() {
         rvMyPosts.setLayoutManager(new LinearLayoutManager(this));
         postList = new ArrayList<>();
-        adapter = new MyPostAdapter(postList, this::deletePost);
+        adapter = new MyPostAdapter(postList, this::deletePost, this::viewApplications);
         rvMyPosts.setAdapter(adapter);
     }
 
@@ -89,5 +98,13 @@ public class MyPostsActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Toast.makeText(MyPostsActivity.this, "Error deleting post: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
+    }
+    
+    private void viewApplications(TuitionPost post) {
+        Intent intent = new Intent(this, ViewApplicationsActivity.class);
+        intent.putExtra("postId", post.getId());
+        intent.putExtra("postSubject", post.getSubject());
+        intent.putExtra("postGrade", post.getGrade());
+        startActivity(intent);
     }
 }

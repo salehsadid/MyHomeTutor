@@ -241,12 +241,12 @@
             <Button
                 android:id="@+id/btnApply"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:text="APPLY NOW"
+                android:layout_height="58dp"
                 android:backgroundTint="@color/teal_button"
+                android:text="APPLY NOW"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

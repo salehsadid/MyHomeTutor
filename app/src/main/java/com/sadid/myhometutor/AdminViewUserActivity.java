@@ -14,6 +14,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sadid.myhometutor.utils.Base64ImageHelper;
 import com.sadid.myhometutor.utils.EmailSender;
+import com.sadid.myhometutor.repository.EmailNotificationService;
 
 public class AdminViewUserActivity extends AppCompatActivity {
 
@@ -27,7 +28,9 @@ public class AdminViewUserActivity extends AppCompatActivity {
     private String userId;
     private String userType;
     private String userEmail;
+    private String userName;
     private boolean isBanned = false;
+    private EmailNotificationService emailService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,7 @@ public class AdminViewUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_view_user);
 
         db = FirebaseFirestore.getInstance();
+        emailService = new EmailNotificationService();
 
         // Get user ID from intent
         userId = getIntent().getStringExtra("userId");
@@ -188,7 +192,10 @@ public class AdminViewUserActivity extends AppCompatActivity {
                 .update("approvalStatus", "approved")
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "User approved successfully", Toast.LENGTH_SHORT).show();
-                    sendApprovalEmail();
+                    // Send approval email using new service
+                    if (userEmail != null && !userEmail.isEmpty()) {
+                        emailService.sendAccountApprovedNotification(userEmail, userType);
+                    }
                     finish();
                 })
                 .addOnFailureListener(e -> 
@@ -202,7 +209,10 @@ public class AdminViewUserActivity extends AppCompatActivity {
                 .update("approvalStatus", "rejected")
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "User rejected", Toast.LENGTH_SHORT).show();
-                    sendRejectionEmail();
+                    // Send rejection email using new service
+                    if (userEmail != null && !userEmail.isEmpty()) {
+                        emailService.sendAccountRejectedNotification(userEmail, userType);
+                    }
                     finish();
                 })
                 .addOnFailureListener(e -> 
@@ -264,6 +274,7 @@ public class AdminViewUserActivity extends AppCompatActivity {
     
     private void toggleBanStatus() {
         boolean newBanStatus = !isBanned;
+        String reason = newBanStatus ? "Policy violation" : null;
         
         db.collection("users").document(userId)
                 .update("isBanned", newBanStatus)
@@ -271,6 +282,15 @@ public class AdminViewUserActivity extends AppCompatActivity {
                     isBanned = newBanStatus;
                     String message = newBanStatus ? "User banned successfully" : "User unbanned successfully";
                     Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                    
+                    // Send email notification
+                    if (userEmail != null && !userEmail.isEmpty() && userName != null) {
+                        if (newBanStatus) {
+                            emailService.sendAccountBannedNotification(userEmail, userName, reason);
+                        } else {
+                            emailService.sendAccountUnbannedNotification(userEmail, userName);
+                        }
+                    }
                     
                     // Update button appearance
                     if (isBanned) {

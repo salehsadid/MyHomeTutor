@@ -40,6 +40,7 @@
         <activity android:name=".TestActivity" />
         <activity android:name=".StudentRegistrationActivity" />
         <activity android:name=".TutorRegistrationActivity" />
+        <activity android:name=".GoogleProfileCompletionActivity" />
         <activity android:name=".DocumentVerificationActivity" />
         <activity android:name=".StudentDashboardActivity" />
         <activity android:name=".PostTuitionActivity" />
@@ -59,8 +60,10 @@
         <activity android:name=".AdminViewTuitionPostActivity" />
         <activity android:name=".AdminReportsActivity" />
         <activity android:name=".AdminBannedUsersActivity" />
+        <activity android:name=".AdminApplicationsActivity" />
+        <activity android:name=".ViewApplicationsActivity" />
         <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
+            android:name=".CustomUCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
     </application>

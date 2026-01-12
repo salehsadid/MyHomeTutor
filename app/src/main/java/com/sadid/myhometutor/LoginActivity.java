@@ -190,7 +190,20 @@ public class LoginActivity extends AppCompatActivity {
                         String userType = documentSnapshot.getString("userType");
                         if (userType == null) {
                             Toast.makeText(LoginActivity.this, "User type not found. Please complete registration.", Toast.LENGTH_LONG).show();
-                            mAuth.signOut(); // Sign out user
+                            mAuth.signOut();
+                            return;
+                        }
+                        
+                        // Check registration step for Google users
+                        String registrationStep = documentSnapshot.getString("registrationStep");
+                        String loginProvider = documentSnapshot.getString("loginProvider");
+                        
+                        // If Google user hasn't completed profile
+                        if ("google".equals(loginProvider) && !"DOCUMENT_UPLOADED".equals(registrationStep)) {
+                            Intent intent = new Intent(LoginActivity.this, GoogleProfileCompletionActivity.class);
+                            intent.putExtra("userType", userType);
+                            startActivity(intent);
+                            finish();
                             return;
                         }
                         
@@ -224,8 +237,8 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
-                        // User doesn't exist in Firestore, create new user
-                        createNewUser(user);
+                        // User doesn't exist in Firestore, create incomplete Google user
+                        createGoogleUser(user);
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -240,7 +253,34 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    private void createGoogleUser(FirebaseUser user) {
+        String userType = getSelectedUserType();
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("name", user.getDisplayName());
+        userData.put("email", user.getEmail());
+        userData.put("userType", userType);
+        userData.put("loginProvider", "google");
+        userData.put("registrationStep", "PROFILE_INCOMPLETE");
+        userData.put("approvalStatus", "pending");
+        userData.put("registrationTimestamp", System.currentTimeMillis());
+
+        db.collection("users").document(user.getUid())
+                .set(userData)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(LoginActivity.this, "Please complete your profile", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LoginActivity.this, GoogleProfileCompletionActivity.class);
+                    intent.putExtra("userType", userType);
+                    startActivity(intent);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    mAuth.signOut();
+                    Toast.makeText(LoginActivity.this, "Failed to create account: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
     private void createNewUser(FirebaseUser user) {
+        // This method is for email/password users (legacy - keeping for compatibility)
         String userType = getSelectedUserType();
         Map<String, Object> userData = new HashMap<>();
         userData.put("name", user.getDisplayName());
@@ -248,14 +288,12 @@ public class LoginActivity extends AppCompatActivity {
         userData.put("userType", userType);
         userData.put("approvalStatus", "pending");
         userData.put("registrationTimestamp", System.currentTimeMillis());
-        // Add other default fields if necessary
 
         db.collection("users").document(user.getUid())
                 .set(userData)
                 .addOnSuccessListener(aVoid -> {
                     mAuth.signOut();
                     Toast.makeText(LoginActivity.this, "Account Created Successfully! Please complete your profile via registration page.", Toast.LENGTH_LONG).show();
-                    // Don't redirect, stay on login page
                     finish();
                 })
                 .addOnFailureListener(e -> {

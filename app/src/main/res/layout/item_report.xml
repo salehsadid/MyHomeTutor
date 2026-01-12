@@ -10,6 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/card_background"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -17,8 +18,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tvReportType"
@@ -26,23 +27,23 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Type: User"
+                android:textColor="@color/black"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="@color/black" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PENDING"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
                 android:background="@drawable/badge_pending"
                 android:paddingStart="12dp"
-                android:paddingEnd="12dp"
                 android:paddingTop="4dp"
-                android:paddingBottom="4dp" />
+                android:paddingEnd="12dp"
+                android:paddingBottom="4dp"
+                android:text="PENDING"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <!-- Reporter info -->
@@ -52,8 +53,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Reporter: John Doe"
-            android:textSize="14sp"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="14sp" />
 
         <!-- Reported user info -->
         <TextView
@@ -62,8 +63,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Reported: Jane Smith"
-            android:textSize="14sp"
             android:textColor="@color/black"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
         <!-- Reason -->
@@ -72,11 +73,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Reason: Inappropriate behavior"
-            android:textSize="13sp"
-            android:textColor="@color/black"
+            android:ellipsize="end"
             android:maxLines="3"
-            android:ellipsize="end" />
+            android:text="Reason: Inappropriate behavior"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
 
         <!-- Timestamp -->
         <TextView
@@ -85,51 +86,51 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Jan 15, 2024 03:45 PM"
-            android:textSize="12sp"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp" />
 
         <!-- Action buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:orientation="horizontal"
-            android:gravity="end">
+            android:gravity="end"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btnViewUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="View User"
-                android:textSize="12sp"
-                android:textColor="@color/white"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/button_blue_rounded"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:layout_marginEnd="8dp" />
+                android:text="View User"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnResolve"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Resolve"
-                android:textSize="12sp"
-                android:textColor="@color/white"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/button_green_rounded"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:layout_marginEnd="8dp" />
+                android:text="Resolve"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnDelete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Delete"
-                android:textSize="12sp"
-                android:textColor="@color/white"
                 android:background="@drawable/button_red_rounded"
                 android:paddingStart="16dp"
-                android:paddingEnd="16dp" />
+                android:paddingEnd="16dp"
+                android:text="Delete"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
         </LinearLayout>
 
     </LinearLayout>

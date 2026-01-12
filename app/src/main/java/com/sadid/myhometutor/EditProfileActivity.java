@@ -371,8 +371,8 @@ public class EditProfileActivity extends AppCompatActivity {
         options.setActiveControlsWidgetColor(ContextCompat.getColor(this, R.color.teal_button));
         options.setFreeStyleCropEnabled(false);
         options.setHideBottomControls(false);
-        options.setToolbarWidgetColor(ContextCompat.getColor(this, R.color.white));
-        return options;
+        options.setToolbarWidgetColor(ContextCompat.getColor(this, R.color.white));        // Use custom UCrop activity with proper insets handling
+        options.setToolbarTitle("Crop Profile Photo");        return options;
     }
 
     @Override

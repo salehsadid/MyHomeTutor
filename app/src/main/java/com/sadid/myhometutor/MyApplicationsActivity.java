@@ -1,5 +1,6 @@
 package com.sadid.myhometutor;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -93,7 +94,13 @@ public class MyApplicationsActivity extends AppCompatActivity {
     }
 
     private void viewStudentProfile(TuitionApplication application) {
-        // TODO: Implement View Student Profile Activity
-        Toast.makeText(this, "View Student Profile clicked for student: " + application.getStudentId(), Toast.LENGTH_SHORT).show();
+        if (application.getStudentId() != null) {
+            Intent intent = new Intent(MyApplicationsActivity.this, AdminViewUserActivity.class);
+            intent.putExtra("userId", application.getStudentId());
+            intent.putExtra("userType", "Student");
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Student information not available", Toast.LENGTH_SHORT).show();
+        }
     }
 }

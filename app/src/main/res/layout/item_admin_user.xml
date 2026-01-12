@@ -93,8 +93,8 @@
         <!-- Action Button -->
         <Button
             android:id="@+id/btnView"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_width="77dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:backgroundTint="@color/teal_button"
             android:text="VIEW"

@@ -45,6 +45,7 @@ public class DocumentVerificationActivity extends AppCompatActivity {
     private String password;
     private Uri documentUri;
     private Uri profileImageUri;
+    private boolean isGoogleSignIn = false;
 
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             uri -> {
@@ -72,6 +73,7 @@ public class DocumentVerificationActivity extends AppCompatActivity {
         if (intent != null) {
             userData = (HashMap<String, Object>) intent.getSerializableExtra("userData");
             password = intent.getStringExtra("password");
+            isGoogleSignIn = intent.getBooleanExtra("fromGoogleSignIn", false);
             String profileUriString = intent.getStringExtra("profileImageUri");
             if (profileUriString != null) {
                 profileImageUri = Uri.parse(profileUriString);
@@ -80,9 +82,10 @@ public class DocumentVerificationActivity extends AppCompatActivity {
         
         android.util.Log.d("DocumentVerification", "userData: " + (userData != null ? "exists" : "null"));
         android.util.Log.d("DocumentVerification", "password: " + (password != null ? "exists" : "null"));
+        android.util.Log.d("DocumentVerification", "isGoogleSignIn: " + isGoogleSignIn);
         
-        // Validate that we received the necessary data
-        if (userData == null || password == null) {
+        // Validate that we received the necessary data (password not required for Google users)
+        if (userData == null || (!isGoogleSignIn && password == null)) {
             Toast.makeText(this, "Error: Registration data is missing. Please try again.", Toast.LENGTH_LONG).show();
             android.util.Log.e("DocumentVerification", "userData or password is null - finishing activity");
             finish();
@@ -183,27 +186,33 @@ public class DocumentVerificationActivity extends AppCompatActivity {
             return;
         }
 
-        if (userData == null || password == null) {
+        if (userData == null || (!isGoogleSignIn && password == null)) {
             Toast.makeText(this, "Error: Missing registration data", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Update registration step to documents
-        userData.put("registrationStep", "documents");
+        userData.put("registrationStep", "DOCUMENT_UPLOADED");
         
         String email = (String) userData.get("email");
 
-        // Create User in Firebase Auth
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        String userId = mAuth.getCurrentUser().getUid();
-                        uploadImagesAndSaveData(userId);
-                    } else {
-                        Toast.makeText(DocumentVerificationActivity.this, "Registration failed: " + (task.getException() != null ? task.getException().getMessage() : "Unknown error"),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+        if (isGoogleSignIn) {
+            // For Google users, account already exists - just update Firestore
+            String userId = mAuth.getCurrentUser().getUid();
+            uploadImagesAndSaveData(userId);
+        } else {
+            // For email/password users, create Firebase Auth account
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            String userId = mAuth.getCurrentUser().getUid();
+                            uploadImagesAndSaveData(userId);
+                        } else {
+                            Toast.makeText(DocumentVerificationActivity.this, "Registration failed: " + (task.getException() != null ? task.getException().getMessage() : "Unknown error"),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
     }
 
     private void uploadImagesAndSaveData(String userId) {
@@ -265,7 +274,7 @@ public class DocumentVerificationActivity extends AppCompatActivity {
         userData.put("approvalStatus", "pending");
         
         // Mark registration as completed
-        userData.put("registrationStep", "completed");
+        userData.put("registrationStep", "DOCUMENT_UPLOADED");
         userData.put("registrationTimestamp", System.currentTimeMillis());
 
         db.collection("users").document(userId)

@@ -20,7 +20,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private TextView tvTotalPosts, tvPendingPosts, tvApprovedPosts, tvTotalConnections;
     private TextView tvTotalStudents, tvPendingStudents, tvTotalTutors, tvPendingTutors;
     private TextView menuDashboard, menuConnections, menuTutors, menuStudents, menuTuitionPosts;
-    private TextView menuReports, menuBannedUsers, menuLogout;
+    private TextView menuReports, menuBannedUsers, menuPendingApprovals, menuLogout;
     private CardView cardTotalTutors;
     private LinearLayout llSideMenu;
     private ImageView btnMenu;
@@ -61,6 +61,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         menuTuitionPosts = findViewById(R.id.menuTuitionPosts);
         menuReports = findViewById(R.id.menuReports);
         menuBannedUsers = findViewById(R.id.menuBannedUsers);
+        menuPendingApprovals = findViewById(R.id.menuPendingApprovals);
         menuLogout = findViewById(R.id.menuLogout);
         
         cardTotalTutors = findViewById(R.id.cardTotalTutors);
@@ -106,6 +107,11 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
         menuBannedUsers.setOnClickListener(v -> {
             Intent intent = new Intent(AdminDashboardActivity.this, AdminBannedUsersActivity.class);
+            startActivity(intent);
+        });
+
+        menuPendingApprovals.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminDashboardActivity.this, AdminApplicationsActivity.class);
             startActivity(intent);
         });
 

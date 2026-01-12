@@ -420,6 +420,8 @@ public class TutorRegistrationActivity extends AppCompatActivity {
         options.setFreeStyleCropEnabled(false);
         options.setHideBottomControls(false);
         options.setToolbarWidgetColor(ContextCompat.getColor(this, R.color.white));
+        // Use custom UCrop activity with proper insets handling
+        options.setToolbarTitle("Crop Profile Photo");
         return options;
     }
 
