@@ -16,15 +16,6 @@
         android:padding="16dp"
         android:background="@color/card_background">
 
-        <Button
-            android:id="@+id/btnBack"
-            android:layout_width="56dp"
-            android:layout_height="40dp"
-            android:background="@color/card_background"
-            android:drawableTop="@drawable/backbutton"
-            android:textColor="@color/teal_button"
-            app:backgroundTint="@null" />
-
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -40,7 +31,7 @@
             android:layout_width="56dp"
             android:layout_height="40dp"
             android:backgroundTint="@color/card_background"
-            android:drawableTop="@android:drawable/ic_popup_sync"
+            android:drawableTop="@drawable/reload"
             android:textColor="@color/black"
             android:textStyle="bold" />
     </LinearLayout>

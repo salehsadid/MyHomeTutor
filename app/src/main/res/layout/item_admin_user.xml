@@ -68,11 +68,13 @@
         <Button
             android:id="@+id/btnView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:background="@color/teal_button"
             android:text="View"
             android:textColor="#ffffff"
-            android:background="@color/teal_button"
-            android:layout_marginTop="8dp"/>
+            app:cornerRadius="2dp" />
 
     </LinearLayout>
 

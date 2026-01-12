@@ -57,16 +57,15 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/ivProfilePhoto"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:contentDescription="Profile Photo"
-            android:padding="2dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_person" />
+            android:layout_marginBottom="12dp"
+            android:src="@drawable/ic_person"
+            app:civ_border_color="@color/text_primary"
+            app:civ_border_width="2dp" />
 
         <TextView
             android:id="@+id/tvUploadPhoto"
@@ -721,7 +720,7 @@
             android:layout_height="56dp"
             android:layout_marginBottom="24dp"
             android:background="@drawable/bg_input"
-            android:hint="Enter years of experience (e.g., 2 years, 6 months)"
+            android:hint="Enter years of experience (e.g., 2 years)"
             android:inputType="text"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"

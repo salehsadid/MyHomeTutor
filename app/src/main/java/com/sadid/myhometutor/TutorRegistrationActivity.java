@@ -450,10 +450,10 @@ public class TutorRegistrationActivity extends AppCompatActivity {
             return;
         }
 
-        String fullName = etFullName.getText().toString();
-        String email = etEmail.getText().toString();
-        String phone = etPhone.getText().toString();
-        if (etPassword.getText() == null || etConfirmPassword.getText() == null) {
+        String fullName = etFullName != null ? etFullName.getText().toString() : "";
+        String email = etEmail != null ? etEmail.getText().toString() : "";
+        String phone = etPhone != null ? etPhone.getText().toString() : "";
+        if (etPassword == null || etPassword.getText() == null || etConfirmPassword == null || etConfirmPassword.getText() == null) {
             Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -461,20 +461,20 @@ public class TutorRegistrationActivity extends AppCompatActivity {
         String confirmPassword = etConfirmPassword.getText().toString();
 
         // Educational Info
-        String collegeName = etCollegeName.getText().toString();
-        String hscYear = etHscYear.getText().toString();
-        String universityName = etUniversityName.getText().toString();
-        String department = etDepartment.getText().toString();
-        String yearSemester = etYearSemester.getText().toString();
-        String session = etSession.getText().toString();
+        String collegeName = etCollegeName != null ? etCollegeName.getText().toString() : "";
+        String hscYear = etHscYear != null ? etHscYear.getText().toString() : "";
+        String universityName = etUniversityName != null ? etUniversityName.getText().toString() : "";
+        String department = etDepartment != null ? etDepartment.getText().toString() : "";
+        String yearSemester = etYearSemester != null ? etYearSemester.getText().toString() : "";
+        String session = etSession != null ? etSession.getText().toString() : "";
 
         // Tuition Preferences
-        String preferredDays = etPreferredDays.getText().toString();
-        String preferredTime = etPreferredTime.getText().toString();
-        String locationDetails = etLocationDetails.getText().toString();
-        String preferredFee = etPreferredFee.getText().toString();
-        String experience = etExperience.getText().toString();
-        String about = etAbout.getText().toString();
+        String preferredDays = etPreferredDays != null ? etPreferredDays.getText().toString() : "";
+        String preferredTime = etPreferredTime != null ? etPreferredTime.getText().toString() : "";
+        String locationDetails = etLocationDetails != null ? etLocationDetails.getText().toString() : "";
+        String preferredFee = etPreferredFee != null ? etPreferredFee.getText().toString() : "";
+        String experience = etExperience != null ? etExperience.getText().toString() : "";
+        String about = etAbout != null ? etAbout.getText().toString() : "";
 
         if (fullName.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty() || universityName.isEmpty()) {
             Toast.makeText(this, "Please fill all required fields (Name, Email, Phone, Password, University)", Toast.LENGTH_LONG).show();
@@ -494,7 +494,7 @@ public class TutorRegistrationActivity extends AppCompatActivity {
 
         // Educational Info
         userData.put("collegeName", collegeName);
-        userData.put("collegeGroup", spCollegeGroup.getSelectedItem().toString());
+        userData.put("collegeGroup", spCollegeGroup != null ? spCollegeGroup.getSelectedItem().toString() : "");
         userData.put("hscYear", hscYear);
         userData.put("universityName", universityName);
         userData.put("department", department);
@@ -502,10 +502,10 @@ public class TutorRegistrationActivity extends AppCompatActivity {
         userData.put("session", session);
 
         // Tuition Preferences
-        userData.put("division", spDivision.getSelectedItem().toString());
-        userData.put("district", spDistrict.getSelectedItem().toString());
-        userData.put("area", spArea.getSelectedItem().toString());
-        userData.put("preferredClass", spPreferredClass.getSelectedItem().toString());
+        userData.put("division", spDivision != null ? spDivision.getSelectedItem().toString() : "");
+        userData.put("district", spDistrict != null ? spDistrict.getSelectedItem().toString() : "");
+        userData.put("area", spArea != null ? spArea.getSelectedItem().toString() : "");
+        userData.put("preferredClass", spPreferredClass != null ? spPreferredClass.getSelectedItem().toString() : "");
         userData.put("preferredDays", preferredDays);
         userData.put("preferredTime", preferredTime);
         userData.put("locationDetails", locationDetails);
@@ -513,13 +513,18 @@ public class TutorRegistrationActivity extends AppCompatActivity {
         userData.put("experience", experience);
         userData.put("about", about);
 
-        int selectedGenderId = rgGender.getCheckedRadioButtonId();
+        int selectedGenderId = rgGender != null ? rgGender.getCheckedRadioButtonId() : -1;
         if (selectedGenderId != -1) {
             RadioButton rbGender = findViewById(selectedGenderId);
             userData.put("gender", rbGender.getText().toString());
         }
 
-        // Log for debugging
+        // Add registration step tracking
+        userData.put("registrationStep", "profile");
+        userData.put("approvalStatus", "pending");
+        userData.put("registrationTimestamp", System.currentTimeMillis());
+        
+        // Proceed to Document Verification without creating auth account yet
         Toast.makeText(this, "Proceeding to Document Verification...", Toast.LENGTH_SHORT).show();
         
         Intent intent = new Intent(TutorRegistrationActivity.this, DocumentVerificationActivity.class);

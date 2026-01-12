@@ -86,18 +86,27 @@
                     android:textColor="@color/white"
                     android:layout_marginBottom="8dp"/>
 
-                <EditText
-                    android:id="@+id/etAdminPassword"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@drawable/bg_input"
-                    android:hint="Enter password"
-                    android:textColorHint="@color/text_hint"
-                    android:textColor="@color/white"
-                    android:inputType="textPassword"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:layout_marginBottom="24dp"/>
+                    android:layout_height="wrap_content"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/teal_button"
+                    app:boxBackgroundMode="none"
+                    android:layout_marginBottom="24dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etAdminPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_input"
+                        android:hint="Enter password"
+                        android:textColorHint="@color/text_hint"
+                        android:textColor="@color/white"
+                        android:inputType="textPassword"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="48dp"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Login Button -->
                 <Button
@@ -128,7 +137,7 @@
                         android:focusable="true"
                         android:padding="8dp"
                         android:text="Back to User Login"
-                        android:textColor="@android:color/holo_red_light"
+                        android:textColor="@color/purple_500"
                         android:textStyle="bold" />
                 </LinearLayout>
 

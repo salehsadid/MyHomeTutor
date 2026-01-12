@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@color/white">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Data Migration Tool"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="⚠️ Admin Only - Run Once ⚠️"
+        android:textSize="16sp"
+        android:textColor="@android:color/holo_red_dark"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This tool migrates data from:\n\n• users/ → users/students/ and users/tutors/\n• tuition_posts/ → posts/\n• Initializes admin/dashboard"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:lineSpacingExtra="4dp"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/btnStartMigration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Migration"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@color/white"
+        android:layout_marginBottom="16dp"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:indeterminate="true"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/tvMigrationStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Click 'Start Migration' to begin..."
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:fontFamily="monospace"
+            android:padding="12dp"
+            android:background="#F5F5F5"/>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnClose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Close"
+        android:textSize="16sp"
+        android:backgroundTint="@android:color/darker_gray"
+        android:textColor="@color/white"/>
+
+</LinearLayout>

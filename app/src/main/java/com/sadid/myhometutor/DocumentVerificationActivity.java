@@ -188,6 +188,9 @@ public class DocumentVerificationActivity extends AppCompatActivity {
             return;
         }
 
+        // Update registration step to documents
+        userData.put("registrationStep", "documents");
+        
         String email = (String) userData.get("email");
 
         // Create User in Firebase Auth
@@ -260,6 +263,9 @@ public class DocumentVerificationActivity extends AppCompatActivity {
         
         // Add approval status - users need admin approval before they can login
         userData.put("approvalStatus", "pending");
+        
+        // Mark registration as completed
+        userData.put("registrationStep", "completed");
         userData.put("registrationTimestamp", System.currentTimeMillis());
 
         db.collection("users").document(userId)

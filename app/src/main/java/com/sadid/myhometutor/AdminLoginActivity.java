@@ -9,12 +9,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AdminLoginActivity extends AppCompatActivity {
 
-    private EditText etAdminEmail, etAdminPassword;
+    private EditText etAdminEmail;
+    private TextInputEditText etAdminPassword;
     private Button btnAdminLogin;
     private TextView tvBackToLogin;
     private FirebaseAuth mAuth;

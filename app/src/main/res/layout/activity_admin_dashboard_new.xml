@@ -169,11 +169,11 @@
                     android:id="@+id/btnMenu"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@android:drawable/ic_menu_sort_by_size"
-                    android:tint="#ffffff"
                     android:clickable="true"
                     android:focusable="true"
-                    android:padding="4dp"/>
+                    android:padding="4dp"
+                    android:src="@drawable/list"
+                    android:tint="#ffffff" />
 
                 <TextView
                     android:layout_width="wrap_content"

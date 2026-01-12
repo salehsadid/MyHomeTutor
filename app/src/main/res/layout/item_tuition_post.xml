@@ -23,32 +23,29 @@
             android:textColor="@color/text_primary"/>
 
         <TextView
-            android:id="@+id/tvGrade"
+            android:id="@+id/tvStudentName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Grade"
-            android:textColor="@color/text_secondary"/>
+            android:text="Posted by: Student Name"
+            android:textColor="@color/text_secondary"
+            android:layout_marginTop="4dp"/>
 
         <TextView
-            android:id="@+id/tvSalary"
+            android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Salary"
-            android:textColor="@color/text_secondary"/>
-
-        <TextView
-            android:id="@+id/tvLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Location"
-            android:textColor="@color/text_secondary"/>
+            android:text="STATUS"
+            android:textColor="@color/text_secondary"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"/>
 
         <Button
-            android:id="@+id/btnApply"
+            android:id="@+id/btnView"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:text="Apply"
-            android:layout_gravity="end"/>
+            android:layout_height="wrap_content"
+            android:text="View Details"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"/>
 
     </LinearLayout>
 

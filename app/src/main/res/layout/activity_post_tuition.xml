@@ -251,129 +251,137 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Location Details -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Location Details *"
-                    android:textColor="@color/white"
-                    android:layout_marginBottom="8dp"/>
-
+                <!-- Location Details (Hidden for Online, Visible for Offline) -->
                 <LinearLayout
+                    android:id="@+id/layoutLocationSection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="8dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Division"
-                            android:textColor="@color/text_hint"
-                            android:textSize="12sp"
-                            android:layout_marginBottom="4dp"/>
-                        <Spinner
-                            android:id="@+id/spDivision"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:background="@drawable/bg_input"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginStart="8dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="District"
-                            android:textColor="@color/text_hint"
-                            android:textSize="12sp"
-                            android:layout_marginBottom="4dp"/>
-                        <Spinner
-                            android:id="@+id/spDistrict"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:background="@drawable/bg_input"/>
-                    </LinearLayout>
-                </LinearLayout>
+                        android:text="Location Details *"
+                        android:textColor="@color/white"
+                        android:layout_marginBottom="8dp"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="8dp">
-                        <TextView
-                            android:layout_width="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="Thana"
-                            android:textColor="@color/text_hint"
-                            android:textSize="12sp"
-                            android:layout_marginBottom="4dp"/>
-                        <Spinner
-                            android:id="@+id/spThana"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:background="@drawable/bg_input"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginStart="8dp">
-                        <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginEnd="8dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Division"
+                                android:textColor="@color/text_hint"
+                                android:textSize="12sp"
+                                android:layout_marginBottom="4dp"/>
+                            <Spinner
+                                android:id="@+id/spDivision"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:background="@drawable/bg_input"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="Area/Street"
-                            android:textColor="@color/text_hint"
-                            android:textSize="12sp"
-                            android:layout_marginBottom="4dp"/>
-                        <EditText
-                            android:id="@+id/etArea"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:background="@drawable/bg_input"
-                            android:hint="Enter Area/Street"
-                            android:textColorHint="@color/text_hint"
-                            android:textColor="@color/white"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:inputType="text"/>
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="8dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="District"
+                                android:textColor="@color/text_hint"
+                                android:textSize="12sp"
+                                android:layout_marginBottom="4dp"/>
+                            <Spinner
+                                android:id="@+id/spDistrict"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:background="@drawable/bg_input"/>
+                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Detailed Address"
-                    android:textColor="@color/text_hint"
-                    android:textSize="12sp"
-                    android:layout_marginBottom="4dp"/>
-                <EditText
-                    android:id="@+id/etDetailedAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@drawable/bg_input"
-                    android:hint="Enter detailed address"
-                    android:textColorHint="@color/text_hint"
-                    android:textColor="@color/white"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:inputType="text"
-                    android:layout_marginBottom="16dp"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginEnd="8dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Thana"
+                                android:textColor="@color/text_hint"
+                                android:textSize="12sp"
+                                android:layout_marginBottom="4dp"/>
+                            <Spinner
+                                android:id="@+id/spThana"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:background="@drawable/bg_input"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="8dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Area/Street"
+                                android:textColor="@color/text_hint"
+                                android:textSize="12sp"
+                                android:layout_marginBottom="4dp"/>
+                            <EditText
+                                android:id="@+id/etArea"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp"
+                                android:background="@drawable/bg_input"
+                                android:hint="Enter Area/Street"
+                                android:textColorHint="@color/text_hint"
+                                android:textColor="@color/white"
+                                android:paddingStart="16dp"
+                                android:paddingEnd="16dp"
+                                android:inputType="text"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Detailed Address"
+                        android:textColor="@color/text_hint"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="4dp"/>
+                    <EditText
+                        android:id="@+id/etDetailedAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_input"
+                        android:hint="Enter detailed address"
+                        android:textColorHint="@color/text_hint"
+                        android:textColor="@color/white"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:inputType="text"
+                        android:layout_marginBottom="16dp"/>
+                </LinearLayout>
 
                 <!-- Additional Requirements -->
                 <TextView
@@ -404,25 +412,25 @@
 
                     <Button
                         android:id="@+id/btnCancel"
-                        android:layout_width="150dp"
+                        android:layout_width="110dp"
                         android:layout_height="60dp"
-                        android:text="Cancel"
+                        android:layout_marginEnd="16dp"
                         android:backgroundTint="@android:color/holo_red_dark"
-                        android:textColor="@color/white"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
-                        android:layout_marginEnd="16dp"/>
+                        android:text="Cancel"
+                        android:textColor="@color/white" />
 
                     <Button
                         android:id="@+id/btnPostTuition"
-                        android:layout_width="150dp"
+                        android:layout_width="110dp"
                         android:layout_height="60dp"
-                        android:text="Post Tuition"
                         android:backgroundTint="@color/teal_button"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
                         android:insetTop="0dp"
-                        android:insetBottom="0dp"/>
+                        android:insetBottom="0dp"
+                        android:text="Post Tuition"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
             </LinearLayout>

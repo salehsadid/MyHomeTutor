@@ -2,6 +2,7 @@ package com.sadid.myhometutor;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,23 +16,32 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.sadid.myhometutor.adapters.AdminUserAdapter;
 import com.sadid.myhometutor.models.PendingUser;
+import com.sadid.myhometutor.repository.UserFilterRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdminTutorsActivity extends AppCompatActivity {
 
+    private static final String TAG = "AdminTutorsActivity";
+    
     private RecyclerView rvTutors;
     private TextView tvEmptyState;
     private ImageView btnBack;
     private Spinner spinnerFilter;
     private AdminUserAdapter adapter;
     private FirebaseFirestore db;
+    private UserFilterRepository userFilterRepo;
     private List<PendingUser> tutorsList;
     private String currentFilter = "All";
+    
+    private ListenerRegistration tutorsListener;
+    private int retryCount = 0;
+    private static final int MAX_RETRIES = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +49,12 @@ public class AdminTutorsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_tutors);
 
         db = FirebaseFirestore.getInstance();
+        userFilterRepo = new UserFilterRepository();
         tutorsList = new ArrayList<>();
 
         initializeViews();
         setupSpinner();
         setupRecyclerView();
-        loadTutors("All");
     }
 
     private void initializeViews() {
@@ -69,8 +79,12 @@ public class AdminTutorsActivity extends AppCompatActivity {
         spinnerFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                currentFilter = filters[position];
-                loadTutors(currentFilter);
+                String selectedFilter = filters[position];
+                if (!selectedFilter.equals(currentFilter)) {
+                    currentFilter = selectedFilter;
+                    removeListener();
+                    attachListener();
+                }
             }
 
             @Override
@@ -91,44 +105,92 @@ public class AdminTutorsActivity extends AppCompatActivity {
         rvTutors.setAdapter(adapter);
     }
 
-    private void loadTutors(String filter) {
-        tutorsList.clear();
+    private void attachListener() {
+        Log.d(TAG, "Attaching listener for filter: " + currentFilter);
         
-        var query = db.collection("users")
-                .whereEqualTo("userType", "Tutor");
-
-        if (!filter.equals("All")) {
-            String status = filter.toLowerCase();
-            query = query.whereEqualTo("approvalStatus", status);
-        }
-
-        query.get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+        UserFilterRepository.UsersListener listener = new UserFilterRepository.UsersListener() {
+            @Override
+            public void onUsersUpdated(com.google.firebase.firestore.QuerySnapshot snapshot) {
+                Log.d(TAG, "Tutors data updated, count: " + snapshot.size());
+                retryCount = 0; // Reset retry count on success
+                tutorsList.clear();
+                
+                for (com.google.firebase.firestore.DocumentSnapshot document : snapshot.getDocuments()) {
+                    try {
                         PendingUser user = documentToPendingUser(document);
                         if (user != null) {
                             tutorsList.add(user);
                         }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error parsing user document: " + document.getId(), e);
                     }
+                }
 
-                    if (tutorsList.isEmpty()) {
-                        tvEmptyState.setVisibility(View.VISIBLE);
-                        rvTutors.setVisibility(View.GONE);
-                    } else {
-                        tvEmptyState.setVisibility(View.GONE);
-                        rvTutors.setVisibility(View.VISIBLE);
-                    }
+                updateUI();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e(TAG, "Error loading tutors", e);
+                
+                if (retryCount < MAX_RETRIES) {
+                    retryCount++;
+                    Toast.makeText(AdminTutorsActivity.this, 
+                        "Connection issue. Retrying... (" + retryCount + "/" + MAX_RETRIES + ")", 
+                        Toast.LENGTH_SHORT).show();
                     
-                    adapter.notifyDataSetChanged();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error loading tutors", Toast.LENGTH_SHORT).show();
-                    tvEmptyState.setVisibility(View.VISIBLE);
-                    rvTutors.setVisibility(View.GONE);
-                });
+                    // Retry after 2 seconds
+                    rvTutors.postDelayed(() -> {
+                        removeListener();
+                        attachListener();
+                    }, 2000);
+                } else {
+                    Toast.makeText(AdminTutorsActivity.this, 
+                        "Unable to load tutors. Please check your connection.", 
+                        Toast.LENGTH_LONG).show();
+                    showEmptyState();
+                }
+            }
+        };
+        
+        if (currentFilter.equals("All")) {
+            tutorsListener = userFilterRepo.listenToAllTutors(listener);
+        } else {
+            String status = currentFilter.toLowerCase();
+            tutorsListener = userFilterRepo.listenToTutorsByStatus(status, listener);
+        }
     }
 
-    private PendingUser documentToPendingUser(QueryDocumentSnapshot document) {
+    private void removeListener() {
+        if (tutorsListener != null) {
+            Log.d(TAG, "Removing tutors listener");
+            tutorsListener.remove();
+            tutorsListener = null;
+        }
+    }
+
+    private void updateUI() {
+        if (tutorsList.isEmpty()) {
+            tvEmptyState.setVisibility(View.VISIBLE);
+            tvEmptyState.setText("No tutors found");
+            rvTutors.setVisibility(View.GONE);
+        } else {
+            tvEmptyState.setVisibility(View.GONE);
+            rvTutors.setVisibility(View.VISIBLE);
+        }
+        
+        adapter.notifyDataSetChanged();
+    }
+
+    private void showEmptyState() {
+        tutorsList.clear();
+        tvEmptyState.setVisibility(View.VISIBLE);
+        tvEmptyState.setText("Unable to load data");
+        rvTutors.setVisibility(View.GONE);
+        adapter.notifyDataSetChanged();
+    }
+
+    private PendingUser documentToPendingUser(com.google.firebase.firestore.DocumentSnapshot document) {
         PendingUser user = new PendingUser();
         user.setUserId(document.getId());
         user.setName(document.getString("name"));
@@ -154,8 +216,20 @@ public class AdminTutorsActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        loadTutors(currentFilter);
+    protected void onStart() {
+        super.onStart();
+        attachListener();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        removeListener();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        removeListener();
     }
 }

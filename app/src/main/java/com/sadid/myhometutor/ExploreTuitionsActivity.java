@@ -1,6 +1,7 @@
 package com.sadid.myhometutor;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -30,9 +32,11 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
 
+    private Button btnFilter, btnBack, btnRefresh;
+    private BottomSheetDialog filterDialog;
+
+    // Filter spinners (from dialog)
     private Spinner spFilterClass, spFilterSubject, spFilterLocation, spFilterSalary, spFilterGender, spFilterType;
-    private Button btnApplyFilters, btnClearFilters, btnBack, btnRefresh;
-    private Switch switchToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,25 +47,54 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         initializeViews();
-        setupSpinners();
         setupRecyclerView();
         setupListeners();
+        setupFilterDialog();
         loadTuitionPosts();
     }
 
     private void initializeViews() {
         rvTuitionPosts = findViewById(R.id.rvTuitionPosts);
-        spFilterClass = findViewById(R.id.spFilterClass);
-        spFilterSubject = findViewById(R.id.spFilterSubject);
-        spFilterLocation = findViewById(R.id.spFilterLocation);
-        spFilterSalary = findViewById(R.id.spFilterSalary);
-        spFilterGender = findViewById(R.id.spFilterGender);
-        spFilterType = findViewById(R.id.spFilterType);
-        btnApplyFilters = findViewById(R.id.btnApplyFilters);
-        btnClearFilters = findViewById(R.id.btnClearFilters);
+        btnFilter = findViewById(R.id.btnFilter);
         btnBack = findViewById(R.id.btnBack);
         btnRefresh = findViewById(R.id.btnRefresh);
+    }
 
+    private void setupFilterDialog() {
+        filterDialog = new BottomSheetDialog(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.layout_filter_bottom_sheet, null);
+        filterDialog.setContentView(dialogView);
+
+        // Initialize spinners from dialog
+        spFilterClass = dialogView.findViewById(R.id.spFilterClass);
+        spFilterSubject = dialogView.findViewById(R.id.spFilterSubject);
+        spFilterLocation = dialogView.findViewById(R.id.spFilterLocation);
+        spFilterSalary = dialogView.findViewById(R.id.spFilterSalary);
+        spFilterGender = dialogView.findViewById(R.id.spFilterGender);
+        spFilterType = dialogView.findViewById(R.id.spFilterType);
+
+        Button btnApplyFilters = dialogView.findViewById(R.id.btnApplyFilters);
+        Button btnClearFilters = dialogView.findViewById(R.id.btnClearFilters);
+
+        // Setup spinners
+        setupSpinners();
+
+        // Apply filters button
+        btnApplyFilters.setOnClickListener(v -> {
+            applyFilters();
+            filterDialog.dismiss();
+        });
+
+        // Clear filters button
+        btnClearFilters.setOnClickListener(v -> {
+            clearFilters();
+        });
+    }
+
+    private void showFilterDialog() {
+        if (filterDialog != null) {
+            filterDialog.show();
+        }
     }
 
     private void setupSpinners() {
@@ -89,8 +122,7 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
         btnRefresh.setOnClickListener(v -> loadTuitionPosts());
-        btnApplyFilters.setOnClickListener(v -> applyFilters());
-        btnClearFilters.setOnClickListener(v -> clearFilters());
+        btnFilter.setOnClickListener(v -> showFilterDialog());
     }
 
     private void loadTuitionPosts() {

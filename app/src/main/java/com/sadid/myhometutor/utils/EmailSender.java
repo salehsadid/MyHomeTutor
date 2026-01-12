@@ -52,8 +52,26 @@ public class EmailSender {
                 Message message = new MimeMessage(session);
                 message.setFrom(new InternetAddress(SENDER_EMAIL));
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
-                message.setSubject("MyHomeTutor Verification OTP");
-                message.setText("Hello,\n\nYour OTP for MyHomeTutor registration is: " + otp + "\n\nPlease do not share this code with anyone.");
+                message.setSubject("MyHomeTutor - Verify Your Account");
+                String emailBody = "<!DOCTYPE html>" +
+                        "<html>" +
+                        "<body style='font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;'>" +
+                        "<div style='max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>" +
+                        "<h2 style='color: #4CAF50; text-align: center;'>MyHomeTutor</h2>" +
+                        "<h3 style='color: #333;'>Verify Your Account</h3>" +
+                        "<p style='color: #666; line-height: 1.6;'>Hello,</p>" +
+                        "<p style='color: #666; line-height: 1.6;'>Thank you for registering with MyHomeTutor. Please use the following One-Time Password (OTP) to complete your registration:</p>" +
+                        "<div style='background-color: #f0f0f0; padding: 20px; text-align: center; margin: 20px 0; border-radius: 5px;'>" +
+                        "<h1 style='color: #4CAF50; margin: 0; letter-spacing: 5px;'>" + otp + "</h1>" +
+                        "</div>" +
+                        "<p style='color: #666; line-height: 1.6;'><strong>Important:</strong> This OTP is valid for 10 minutes and should not be shared with anyone.</p>" +
+                        "<p style='color: #666; line-height: 1.6;'>If you didn't request this verification code, please ignore this email.</p>" +
+                        "<hr style='border: none; border-top: 1px solid #eee; margin: 20px 0;'>" +
+                        "<p style='color: #999; font-size: 12px; text-align: center;'>© 2024 MyHomeTutor. All rights reserved.</p>" +
+                        "</div>" +
+                        "</body>" +
+                        "</html>";
+                message.setContent(emailBody, "text/html; charset=utf-8");
 
                 // Send the email
                 Transport.send(message);

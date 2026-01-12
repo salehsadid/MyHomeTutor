@@ -51,10 +51,10 @@
             android:id="@+id/btnMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_more"
-            app:tint="@color/text_primary"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            android:src="@drawable/list"
+            app:tint="@color/text_primary" />
 
     </LinearLayout>
 
@@ -71,15 +71,14 @@
             android:gravity="center_horizontal">
 
             <!-- Profile Image -->
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/ivProfile"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginBottom="16dp"
-                android:contentDescription="Profile Picture"
-                android:padding="2dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_person" />
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginBottom="12dp"
+                android:src="@drawable/ic_person"
+                app:civ_border_color="@color/text_primary"
+                app:civ_border_width="2dp" />
 
             <TextView
                 android:id="@+id/tvName"
