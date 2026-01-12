@@ -14,21 +14,12 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Header with ID and Type -->
+        <!-- Header with Type and Status -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="8dp">
-
-            <TextView
-                android:id="@+id/tvUserId"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="ID: 11"
-                android:textColor="#94a3b8"
-                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/tvUserType"
@@ -53,16 +44,51 @@
 
         </LinearLayout>
 
-        <!-- Username/Email -->
-        <TextView
-            android:id="@+id/tvUsername"
-            android:layout_width="wrap_content"
+        <!-- Name -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="salehsadid16@gmail.com"
-            android:textColor="#ffffff"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name: "
+                android:textColor="#94a3b8"
+                android:textSize="14sp"/>
+            
+            <TextView
+                android:id="@+id/tvUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Saleh Sadid Mir"
+                android:textColor="#ffffff"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <!-- Email -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mail: "
+                android:textColor="#94a3b8"
+                android:textSize="14sp"/>
+            
+            <TextView
+                android:id="@+id/tvUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="salehsadid16@gmail.com"
+                android:textColor="#ffffff"
+                android:textSize="14sp"/>
+        </LinearLayout>
 
         <!-- Action Button -->
         <Button
@@ -70,11 +96,11 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:background="@color/teal_button"
-            android:text="View"
-            android:textColor="#ffffff"
-            app:cornerRadius="2dp" />
+            android:backgroundTint="@color/teal_button"
+            android:text="VIEW"
+            android:textColor="#1a1b2e"
+            android:textStyle="bold"
+            app:cornerRadius="8dp" />
 
     </LinearLayout>
 

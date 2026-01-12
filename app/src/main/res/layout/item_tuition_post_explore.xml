@@ -91,6 +91,24 @@
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
+                android:text="Medium:"
+                android:textColor="@color/white"/>
+            <TextView
+                android:id="@+id/tvMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bangla"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
                 android:text="Type:"
                 android:textColor="@color/white"/>
             <TextView
@@ -179,31 +197,57 @@
             android:background="@color/text_hint"
             android:layout_marginBottom="12dp"/>
 
-        <!-- Footer: Posted By & Apply Button -->
+        <!-- Footer: Posted By & Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvPostedBy"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Posted by: Saleh Sadid Mir"
-                android:textColor="@color/text_hint"
-                android:textSize="12sp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Posted by: "
+                    android:textColor="@color/text_hint"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/tvPostedBy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Loading..."
+                    android:textColor="@color/white"
+                    android:textSize="14sp"/>
+
+                <Button
+                    android:id="@+id/btnViewProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="View Profile"
+                    android:textSize="10sp"
+                    android:backgroundTint="#4ade80"
+                    android:textColor="#1a1b2e"
+                    app:cornerRadius="8dp"/>
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btnApply"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:text="Apply Now"
+                android:text="APPLY NOW"
                 android:backgroundTint="@color/teal_button"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="12sp"/>
+                android:textSize="14sp"/>
+
         </LinearLayout>
 
     </LinearLayout>

@@ -1,5 +1,6 @@
 package com.sadid.myhometutor;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,11 +14,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AdminViewTuitionPostActivity extends AppCompatActivity {
 
-    private TextView tvSubject, tvStudentName, tvMedium, tvClass, tvDaysPerWeek, tvSalary, tvLocation, tvStatus;
-    private Button btnApprove, btnReject;
+    private TextView tvSubject, tvStudentName, tvMedium, tvClass, tvGroup, tvGender, tvType, tvDaysPerWeek, tvTiming, tvSalary, tvLocation, tvStatus;
+    private Button btnApprove, btnReject, btnViewProfile;
     private ImageView btnBack;
     private FirebaseFirestore db;
     private String postId;
+    private String studentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +40,17 @@ public class AdminViewTuitionPostActivity extends AppCompatActivity {
         tvStudentName = findViewById(R.id.tvStudentName);
         tvMedium = findViewById(R.id.tvMedium);
         tvClass = findViewById(R.id.tvClass);
+        tvGroup = findViewById(R.id.tvGroup);
+        tvGender = findViewById(R.id.tvGender);
+        tvType = findViewById(R.id.tvType);
         tvDaysPerWeek = findViewById(R.id.tvDaysPerWeek);
+        tvTiming = findViewById(R.id.tvTiming);
         tvSalary = findViewById(R.id.tvSalary);
         tvLocation = findViewById(R.id.tvLocation);
         tvStatus = findViewById(R.id.tvStatus);
         btnApprove = findViewById(R.id.btnApprove);
         btnReject = findViewById(R.id.btnReject);
+        btnViewProfile = findViewById(R.id.btnViewProfile);
 
         btnBack.setOnClickListener(v -> finish());
     }
@@ -59,12 +66,29 @@ public class AdminViewTuitionPostActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        tvSubject.setText(documentSnapshot.getString("subject"));
-                        tvMedium.setText(documentSnapshot.getString("medium"));
-                        tvClass.setText(documentSnapshot.getString("class"));
-                        tvDaysPerWeek.setText(documentSnapshot.getString("daysPerWeek"));
-                        tvSalary.setText(documentSnapshot.getString("salary"));
-                        tvLocation.setText(documentSnapshot.getString("location"));
+                        tvSubject.setText(documentSnapshot.getString("subject") != null ? documentSnapshot.getString("subject") : "N/A");
+                        tvMedium.setText(documentSnapshot.getString("medium") != null ? documentSnapshot.getString("medium") : "N/A");
+                        tvClass.setText(documentSnapshot.getString("grade") != null ? documentSnapshot.getString("grade") : "N/A");
+                        tvGroup.setText(documentSnapshot.getString("group") != null ? documentSnapshot.getString("group") : "N/A");
+                        tvGender.setText(documentSnapshot.getString("preferredGender") != null ? documentSnapshot.getString("preferredGender") : "Any");
+                        tvType.setText(documentSnapshot.getString("tuitionType") != null ? documentSnapshot.getString("tuitionType") : "N/A");
+                        tvDaysPerWeek.setText(documentSnapshot.getString("daysPerWeek") != null ? documentSnapshot.getString("daysPerWeek") : "N/A");
+                        tvTiming.setText(documentSnapshot.getString("preferredTiming") != null ? documentSnapshot.getString("preferredTiming") : "N/A");
+                        tvSalary.setText(documentSnapshot.getString("salary") != null ? documentSnapshot.getString("salary") + " BDT" : "0 BDT");
+                        
+                        String address = documentSnapshot.getString("detailedAddress") != null ? documentSnapshot.getString("detailedAddress") : "N/A";
+                        String area = documentSnapshot.getString("area") != null ? documentSnapshot.getString("area") : "";
+                        String district = documentSnapshot.getString("district") != null ? documentSnapshot.getString("district") : "";
+                        
+                        if (area.isEmpty() && district.isEmpty()) {
+                            tvLocation.setText(address);
+                        } else if (area.isEmpty()) {
+                            tvLocation.setText(String.format("%s, %s", address, district));
+                        } else if (district.isEmpty()) {
+                            tvLocation.setText(String.format("%s, %s", address, area));
+                        } else {
+                            tvLocation.setText(String.format("%s, %s, %s", address, area, district));
+                        }
 
                         String status = documentSnapshot.getString("status");
                         tvStatus.setText(status != null ? status.toUpperCase() : "UNKNOWN");
@@ -92,9 +116,11 @@ public class AdminViewTuitionPostActivity extends AppCompatActivity {
                         }
 
                         // Load student name
-                        String studentId = documentSnapshot.getString("studentId");
+                        studentId = documentSnapshot.getString("studentId");
                         if (studentId != null) {
                             loadStudentName(studentId);
+                        } else {
+                            tvStudentName.setText("Unknown");
                         }
                     } else {
                         Toast.makeText(this, "Post not found", Toast.LENGTH_SHORT).show();
@@ -120,6 +146,16 @@ public class AdminViewTuitionPostActivity extends AppCompatActivity {
     private void setupListeners() {
         btnApprove.setOnClickListener(v -> updatePostStatus("approved"));
         btnReject.setOnClickListener(v -> updatePostStatus("rejected"));
+        btnViewProfile.setOnClickListener(v -> {
+            if (studentId != null) {
+                Intent intent = new Intent(AdminViewTuitionPostActivity.this, AdminViewUserActivity.class);
+                intent.putExtra("userId", studentId);
+                intent.putExtra("userType", "Student");
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Student information not available", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void updatePostStatus(String newStatus) {

@@ -46,18 +46,34 @@ public class MyApplicationAdapter extends RecyclerView.Adapter<MyApplicationAdap
         TuitionPost post = application.getTuitionPost();
 
         if (post != null) {
-            holder.tvSubject.setText(post.getSubject());
-            holder.tvClass.setText(post.getGrade());
-            holder.tvGroup.setText(post.getGroup());
-            holder.tvType.setText(post.getTuitionType());
-            holder.tvDays.setText(post.getDaysPerWeek());
-            holder.tvSalary.setText(post.getSalary() + " BDT");
-            holder.tvLocation.setText(post.getLocation()); // Or construct from address
+            holder.tvSubject.setText(post.getSubject() != null ? post.getSubject() : "N/A");
+            holder.tvClass.setText(post.getGrade() != null ? post.getGrade() : "N/A");
+            holder.tvGroup.setText(post.getGroup() != null ? post.getGroup() : "N/A");
+            holder.tvGender.setText(post.getPreferredGender() != null ? post.getPreferredGender() : "Any");
+            holder.tvMedium.setText(post.getMedium() != null ? post.getMedium() : "N/A");
+            holder.tvType.setText(post.getTuitionType() != null ? post.getTuitionType() : "N/A");
+            holder.tvDays.setText(post.getDaysPerWeek() != null ? post.getDaysPerWeek() : "N/A");
+            holder.tvTiming.setText(post.getPreferredTiming() != null ? post.getPreferredTiming() : "N/A");
+            holder.tvSalary.setText((post.getSalary() != null ? post.getSalary() : "0") + " BDT");
+            
+            String address = post.getDetailedAddress() != null ? post.getDetailedAddress() : "N/A";
+            String area = post.getArea() != null ? post.getArea() : "";
+            String district = post.getDistrict() != null ? post.getDistrict() : "";
+            
+            if (area.isEmpty() && district.isEmpty()) {
+                holder.tvLocation.setText(address);
+            } else if (area.isEmpty()) {
+                holder.tvLocation.setText(String.format("%s, %s", address, district));
+            } else if (district.isEmpty()) {
+                holder.tvLocation.setText(String.format("%s, %s", address, area));
+            } else {
+                holder.tvLocation.setText(String.format("%s, %s, %s", address, area, district));
+            }
         } else {
             holder.tvSubject.setText("Loading...");
         }
 
-        holder.tvStatus.setText(application.getStatus().toUpperCase());
+        holder.tvStatus.setText(application.getStatus() != null ? application.getStatus().toUpperCase() : "UNKNOWN");
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         holder.tvAppliedOn.setText(sdf.format(new Date(application.getTimestamp())));
@@ -75,7 +91,7 @@ public class MyApplicationAdapter extends RecyclerView.Adapter<MyApplicationAdap
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvSubject, tvStatus, tvClass, tvGroup, tvType, tvDays, tvSalary, tvLocation, tvAppliedOn;
+        TextView tvSubject, tvStatus, tvClass, tvGroup, tvGender, tvMedium, tvType, tvDays, tvTiming, tvSalary, tvLocation, tvAppliedOn;
         Button btnViewProfile;
 
         public ViewHolder(@NonNull View itemView) {
@@ -84,8 +100,11 @@ public class MyApplicationAdapter extends RecyclerView.Adapter<MyApplicationAdap
             tvStatus = itemView.findViewById(R.id.tvStatus);
             tvClass = itemView.findViewById(R.id.tvClass);
             tvGroup = itemView.findViewById(R.id.tvGroup);
+            tvGender = itemView.findViewById(R.id.tvGender);
+            tvMedium = itemView.findViewById(R.id.tvMedium);
             tvType = itemView.findViewById(R.id.tvType);
             tvDays = itemView.findViewById(R.id.tvDays);
+            tvTiming = itemView.findViewById(R.id.tvTiming);
             tvSalary = itemView.findViewById(R.id.tvSalary);
             tvLocation = itemView.findViewById(R.id.tvLocation);
             tvAppliedOn = itemView.findViewById(R.id.tvAppliedOn);

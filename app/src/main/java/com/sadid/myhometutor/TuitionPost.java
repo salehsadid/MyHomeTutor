@@ -12,6 +12,8 @@ public class TuitionPost {
     // New fields
     private String tuitionType;
     private String group;
+    private String preferredGender;
+    private String medium;
     private String daysPerWeek;
     private String hoursPerDay;
     private String preferredTiming;
@@ -47,6 +49,10 @@ public class TuitionPost {
     public void setTuitionType(String tuitionType) { this.tuitionType = tuitionType; }
     public String getGroup() { return group; }
     public void setGroup(String group) { this.group = group; }
+    public String getPreferredGender() { return preferredGender; }
+    public void setPreferredGender(String preferredGender) { this.preferredGender = preferredGender; }
+    public String getMedium() { return medium; }
+    public void setMedium(String medium) { this.medium = medium; }
     public String getDaysPerWeek() { return daysPerWeek; }
     public void setDaysPerWeek(String daysPerWeek) { this.daysPerWeek = daysPerWeek; }
     public String getHoursPerDay() { return hoursPerDay; }

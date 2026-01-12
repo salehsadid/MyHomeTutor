@@ -1,150 +1,117 @@
 package com.sadid.myhometutor;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.sadid.myhometutor.adapters.AdminReportsAdapter;
+import com.sadid.myhometutor.models.Report;
+import com.sadid.myhometutor.repository.ReportRepository;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.List;
 
-public class AdminReportsActivity extends AppCompatActivity {
+public class AdminReportsActivity extends AppCompatActivity implements AdminReportsAdapter.OnReportActionListener {
 
     private ImageView btnBack;
-    private TextView tvTotalUsers, tvTotalTutors, tvTotalStudents;
-    private TextView tvTotalPosts, tvActivePosts, tvPendingPosts;
-    private TextView tvTotalApplications, tvAcceptedApplications, tvPendingApplications;
-    private TextView tvApprovedTutors, tvApprovedStudents, tvPendingApprovals;
-    private TextView tvReportDate;
-    private FirebaseFirestore db;
+    private RecyclerView rvReports;
+    private AdminReportsAdapter adapter;
+    private ReportRepository reportRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_reports);
 
-        db = FirebaseFirestore.getInstance();
+        reportRepository = new ReportRepository();
 
         initializeViews();
-        loadReportData();
+        setupRecyclerView();
+        loadReports();
     }
 
     private void initializeViews() {
         btnBack = findViewById(R.id.btnBack);
-        tvTotalUsers = findViewById(R.id.tvTotalUsers);
-        tvTotalTutors = findViewById(R.id.tvTotalTutors);
-        tvTotalStudents = findViewById(R.id.tvTotalStudents);
-        tvTotalPosts = findViewById(R.id.tvTotalPosts);
-        tvActivePosts = findViewById(R.id.tvActivePosts);
-        tvPendingPosts = findViewById(R.id.tvPendingPosts);
-        tvTotalApplications = findViewById(R.id.tvTotalApplications);
-        tvAcceptedApplications = findViewById(R.id.tvAcceptedApplications);
-        tvPendingApplications = findViewById(R.id.tvPendingApplications);
-        tvApprovedTutors = findViewById(R.id.tvApprovedTutors);
-        tvApprovedStudents = findViewById(R.id.tvApprovedStudents);
-        tvPendingApprovals = findViewById(R.id.tvPendingApprovals);
-        tvReportDate = findViewById(R.id.tvReportDate);
+        rvReports = findViewById(R.id.rvReports);
 
         btnBack.setOnClickListener(v -> finish());
-
-        // Set current date
-        SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
-        tvReportDate.setText("Report Generated: " + sdf.format(new Date()));
     }
 
-    private void loadReportData() {
-        loadUserStatistics();
-        loadTuitionPostStatistics();
-        loadApplicationStatistics();
+    private void setupRecyclerView() {
+        adapter = new AdminReportsAdapter(this);
+        adapter.setOnReportActionListener(this);
+        rvReports.setLayoutManager(new LinearLayoutManager(this));
+        rvReports.setAdapter(adapter);
     }
 
-    private void loadUserStatistics() {
-        db.collection("users").get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    int totalUsers = queryDocumentSnapshots.size();
-                    int totalTutors = 0;
-                    int totalStudents = 0;
-                    int approvedTutors = 0;
-                    int approvedStudents = 0;
-                    int pendingApprovals = 0;
+    private void loadReports() {
+        reportRepository.listenToReports(new ReportRepository.ReportsListener() {
+            @Override
+            public void onReportsUpdated(List<Report> reports) {
+                adapter.setReports(reports);
+                if (reports.isEmpty()) {
+                    Toast.makeText(AdminReportsActivity.this, 
+                        "No reports found", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        String userType = document.getString("userType");
-                        String approvalStatus = document.getString("approvalStatus");
-
-                        if ("Tutor".equals(userType)) {
-                            totalTutors++;
-                            if ("approved".equals(approvalStatus)) {
-                                approvedTutors++;
-                            } else if ("pending".equals(approvalStatus)) {
-                                pendingApprovals++;
-                            }
-                        } else if ("Student".equals(userType)) {
-                            totalStudents++;
-                            if ("approved".equals(approvalStatus)) {
-                                approvedStudents++;
-                            } else if ("pending".equals(approvalStatus)) {
-                                pendingApprovals++;
-                            }
-                        }
-                    }
-
-                    tvTotalUsers.setText(String.valueOf(totalUsers));
-                    tvTotalTutors.setText(String.valueOf(totalTutors));
-                    tvTotalStudents.setText(String.valueOf(totalStudents));
-                    tvApprovedTutors.setText(String.valueOf(approvedTutors));
-                    tvApprovedStudents.setText(String.valueOf(approvedStudents));
-                    tvPendingApprovals.setText(String.valueOf(pendingApprovals));
-                });
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(AdminReportsActivity.this, 
+                    "Error loading reports: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void loadTuitionPostStatistics() {
-        db.collection("tuition_posts").get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    int total = queryDocumentSnapshots.size();
-                    int active = 0;
-                    int pending = 0;
-
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        String status = document.getString("status");
-                        if ("active".equals(status) || "approved".equals(status)) {
-                            active++;
-                        } else if ("pending".equals(status)) {
-                            pending++;
-                        }
-                    }
-
-                    tvTotalPosts.setText(String.valueOf(total));
-                    tvActivePosts.setText(String.valueOf(active));
-                    tvPendingPosts.setText(String.valueOf(pending));
-                });
+    @Override
+    public void onResolveClick(Report report) {
+        new AlertDialog.Builder(this)
+            .setTitle("Resolve Report")
+            .setMessage("Mark this report as resolved?")
+            .setPositiveButton("Yes", (dialog, which) -> {
+                reportRepository.resolveReport(report.getReportId())
+                    .addOnSuccessListener(aVoid -> 
+                        Toast.makeText(this, "Report resolved", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> 
+                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            })
+            .setNegativeButton("No", null)
+            .show();
     }
 
-    private void loadApplicationStatistics() {
-        db.collection("applications").get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    int total = queryDocumentSnapshots.size();
-                    int accepted = 0;
-                    int pending = 0;
+    @Override
+    public void onDeleteClick(Report report) {
+        new AlertDialog.Builder(this)
+            .setTitle("Delete Report")
+            .setMessage("Are you sure you want to delete this report?")
+            .setPositiveButton("Yes", (dialog, which) -> {
+                reportRepository.deleteReport(report.getReportId())
+                    .addOnSuccessListener(aVoid -> 
+                        Toast.makeText(this, "Report deleted", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> 
+                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            })
+            .setNegativeButton("No", null)
+            .show();
+    }
 
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        String status = document.getString("status");
-                        if ("accepted".equals(status)) {
-                            accepted++;
-                        } else if ("pending".equals(status)) {
-                            pending++;
-                        }
-                    }
+    @Override
+    public void onViewReportedUserClick(String userId) {
+        Intent intent = new Intent(this, AdminViewUserActivity.class);
+        intent.putExtra("userId", userId);
+        startActivity(intent);
+    }
 
-                    tvTotalApplications.setText(String.valueOf(total));
-                    tvAcceptedApplications.setText(String.valueOf(accepted));
-                    tvPendingApplications.setText(String.valueOf(pending));
-                });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (reportRepository != null) {
+            reportRepository.removeListener();
+        }
     }
 }

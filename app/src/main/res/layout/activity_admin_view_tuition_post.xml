@@ -99,14 +99,32 @@
                     android:textSize="12sp"
                     android:layout_marginBottom="4dp"/>
 
-                <TextView
-                    android:id="@+id/tvStudentName"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Student Name"
-                    android:textColor="#ffffff"
-                    android:textSize="16sp"
-                    android:layout_marginBottom="12dp"/>
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:id="@+id/tvStudentName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Loading..."
+                        android:textColor="#ffffff"
+                        android:textSize="16sp"/>
+
+                    <Button
+                        android:id="@+id/btnViewProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="View Profile"
+                        android:textSize="12sp"
+                        android:backgroundTint="#4ade80"
+                        android:textColor="#1a1b2e"/>
+
+                </LinearLayout>
 
                 <!-- Medium -->
                 <TextView
@@ -126,11 +144,11 @@
                     android:textSize="16sp"
                     android:layout_marginBottom="12dp"/>
 
-                <!-- Class -->
+                <!-- Class/Grade -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Class"
+                    android:text="Class/Grade"
                     android:textColor="#94a3b8"
                     android:textSize="12sp"
                     android:layout_marginBottom="4dp"/>
@@ -140,6 +158,60 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Class 10"
+                    android:textColor="#ffffff"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Group -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Group"
+                    android:textColor="#94a3b8"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+
+                <TextView
+                    android:id="@+id/tvGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Science"
+                    android:textColor="#ffffff"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Gender Preference -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gender Preference"
+                    android:textColor="#94a3b8"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+
+                <TextView
+                    android:id="@+id/tvGender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Any"
+                    android:textColor="#ffffff"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Tuition Type -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tuition Type"
+                    android:textColor="#94a3b8"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+
+                <TextView
+                    android:id="@+id/tvType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Offline"
                     android:textColor="#ffffff"
                     android:textSize="16sp"
                     android:layout_marginBottom="12dp"/>
@@ -158,6 +230,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="3 days"
+                    android:textColor="#ffffff"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Preferred Timing -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Preferred Timing"
+                    android:textColor="#94a3b8"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+
+                <TextView
+                    android:id="@+id/tvTiming"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2-6pm"
                     android:textColor="#ffffff"
                     android:textSize="16sp"
                     android:layout_marginBottom="12dp"/>

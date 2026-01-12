@@ -20,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
 
-    private Button btnFilter, btnBack, btnRefresh;
+    private Button btnFilter, btnRefresh;
     private BottomSheetDialog filterDialog;
 
     // Filter spinners (from dialog)
@@ -56,7 +57,6 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
     private void initializeViews() {
         rvTuitionPosts = findViewById(R.id.rvTuitionPosts);
         btnFilter = findViewById(R.id.btnFilter);
-        btnBack = findViewById(R.id.btnBack);
         btnRefresh = findViewById(R.id.btnRefresh);
     }
 
@@ -115,19 +115,18 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
     private void setupRecyclerView() {
         rvTuitionPosts.setLayoutManager(new LinearLayoutManager(this));
         postList = new ArrayList<>();
-        adapter = new TuitionPostAdapter(postList, this::applyForTuition);
+        adapter = new TuitionPostAdapter(this, postList, this::applyForTuition);
         rvTuitionPosts.setAdapter(adapter);
     }
 
     private void setupListeners() {
-        btnBack.setOnClickListener(v -> finish());
         btnRefresh.setOnClickListener(v -> loadTuitionPosts());
         btnFilter.setOnClickListener(v -> showFilterDialog());
     }
 
     private void loadTuitionPosts() {
         db.collection("tuition_posts")
-                .whereEqualTo("status", "open")
+                .whereIn("status", Arrays.asList("approved", "active"))
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {

@@ -41,16 +41,32 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         TuitionPost post = postList.get(position);
 
-        holder.tvSubjectClass.setText(String.format("%s • %s", post.getSubject(), post.getGrade()));
-        holder.tvStatusDate.setText(String.format("Status: %s", post.getStatus()));
+        String subject = post.getSubject() != null ? post.getSubject() : "N/A";
+        String grade = post.getGrade() != null ? post.getGrade() : "N/A";
+        holder.tvSubjectClass.setText(String.format("%s • %s", subject, grade));
+        holder.tvStatusDate.setText(String.format("Status: %s", post.getStatus() != null ? post.getStatus() : "N/A"));
 
-        holder.tvGroup.setText(post.getGroup());
-        holder.tvGender.setText("Any"); // Placeholder
-        holder.tvType.setText(post.getTuitionType());
-        holder.tvDays.setText(post.getDaysPerWeek());
-        holder.tvTiming.setText(post.getPreferredTiming());
-        holder.tvSalary.setText(post.getSalary() + " BDT");
-        holder.tvLocation.setText(String.format("%s, %s, %s", post.getDetailedAddress(), post.getArea(), post.getDistrict()));
+        holder.tvGroup.setText(post.getGroup() != null ? post.getGroup() : "N/A");
+        holder.tvGender.setText(post.getPreferredGender() != null ? post.getPreferredGender() : "Any");
+        holder.tvMedium.setText(post.getMedium() != null ? post.getMedium() : "N/A");
+        holder.tvType.setText(post.getTuitionType() != null ? post.getTuitionType() : "N/A");
+        holder.tvDays.setText(post.getDaysPerWeek() != null ? post.getDaysPerWeek() : "N/A");
+        holder.tvTiming.setText(post.getPreferredTiming() != null ? post.getPreferredTiming() : "N/A");
+        holder.tvSalary.setText((post.getSalary() != null ? post.getSalary() : "0") + " BDT");
+        
+        String address = post.getDetailedAddress() != null ? post.getDetailedAddress() : "N/A";
+        String area = post.getArea() != null ? post.getArea() : "";
+        String district = post.getDistrict() != null ? post.getDistrict() : "";
+        
+        if (area.isEmpty() && district.isEmpty()) {
+            holder.tvLocation.setText(address);
+        } else if (area.isEmpty()) {
+            holder.tvLocation.setText(String.format("%s, %s", address, district));
+        } else if (district.isEmpty()) {
+            holder.tvLocation.setText(String.format("%s, %s", address, area));
+        } else {
+            holder.tvLocation.setText(String.format("%s, %s, %s", address, area, district));
+        }
 
         holder.btnDelete.setOnClickListener(v -> {
             if (onDeleteClickListener != null) {
@@ -65,7 +81,7 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvSubjectClass, tvStatusDate, tvGroup, tvGender, tvType, tvDays, tvTiming, tvSalary, tvLocation;
+        TextView tvSubjectClass, tvStatusDate, tvGroup, tvGender, tvMedium, tvType, tvDays, tvTiming, tvSalary, tvLocation;
         Button btnDelete;
 
         public ViewHolder(@NonNull View itemView) {
@@ -74,6 +90,7 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.ViewHolder
             tvStatusDate = itemView.findViewById(R.id.tvStatusDate);
             tvGroup = itemView.findViewById(R.id.tvGroup);
             tvGender = itemView.findViewById(R.id.tvGender);
+            tvMedium = itemView.findViewById(R.id.tvMedium);
             tvType = itemView.findViewById(R.id.tvType);
             tvDays = itemView.findViewById(R.id.tvDays);
             tvTiming = itemView.findViewById(R.id.tvTiming);

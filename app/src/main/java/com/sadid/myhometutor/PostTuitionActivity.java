@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class PostTuitionActivity extends AppCompatActivity {
 
-    private Spinner spSubject, spClass, spTuitionType, spGroup, spDivision, spDistrict, spThana;
+    private Spinner spSubject, spClass, spTuitionType, spGroup, spGender, spMedium, spDivision, spDistrict, spThana;
     private EditText etDaysPerWeek, etHoursPerDay, etPreferredTiming, etSalary, etArea, etDetailedAddress, etAdditionalReq;
     private Button btnCancel, btnPostTuition;
     private Switch switchUrgent;
@@ -49,6 +49,8 @@ public class PostTuitionActivity extends AppCompatActivity {
         spClass = findViewById(R.id.spClass);
         spTuitionType = findViewById(R.id.spTuitionType);
         spGroup = findViewById(R.id.spGroup);
+        spGender = findViewById(R.id.spGender);
+        spMedium = findViewById(R.id.spMedium);
         spDivision = findViewById(R.id.spDivision);
         spDistrict = findViewById(R.id.spDistrict);
         spThana = findViewById(R.id.spThana);
@@ -75,6 +77,8 @@ public class PostTuitionActivity extends AppCompatActivity {
         setupSpinner(spClass, new String[]{"Select Class", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10", "HSC"});
         setupSpinner(spTuitionType, new String[]{"Select Type", "Offline", "Online"});
         setupSpinner(spGroup, new String[]{"Select Group", "Science", "Commerce", "Arts", "N/A"});
+        setupSpinner(spGender, new String[]{"Select Gender", "Male", "Female", "Any"});
+        setupSpinner(spMedium, new String[]{"Select Medium", "Bangla", "English"});
         
         // Setup location spinners with LocationDataHelper
         setupLocationSpinners();
@@ -219,7 +223,8 @@ public class PostTuitionActivity extends AppCompatActivity {
         
         // Basic validation
         if (spSubject.getSelectedItemPosition() == 0 || spClass.getSelectedItemPosition() == 0 ||
-            spTuitionType.getSelectedItemPosition() == 0 || spGroup.getSelectedItemPosition() == 0) {
+            spTuitionType.getSelectedItemPosition() == 0 || spGroup.getSelectedItemPosition() == 0 ||
+            spGender.getSelectedItemPosition() == 0 || spMedium.getSelectedItemPosition() == 0) {
             Toast.makeText(this, "Please select all required fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -256,9 +261,11 @@ public class PostTuitionActivity extends AppCompatActivity {
         Map<String, Object> post = new HashMap<>();
         post.put("studentId", mAuth.getCurrentUser().getUid());
         post.put("subject", spSubject.getSelectedItem().toString());
-        post.put("class", spClass.getSelectedItem().toString());
+        post.put("grade", spClass.getSelectedItem().toString());
         post.put("tuitionType", selectedTuitionType);
         post.put("group", spGroup.getSelectedItem().toString());
+        post.put("preferredGender", spGender.getSelectedItem().toString());
+        post.put("medium", spMedium.getSelectedItem().toString());
         post.put("daysPerWeek", daysPerWeek);
         post.put("hoursPerDay", hoursPerDay);
         post.put("preferredTiming", preferredTiming);
@@ -281,7 +288,7 @@ public class PostTuitionActivity extends AppCompatActivity {
         
         post.put("additionalReq", additionalReq);
         post.put("isUrgent", switchUrgent != null && switchUrgent.isChecked());
-        post.put("status", "open");
+        post.put("status", "pending");
         post.put("timestamp", System.currentTimeMillis());
 
         db.collection("tuition_posts")

@@ -23,7 +23,7 @@ public class MyApplicationsActivity extends AppCompatActivity {
     private List<TuitionApplication> applicationList;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
-    private Button btnBack, btnRefresh;
+    private Button btnRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,6 @@ public class MyApplicationsActivity extends AppCompatActivity {
 
     private void initializeViews() {
         rvMyApplications = findViewById(R.id.rvMyApplications);
-        btnBack = findViewById(R.id.btnBack);
         btnRefresh = findViewById(R.id.btnRefresh);
     }
 
@@ -53,7 +52,6 @@ public class MyApplicationsActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        btnBack.setOnClickListener(v -> finish());
         btnRefresh.setOnClickListener(v -> loadMyApplications());
     }
 

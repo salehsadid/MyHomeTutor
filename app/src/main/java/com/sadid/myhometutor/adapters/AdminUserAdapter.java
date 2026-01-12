@@ -42,8 +42,8 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         PendingUser user = usersList.get(position);
 
-        holder.tvUserId.setText("ID: " + (position + 1));
         holder.tvUserType.setText(user.getUserType() != null ? user.getUserType() : "Unknown");
+        holder.tvUserName.setText(user.getName() != null ? user.getName() : "N/A");
         holder.tvUsername.setText(user.getEmail() != null ? user.getEmail() : "No email");
         
         String status = user.getStatus() != null ? user.getStatus() : "unknown";
@@ -71,13 +71,13 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
     }
 
     static class UserViewHolder extends RecyclerView.ViewHolder {
-        TextView tvUserId, tvUserType, tvUsername, tvStatus;
+        TextView tvUserType, tvUserName, tvUsername, tvStatus;
         Button btnView;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvUserId = itemView.findViewById(R.id.tvUserId);
             tvUserType = itemView.findViewById(R.id.tvUserType);
+            tvUserName = itemView.findViewById(R.id.tvUserName);
             tvUsername = itemView.findViewById(R.id.tvUsername);
             tvStatus = itemView.findViewById(R.id.tvStatus);
             btnView = itemView.findViewById(R.id.btnView);

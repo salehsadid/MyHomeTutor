@@ -135,6 +135,52 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <!-- Row: Gender & Medium/Version -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Preferred Gender *"
+                            android:textColor="@color/white"
+                            android:layout_marginBottom="8dp"/>
+                        <Spinner
+                            android:id="@+id/spGender"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:background="@drawable/bg_input"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Medium/Version *"
+                            android:textColor="@color/white"
+                            android:layout_marginBottom="8dp"/>
+                        <Spinner
+                            android:id="@+id/spMedium"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:background="@drawable/bg_input"/>
+                    </LinearLayout>
+                </LinearLayout>
+
                 <!-- Row 3: Days per Week & Hours per Day -->
                 <LinearLayout
                     android:layout_width="match_parent"

@@ -12,10 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.sadid.myhometutor.repository.AdminDashboardRepository;
-
-import java.util.Map;
+import com.sadid.myhometutor.models.DashboardStats;
+import com.sadid.myhometutor.repository.AdminStatsRepository;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
@@ -29,8 +27,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private boolean isMenuVisible = false;
 
     private FirebaseAuth mAuth;
-    private AdminDashboardRepository dashboardRepo;
-    private ListenerRegistration dashboardListener;
+    private AdminStatsRepository statsRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +35,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_dashboard_new);
 
         mAuth = FirebaseAuth.getInstance();
-        dashboardRepo = new AdminDashboardRepository();
+        statsRepository = new AdminStatsRepository();
 
         initializeViews();
         setupMenuListeners();
@@ -126,17 +123,16 @@ public class AdminDashboardActivity extends AppCompatActivity {
      * Dashboard updates automatically when data changes
      */
     private void setupRealtimeDashboard() {
-        dashboardListener = dashboardRepo.listenToDashboard(new AdminDashboardRepository.DashboardListener() {
+        statsRepository.listenToDashboardStats(new AdminStatsRepository.StatsListener() {
             @Override
-            public void onDashboardUpdated(Map<String, Object> dashboardData) {
-                updateDashboardUI(dashboardData);
+            public void onStatsUpdated(DashboardStats stats) {
+                updateDashboardUI(stats);
             }
 
             @Override
             public void onError(Exception e) {
                 Toast.makeText(AdminDashboardActivity.this, 
                     "Error loading dashboard: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                // Set all to 0 on error
                 setDefaultValues();
             }
         });
@@ -145,35 +141,22 @@ public class AdminDashboardActivity extends AppCompatActivity {
     /**
      * Update UI with dashboard statistics
      */
-    private void updateDashboardUI(Map<String, Object> dashboardData) {
+    private void updateDashboardUI(DashboardStats stats) {
         // Student stats
-        tvTotalStudents.setText(String.valueOf(getIntValue(dashboardData, "totalStudents")));
-        tvPendingStudents.setText(String.valueOf(getIntValue(dashboardData, "pendingStudents")));
+        tvTotalStudents.setText(String.valueOf(stats.getTotalStudents()));
+        tvPendingStudents.setText(String.valueOf(stats.getTotalStudents() - stats.getApprovedStudents()));
 
         // Tutor stats
-        tvTotalTutors.setText(String.valueOf(getIntValue(dashboardData, "totalTutors")));
-        tvPendingTutors.setText(String.valueOf(getIntValue(dashboardData, "pendingTutors")));
+        tvTotalTutors.setText(String.valueOf(stats.getTotalTutors()));
+        tvPendingTutors.setText(String.valueOf(stats.getTotalTutors() - stats.getApprovedTutors()));
 
         // Post stats
-        tvTotalPosts.setText(String.valueOf(getIntValue(dashboardData, "totalPosts")));
-        tvPendingPosts.setText(String.valueOf(getIntValue(dashboardData, "pendingPosts")));
-        tvApprovedPosts.setText(String.valueOf(getIntValue(dashboardData, "approvedPosts")));
+        tvTotalPosts.setText(String.valueOf(stats.getTotalPosts()));
+        tvPendingPosts.setText(String.valueOf(stats.getPendingPosts()));
+        tvApprovedPosts.setText(String.valueOf(stats.getActivePosts()));
 
-        // Connection stats
-        tvTotalConnections.setText(String.valueOf(getIntValue(dashboardData, "successfulConnections")));
-    }
-    
-    /**
-     * Safely get integer value from map
-     */
-    private int getIntValue(Map<String, Object> map, String key) {
-        Object value = map.get(key);
-        if (value instanceof Long) {
-            return ((Long) value).intValue();
-        } else if (value instanceof Integer) {
-            return (Integer) value;
-        }
-        return 0;
+        // Connection stats (using accepted applications as successful connections)
+        tvTotalConnections.setText(String.valueOf(stats.getAcceptedApplications()));
     }
 
     /**
@@ -192,46 +175,51 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     private void toggleMenu() {
         if (isMenuVisible) {
-            llSideMenu.setVisibility(View.GONE);
-            isMenuVisible = false;
+            // Slide out (hide menu)
+            llSideMenu.animate()
+                .translationX(-llSideMenu.getWidth())
+                .setDuration(300)
+                .withEndAction(() -> isMenuVisible = false)
+                .start();
         } else {
-            llSideMenu.setVisibility(View.VISIBLE);
-            isMenuVisible = true;
+            // Slide in (show menu)
+            llSideMenu.animate()
+                .translationX(0)
+                .setDuration(300)
+                .withStartAction(() -> isMenuVisible = true)
+                .start();
         }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        // Listener already attached in onCreate via setupRealtimeDashboard()
-        // No need to reattach here since it persists across resume/pause
+        // Listener already attached in onCreate
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        // Remove listener when activity stops
-        if (dashboardListener != null) {
-            dashboardListener.remove();
-            dashboardListener = null;
+        // Remove listeners when activity stops
+        if (statsRepository != null) {
+            statsRepository.removeListeners();
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Remove listener to prevent memory leaks (safety net)
-        if (dashboardListener != null) {
-            dashboardListener.remove();
-            dashboardListener = null;
+        // Safety cleanup
+        if (statsRepository != null) {
+            statsRepository.removeListeners();
         }
     }
     
     @Override
     protected void onResume() {
         super.onResume();
-        // Reattach listener if it was removed in onStop
-        if (dashboardListener == null) {
+        // Reattach listener if needed
+        if (statsRepository != null) {
             setupRealtimeDashboard();
         }
     }
