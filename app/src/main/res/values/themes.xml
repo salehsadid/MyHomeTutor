@@ -56,4 +56,12 @@
         <item name="android:textColor">#4ade80</item>
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="AppSearchView" parent="Widget.AppCompat.SearchView">
+        <item name="android:textColorHint">#94a3b8</item>
+        <item name="android:editTextColor">#ffffff</item>
+        <item name="android:tint">#ffffff</item>
+        <item name="iconifiedByDefault">false</item>
+        <item name="queryBackground">@null</item>
+        <item name="submitBackground">@null</item>
+    </style>
 </resources>

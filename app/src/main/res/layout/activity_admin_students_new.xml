@@ -41,6 +41,17 @@
             android:textStyle="bold"
             android:layout_marginStart="16dp"/>
 
+        <ImageView
+            android:id="@+id/btnSearch"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@android:drawable/ic_menu_search"
+            app:tint="#ffffff"
+            android:padding="4dp"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:focusable="true"/>
+
         <Spinner
             android:id="@+id/spinnerFilter"
             android:layout_width="wrap_content"
@@ -50,6 +61,27 @@
             android:padding="8dp" />
 
     </LinearLayout>
+
+    <!-- Search View Container (Initially Hidden) -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/searchContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        app:cardCornerRadius="12dp"
+        app:cardBackgroundColor="#1e293b"
+        app:cardElevation="4dp">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/AppSearchView"
+            app:iconifiedByDefault="false"
+            app:queryHint="Search students..." />
+    </androidx.cardview.widget.CardView>
 
     <!-- Students List -->
     <androidx.recyclerview.widget.RecyclerView

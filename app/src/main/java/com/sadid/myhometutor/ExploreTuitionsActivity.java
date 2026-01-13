@@ -6,10 +6,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,6 +35,7 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     private Button btnFilter, btnRefresh;
+    private SearchView searchView;
     private BottomSheetDialog filterDialog;
 
     // Filter spinners (from dialog)
@@ -56,13 +57,35 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
         setupRecyclerView();
         setupListeners();
         setupFilterDialog();
+        setupSearch();
         loadTuitionPosts();
+    }
+
+    private void setupSearch() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (adapter != null) {
+                    adapter.getFilter().filter(query);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (adapter != null) {
+                    adapter.getFilter().filter(newText);
+                }
+                return false;
+            }
+        });
     }
 
     private void initializeViews() {
         rvTuitionPosts = findViewById(R.id.rvTuitionPosts);
         btnFilter = findViewById(R.id.btnFilter);
         btnRefresh = findViewById(R.id.btnRefresh);
+        searchView = findViewById(R.id.searchView);
     }
 
     private void setupFilterDialog() {

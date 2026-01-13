@@ -4,6 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,25 +14,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sadid.myhometutor.R;
 import com.sadid.myhometutor.TuitionApplication;
+import com.sadid.myhometutor.TuitionPost;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * AdminApplicationAdapter - For admin to review student-approved applications
- * 
- * Shows:
- * - Student info (name)
- * - Tutor info (name, university)
- * - Post info (subject, class)
- * - Applied date
- * - Actions: View Student, View Tutor, View Post, Approve, Reject
- */
-public class AdminApplicationAdapter extends RecyclerView.Adapter<AdminApplicationAdapter.ViewHolder> {
+public class AdminApplicationAdapter extends RecyclerView.Adapter<AdminApplicationAdapter.ViewHolder> implements Filterable {
 
     private List<TuitionApplication> applicationList;
+    private List<TuitionApplication> applicationListFull;
     private OnAdminApplicationActionListener listener;
     private FirebaseFirestore db;
 
@@ -45,8 +40,53 @@ public class AdminApplicationAdapter extends RecyclerView.Adapter<AdminApplicati
     public AdminApplicationAdapter(List<TuitionApplication> applicationList, 
                                    OnAdminApplicationActionListener listener) {
         this.applicationList = applicationList;
+        this.applicationListFull = new ArrayList<>(applicationList);
         this.listener = listener;
         this.db = FirebaseFirestore.getInstance();
+    }
+    
+    public void updateList(List<TuitionApplication> newList) {
+        this.applicationList = newList;
+        this.applicationListFull = new ArrayList<>(newList);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                List<TuitionApplication> filteredList = new ArrayList<>();
+                if (constraint == null || constraint.length() == 0) {
+                    filteredList.addAll(applicationListFull);
+                } else {
+                    String filterPattern = constraint.toString().toLowerCase().trim();
+                    for (TuitionApplication item : applicationListFull) {
+                        // Match against Student Name, Tutor Name, Post Subject
+                        if (contains(item.getStudentName(), filterPattern) ||
+                            contains(item.getTutorName(), filterPattern) ||
+                            (item.getTuitionPost() != null && contains(item.getTuitionPost().getSubject(), filterPattern)) ||
+                            (item.getTuitionPost() != null && contains(item.getTuitionPost().getGrade(), filterPattern))) {
+                            filteredList.add(item);
+                        }
+                    }
+                }
+                FilterResults results = new FilterResults();
+                results.values = filteredList;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                applicationList.clear();
+                applicationList.addAll((List) results.values);
+                notifyDataSetChanged();
+            }
+        };
+    }
+    
+    private boolean contains(String text, String pattern) {
+        return text != null && text.toLowerCase().contains(pattern);
     }
 
     @NonNull
@@ -62,13 +102,30 @@ public class AdminApplicationAdapter extends RecyclerView.Adapter<AdminApplicati
         TuitionApplication application = applicationList.get(position);
         
         // Load student name
-        loadUserName(application.getStudentId(), holder.tvStudentName, "Student");
+        if (application.getStudentName() != null) {
+            holder.tvStudentName.setText(application.getStudentName());
+        } else {
+            loadUserName(application, holder.tvStudentName, "Student");
+        }
         
         // Load tutor name and info
-        loadTutorInfo(application.getTutorId(), holder.tvTutorName, holder.tvTutorInfo);
+        if (application.getTutorName() != null) {
+            holder.tvTutorName.setText(application.getTutorName());
+            holder.tvTutorInfo.setText(application.getTutorUniversity() != null ? 
+                    application.getTutorUniversity() : "Info not available");
+        } else {
+            loadTutorInfo(application, holder.tvTutorName, holder.tvTutorInfo);
+        }
         
         // Load post info
-        loadPostInfo(application.getPostId(), holder.tvPostInfo);
+        if (application.getTuitionPost() != null) {
+             TuitionPost post = application.getTuitionPost();
+             holder.tvPostInfo.setText(String.format("%s • %s", 
+                     post.getSubject(), 
+                     post.getGrade() != null ? post.getGrade() : "N/A"));
+        } else {
+            loadPostInfo(application, holder.tvPostInfo);
+        }
         
         // Set applied date
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault());
@@ -100,20 +157,23 @@ public class AdminApplicationAdapter extends RecyclerView.Adapter<AdminApplicati
         });
     }
     
-    private void loadUserName(String userId, TextView textView, String defaultText) {
-        if (userId == null) {
+    private void loadUserName(TuitionApplication application, TextView textView, String defaultText) {
+        if (application.getStudentId() == null) {
             textView.setText(defaultText);
             return;
         }
         
         textView.setText("Loading...");
-        db.collection("users").document(userId)
+        db.collection("users").document(application.getStudentId())
             .get()
             .addOnSuccessListener(doc -> {
                 if (doc.exists()) {
                     String name = doc.getString("name");
                     if (name == null) name = doc.getString("fullName");
-                    textView.setText(name != null ? name : "Unknown");
+                    String finalName = name != null ? name : "Unknown";
+                    application.setStudentName(finalName);
+                    // Update field directly to avoid full rebind flicker
+                    textView.setText(finalName); 
                 } else {
                     textView.setText("Unknown");
                 }
@@ -121,31 +181,36 @@ public class AdminApplicationAdapter extends RecyclerView.Adapter<AdminApplicati
             .addOnFailureListener(e -> textView.setText("Unknown"));
     }
     
-    private void loadTutorInfo(String tutorId, TextView nameView, TextView infoView) {
-        if (tutorId == null) {
+    private void loadTutorInfo(TuitionApplication application, TextView nameView, TextView infoView) {
+        if (application.getTutorId() == null) {
             nameView.setText("Unknown Tutor");
             infoView.setText("Info not available");
             return;
         }
         
         nameView.setText("Loading...");
-        db.collection("users").document(tutorId)
+        db.collection("users").document(application.getTutorId())
             .get()
             .addOnSuccessListener(doc -> {
                 if (doc.exists()) {
                     String name = doc.getString("name");
                     if (name == null) name = doc.getString("fullName");
-                    nameView.setText(name != null ? name : "Unknown Tutor");
+                    String finalName = name != null ? name : "Unknown Tutor";
+                    application.setTutorName(finalName);
+                    nameView.setText(finalName);
                     
                     String university = doc.getString("universityName");
                     String department = doc.getString("department");
+                    String infoText;
                     if (university != null && department != null) {
-                        infoView.setText(String.format("%s, %s", department, university));
+                        infoText = String.format("%s, %s", department, university);
                     } else if (university != null) {
-                        infoView.setText(university);
+                        infoText = university;
                     } else {
-                        infoView.setText("Education info not available");
+                        infoText = "Education info not available";
                     }
+                    application.setTutorUniversity(infoText);
+                    infoView.setText(infoText);
                 } else {
                     nameView.setText("Unknown Tutor");
                     infoView.setText("Info not available");
@@ -157,25 +222,32 @@ public class AdminApplicationAdapter extends RecyclerView.Adapter<AdminApplicati
             });
     }
     
-    private void loadPostInfo(String postId, TextView textView) {
-        if (postId == null) {
+    private void loadPostInfo(TuitionApplication application, TextView textView) {
+        if (application.getPostId() == null) {
             textView.setText("Post not found");
             return;
         }
         
         textView.setText("Loading...");
-        db.collection("tuition_posts").document(postId)
+        db.collection("tuition_posts").document(application.getPostId())
             .get()
             .addOnSuccessListener(doc -> {
                 if (doc.exists()) {
-                    String subject = doc.getString("subject");
-                    String grade = doc.getString("grade");
-                    if (grade == null) grade = doc.getString("class");
-                    
-                    if (subject != null && grade != null) {
-                        textView.setText(String.format("%s • %s", subject, grade));
-                    } else if (subject != null) {
-                        textView.setText(subject);
+                    TuitionPost post = doc.toObject(TuitionPost.class);
+                    if (post != null) {
+                        post.setId(doc.getId());
+                        application.setTuitionPost(post);
+                        
+                        String subject = post.getSubject();
+                        String grade = post.getGrade() != null ? post.getGrade() : "N/A";
+                        
+                        if (subject != null && grade != null) {
+                            textView.setText(String.format("%s • %s", subject, grade));
+                        } else if (subject != null) {
+                            textView.setText(subject);
+                        } else {
+                            textView.setText("Post details unavailable");
+                        }
                     } else {
                         textView.setText("Post details unavailable");
                     }

@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +26,7 @@ public class MyApplicationsActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private Button btnRefresh;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,7 @@ public class MyApplicationsActivity extends AppCompatActivity {
 
         initializeViews();
         setupRecyclerView();
+        setupSearch();
         setupListeners();
         loadMyApplications();
     }
@@ -43,6 +46,7 @@ public class MyApplicationsActivity extends AppCompatActivity {
     private void initializeViews() {
         rvMyApplications = findViewById(R.id.rvMyApplications);
         btnRefresh = findViewById(R.id.btnRefresh);
+        searchView = findViewById(R.id.searchView);
     }
 
     private void setupRecyclerView() {
@@ -50,6 +54,23 @@ public class MyApplicationsActivity extends AppCompatActivity {
         applicationList = new ArrayList<>();
         adapter = new MyApplicationAdapter(applicationList, this::viewStudentProfile);
         rvMyApplications.setAdapter(adapter);
+    }
+
+    private void setupSearch() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (adapter != null) {
+                    adapter.getFilter().filter(newText);
+                }
+                return true;
+            }
+        });
     }
 
     private void setupListeners() {
@@ -66,6 +87,9 @@ public class MyApplicationsActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     applicationList.clear();
+                    // Clear adapter initially to reflect reloading state
+                    adapter.updateList(new ArrayList<>());
+                    
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         TuitionApplication application = document.toObject(TuitionApplication.class);
                         if (application != null) {
@@ -88,7 +112,13 @@ public class MyApplicationsActivity extends AppCompatActivity {
                         post.setId(documentSnapshot.getId());
                         application.setTuitionPost(post);
                         applicationList.add(application);
-                        adapter.notifyDataSetChanged();
+                        
+                        adapter.updateList(new ArrayList<>(applicationList));
+                        
+                        // Re-apply filter if search is active
+                        if (searchView != null && !searchView.getQuery().toString().isEmpty()) {
+                            adapter.getFilter().filter(searchView.getQuery());
+                        }
                     }
                 });
     }

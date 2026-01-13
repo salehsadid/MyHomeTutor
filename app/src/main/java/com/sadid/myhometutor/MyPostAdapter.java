@@ -5,19 +5,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * MyPostAdapter for MyPostsActivity
  * Displays student's own tuition posts with View Applications and Delete actions
  */
-public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.ViewHolder> {
+public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.ViewHolder> implements Filterable {
 
     private List<TuitionPost> postList;
+    private List<TuitionPost> postListFull; // Original copy
     private OnDeleteClickListener onDeleteClickListener;
     private OnViewApplicationsClickListener onViewApplicationsClickListener;
 
@@ -31,19 +35,58 @@ public class MyPostAdapter extends RecyclerView.Adapter<MyPostAdapter.ViewHolder
 
     public MyPostAdapter(List<TuitionPost> postList, OnDeleteClickListener onDeleteClickListener) {
         this.postList = postList;
+        this.postListFull = new ArrayList<>(postList);
         this.onDeleteClickListener = onDeleteClickListener;
     }
     
     public MyPostAdapter(List<TuitionPost> postList, OnDeleteClickListener onDeleteClickListener, 
                          OnViewApplicationsClickListener onViewApplicationsClickListener) {
         this.postList = postList;
+        this.postListFull = new ArrayList<>(postList);
         this.onDeleteClickListener = onDeleteClickListener;
         this.onViewApplicationsClickListener = onViewApplicationsClickListener;
     }
 
     public void updateList(List<TuitionPost> newList) {
         this.postList = newList;
+        this.postListFull = new ArrayList<>(newList);
         notifyDataSetChanged();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                List<TuitionPost> filteredList = new ArrayList<>();
+                if (constraint == null || constraint.length() == 0) {
+                    filteredList.addAll(postListFull);
+                } else {
+                    String filterPattern = constraint.toString().toLowerCase().trim();
+                    for (TuitionPost item : postListFull) {
+                        if ((item.getSubject() != null && item.getSubject().toLowerCase().contains(filterPattern)) ||
+                            (item.getGrade() != null && item.getGrade().toLowerCase().contains(filterPattern)) ||
+                            (item.getDistrict() != null && item.getDistrict().toLowerCase().contains(filterPattern)) ||
+                            (item.getArea() != null && item.getArea().toLowerCase().contains(filterPattern)) || 
+                            (item.getStatus() != null && item.getStatus().toLowerCase().contains(filterPattern))) {
+                            filteredList.add(item);
+                        }
+                    }
+                }
+                FilterResults results = new FilterResults();
+                results.values = filteredList;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                postList.clear();
+                if (results.values != null) {
+                    postList.addAll((List) results.values);
+                }
+                notifyDataSetChanged();
+            }
+        };
     }
 
     @NonNull

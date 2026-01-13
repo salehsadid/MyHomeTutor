@@ -108,8 +108,8 @@ public class ViewStudentProfileActivity extends AppCompatActivity {
             currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
 
-        setupListeners();
         initializeViews();
+        setupListeners();
         loadStudentProfile();
     }
 

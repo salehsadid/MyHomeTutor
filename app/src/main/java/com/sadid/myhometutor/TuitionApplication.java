@@ -1,5 +1,7 @@
 package com.sadid.myhometutor;
 
+import com.google.firebase.firestore.Exclude;
+
 public class TuitionApplication {
     private String applicationId;
     private String tutorId;
@@ -8,8 +10,22 @@ public class TuitionApplication {
     private String status;
     private long timestamp;
     private TuitionPost tuitionPost;
+    
+    // Transient fields for Admin Search
+    private String studentName;
+    private String tutorName;
+    private String tutorUniversity;
 
     public TuitionApplication() {}
+
+    @Exclude public String getStudentName() { return studentName; }
+    @Exclude public void setStudentName(String studentName) { this.studentName = studentName; }
+    
+    @Exclude public String getTutorName() { return tutorName; }
+    @Exclude public void setTutorName(String tutorName) { this.tutorName = tutorName; }
+    
+    @Exclude public String getTutorUniversity() { return tutorUniversity; }
+    @Exclude public void setTutorUniversity(String tutorUniversity) { this.tutorUniversity = tutorUniversity; }
 
     public String getApplicationId() { return applicationId; }
     public void setApplicationId(String applicationId) { this.applicationId = applicationId; }

@@ -36,6 +36,17 @@
             android:textStyle="bold" />
     </LinearLayout>
 
+    <!-- Search Bar -->
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:background="@drawable/bg_search_rounded"
+        app:iconifiedByDefault="false"
+        app:queryHint="Search applications..."
+        app:theme="@style/AppSearchView" />
+
     <!-- My Applications List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMyApplications"

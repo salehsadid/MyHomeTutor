@@ -5,19 +5,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ConnectionsAdapter extends RecyclerView.Adapter<ConnectionsAdapter.ConnectionViewHolder> {
+public class ConnectionsAdapter extends RecyclerView.Adapter<ConnectionsAdapter.ConnectionViewHolder> implements Filterable {
 
     private static final String TAG = "ConnectionsAdapter";
     private List<Connection> connections;
+    private List<Connection> connectionsFull;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault());
     
     // Interface for button clicks (can be implemented later)
@@ -31,10 +35,51 @@ public class ConnectionsAdapter extends RecyclerView.Adapter<ConnectionsAdapter.
 
     public ConnectionsAdapter(List<Connection> connections) {
         this.connections = connections;
+        this.connectionsFull = new ArrayList<>(connections);
+    }
+    
+    public void updateList(List<Connection> newList) {
+        this.connections = newList;
+        this.connectionsFull = new ArrayList<>(newList);
+        notifyDataSetChanged();
     }
     
     public void setOnConnectionActionListener(OnConnectionActionListener listener) {
         this.listener = listener;
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                List<Connection> filteredList = new ArrayList<>();
+                if (constraint == null || constraint.length() == 0) {
+                    filteredList.addAll(connectionsFull);
+                } else {
+                    String filterPattern = constraint.toString().toLowerCase().trim();
+                    for (Connection item : connectionsFull) {
+                        if ((item.getStudentName() != null && item.getStudentName().toLowerCase().contains(filterPattern)) ||
+                            (item.getTutorName() != null && item.getTutorName().toLowerCase().contains(filterPattern)) ||
+                            (item.getSubject() != null && item.getSubject().toLowerCase().contains(filterPattern))) {
+                            filteredList.add(item);
+                        }
+                    }
+                }
+                FilterResults results = new FilterResults();
+                results.values = filteredList;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                connections.clear();
+                if (results.values != null) {
+                    connections.addAll((List) results.values);
+                }
+                notifyDataSetChanged();
+            }
+        };
     }
 
     @NonNull

@@ -7,12 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,10 +30,11 @@ import java.util.List;
  * - Medium, Type, Days, Timing, Salary
  * - General location (district/area only, not detailed address)
  */
-public class TuitionPostAdapter extends RecyclerView.Adapter<TuitionPostAdapter.ViewHolder> {
+public class TuitionPostAdapter extends RecyclerView.Adapter<TuitionPostAdapter.ViewHolder> implements Filterable {
 
     private Context context;
     private List<TuitionPost> postList;
+    private List<TuitionPost> postListFull; // Copy of original list
     private OnApplyClickListener onApplyClickListener;
     private FirebaseFirestore db;
 
@@ -41,13 +45,55 @@ public class TuitionPostAdapter extends RecyclerView.Adapter<TuitionPostAdapter.
     public TuitionPostAdapter(Context context, List<TuitionPost> postList, OnApplyClickListener onApplyClickListener) {
         this.context = context;
         this.postList = postList;
+        this.postListFull = new ArrayList<>(postList); // Initialize copy
         this.onApplyClickListener = onApplyClickListener;
         this.db = FirebaseFirestore.getInstance();
     }
 
     public void updateList(List<TuitionPost> newList) {
         this.postList = newList;
+        this.postListFull = new ArrayList<>(newList); // Update copy
         notifyDataSetChanged();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                List<TuitionPost> filteredList = new ArrayList<>();
+
+                if (constraint == null || constraint.length() == 0) {
+                    filteredList.addAll(postListFull);
+                } else {
+                    String filterPattern = constraint.toString().toLowerCase().trim();
+
+                    for (TuitionPost item : postListFull) {
+                        // Filter by Subject, Class (Grade), Location (Area/District)
+                        if ((item.getSubject() != null && item.getSubject().toLowerCase().contains(filterPattern)) ||
+                            (item.getGrade() != null && item.getGrade().toLowerCase().contains(filterPattern)) ||
+                            (item.getDistrict() != null && item.getDistrict().toLowerCase().contains(filterPattern)) ||
+                            (item.getArea() != null && item.getArea().toLowerCase().contains(filterPattern)) ||
+                            (item.getMedium() != null && item.getMedium().toLowerCase().contains(filterPattern))) {
+                            filteredList.add(item);
+                        }
+                    }
+                }
+
+                FilterResults results = new FilterResults();
+                results.values = filteredList;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                postList.clear();
+                if (results.values != null) {
+                    postList.addAll((List) results.values);
+                }
+                notifyDataSetChanged();
+            }
+        };
     }
 
     @NonNull

@@ -12,6 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,8 +33,10 @@ public class AdminTutorsActivity extends AppCompatActivity {
     
     private RecyclerView rvTutors;
     private TextView tvEmptyState;
-    private ImageView btnBack;
+    private ImageView btnBack, btnSearch;
     private Spinner spinnerFilter;
+    private CardView searchContainer;
+    private SearchView searchView;
     private AdminUserAdapter adapter;
     private FirebaseFirestore db;
     private UserFilterRepository userFilterRepo;
@@ -62,8 +66,37 @@ public class AdminTutorsActivity extends AppCompatActivity {
         tvEmptyState = findViewById(R.id.tvEmptyState);
         btnBack = findViewById(R.id.btnBack);
         spinnerFilter = findViewById(R.id.spinnerFilter);
+        
+        btnSearch = findViewById(R.id.btnSearch);
+        searchContainer = findViewById(R.id.searchContainer);
+        searchView = findViewById(R.id.searchView);
 
         btnBack.setOnClickListener(v -> finish());
+        
+        btnSearch.setOnClickListener(v -> {
+            if (searchContainer.getVisibility() == View.VISIBLE) {
+                searchContainer.setVisibility(View.GONE);
+                searchView.setQuery("", false);
+            } else {
+                searchContainer.setVisibility(View.VISIBLE);
+                searchView.setIconified(false);
+            }
+        });
+        
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (adapter != null) {
+                    adapter.getFilter().filter(newText);
+                }
+                return true;
+            }
+        });
     }
 
     private void setupSpinner() {
@@ -179,7 +212,11 @@ public class AdminTutorsActivity extends AppCompatActivity {
             rvTutors.setVisibility(View.VISIBLE);
         }
         
-        adapter.notifyDataSetChanged();
+        adapter.updateList(new ArrayList<>(tutorsList));
+        
+        if (searchView != null && !searchView.getQuery().toString().isEmpty()) {
+            adapter.getFilter().filter(searchView.getQuery());
+        }
     }
 
     private void showEmptyState() {

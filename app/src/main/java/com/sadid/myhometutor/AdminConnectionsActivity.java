@@ -9,6 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +28,9 @@ public class AdminConnectionsActivity extends AppCompatActivity {
     
     private RecyclerView rvConnections;
     private TextView tvEmptyState;
-    private ImageView btnBack;
+    private ImageView btnBack, btnSearch;
+    private CardView searchContainer;
+    private SearchView searchView;
     private ConnectionsAdapter adapter;
     private List<Connection> connectionsList;
     private FirebaseFirestore db;
@@ -43,6 +47,7 @@ public class AdminConnectionsActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         connectionRepo = new ConnectionRepository();
+        connectionsList = new ArrayList<>(); // Ensure this is initialized!
         
         initializeViews();
         setupRecyclerView();
@@ -52,8 +57,37 @@ public class AdminConnectionsActivity extends AppCompatActivity {
         rvConnections = findViewById(R.id.rvConnections);
         tvEmptyState = findViewById(R.id.tvEmptyState);
         btnBack = findViewById(R.id.btnBack);
+        
+        btnSearch = findViewById(R.id.btnSearch);
+        searchContainer = findViewById(R.id.searchContainer);
+        searchView = findViewById(R.id.searchView);
 
         btnBack.setOnClickListener(v -> finish());
+        
+        btnSearch.setOnClickListener(v -> {
+            if (searchContainer.getVisibility() == View.VISIBLE) {
+                searchContainer.setVisibility(View.GONE);
+                searchView.setQuery("", false);
+            } else {
+                searchContainer.setVisibility(View.VISIBLE);
+                searchView.setIconified(false);
+            }
+        });
+        
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (adapter != null) {
+                    adapter.getFilter().filter(newText);
+                }
+                return true;
+            }
+        });
     }
 
     private void setupRecyclerView() {
@@ -170,7 +204,12 @@ public class AdminConnectionsActivity extends AppCompatActivity {
         } else {
             tvEmptyState.setVisibility(View.GONE);
             rvConnections.setVisibility(View.VISIBLE);
-            adapter.notifyDataSetChanged();
+        }
+        
+        adapter.updateList(new ArrayList<>(connectionsList));
+        
+        if (searchView != null && !searchView.getQuery().toString().isEmpty()) {
+            adapter.getFilter().filter(searchView.getQuery());
         }
     }
 
@@ -194,7 +233,11 @@ public class AdminConnectionsActivity extends AppCompatActivity {
                                 name = documentSnapshot.getString("fullName");
                             }
                             connection.setStudentName(name);
-                            adapter.notifyDataSetChanged();
+                            if (searchView != null && !searchView.getQuery().toString().isEmpty()) {
+                                adapter.getFilter().filter(searchView.getQuery());
+                            } else {
+                                adapter.notifyDataSetChanged();
+                            }
                         }
                     })
                     .addOnFailureListener(e -> {
@@ -213,7 +256,11 @@ public class AdminConnectionsActivity extends AppCompatActivity {
                                 name = documentSnapshot.getString("fullName");
                             }
                             connection.setTutorName(name);
-                            adapter.notifyDataSetChanged();
+                            if (searchView != null && !searchView.getQuery().toString().isEmpty()) {
+                                adapter.getFilter().filter(searchView.getQuery());
+                            } else {
+                                adapter.notifyDataSetChanged();
+                            }
                         }
                     })
                     .addOnFailureListener(e -> {
@@ -228,7 +275,11 @@ public class AdminConnectionsActivity extends AppCompatActivity {
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             connection.setSubject(documentSnapshot.getString("subject"));
-                            adapter.notifyDataSetChanged();
+                            if (searchView != null && !searchView.getQuery().toString().isEmpty()) {
+                                adapter.getFilter().filter(searchView.getQuery());
+                            } else {
+                                adapter.notifyDataSetChanged();
+                            }
                         }
                     })
                     .addOnFailureListener(e -> {

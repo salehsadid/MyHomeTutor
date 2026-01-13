@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,10 +23,11 @@ import java.util.Locale;
 /**
  * Adapter for displaying admin reports list
  */
-public class AdminReportsAdapter extends RecyclerView.Adapter<AdminReportsAdapter.ReportViewHolder> {
+public class AdminReportsAdapter extends RecyclerView.Adapter<AdminReportsAdapter.ReportViewHolder> implements Filterable {
     
     private final Context context;
     private List<Report> reports;
+    private List<Report> reportsFull;
     private OnReportActionListener listener;
     
     public interface OnReportActionListener {
@@ -36,15 +39,59 @@ public class AdminReportsAdapter extends RecyclerView.Adapter<AdminReportsAdapte
     public AdminReportsAdapter(Context context) {
         this.context = context;
         this.reports = new ArrayList<>();
+        this.reportsFull = new ArrayList<>();
     }
     
-    public void setReports(List<Report> reports) {
-        this.reports = reports;
+    public void updateList(List<Report> reports) {
+        this.reports = new ArrayList<>(reports);
+        this.reportsFull = new ArrayList<>(reports);
         notifyDataSetChanged();
+    }
+
+    public void setReports(List<Report> reports) {
+        updateList(reports);
     }
     
     public void setOnReportActionListener(OnReportActionListener listener) {
         this.listener = listener;
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                List<Report> filteredList = new ArrayList<>();
+                if (constraint == null || constraint.length() == 0) {
+                    filteredList.addAll(reportsFull);
+                } else {
+                    String filterPattern = constraint.toString().toLowerCase().trim();
+                    for (Report item : reportsFull) {
+                        if (contains(item.getReporterName(), filterPattern) ||
+                            contains(item.getReportedUserName(), filterPattern) ||
+                            contains(item.getReportType(), filterPattern) ||
+                            contains(item.getReportMessage(), filterPattern) ||
+                            contains(item.getReason(), filterPattern)) {
+                            filteredList.add(item);
+                        }
+                    }
+                }
+                FilterResults results = new FilterResults();
+                results.values = filteredList;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                reports.clear();
+                reports.addAll((List) results.values);
+                notifyDataSetChanged();
+            }
+        };
+    }
+    
+    private boolean contains(String text, String pattern) {
+        return text != null && text.toLowerCase().contains(pattern);
     }
     
     @NonNull

@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,12 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sadid.myhometutor.R;
 import com.sadid.myhometutor.models.PendingUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.UserViewHolder> {
+public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.UserViewHolder> implements Filterable {
 
     private Context context;
     private List<PendingUser> usersList;
+    private List<PendingUser> usersListFull;
     private OnUserClickListener listener;
 
     public interface OnUserClickListener {
@@ -28,7 +32,52 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
     public AdminUserAdapter(Context context, List<PendingUser> usersList, OnUserClickListener listener) {
         this.context = context;
         this.usersList = usersList;
+        this.usersListFull = new ArrayList<>(usersList);
         this.listener = listener;
+    }
+
+    public void updateList(List<PendingUser> newList) {
+        this.usersList = newList;
+        this.usersListFull = new ArrayList<>(newList);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                List<PendingUser> filteredList = new ArrayList<>();
+
+                if (constraint == null || constraint.length() == 0) {
+                    filteredList.addAll(usersListFull);
+                } else {
+                    String filterPattern = constraint.toString().toLowerCase().trim();
+
+                    for (PendingUser item : usersListFull) {
+                        if ((item.getName() != null && item.getName().toLowerCase().contains(filterPattern)) ||
+                            (item.getEmail() != null && item.getEmail().toLowerCase().contains(filterPattern)) ||
+                            (item.getPhone() != null && item.getPhone().toLowerCase().contains(filterPattern)) ||
+                            (item.getStatus() != null && item.getStatus().toLowerCase().contains(filterPattern))) {
+                            filteredList.add(item);
+                        }
+                    }
+                }
+
+                FilterResults results = new FilterResults();
+                results.values = filteredList;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                usersList.clear();
+                if (results.values != null) {
+                    usersList.addAll((List) results.values);
+                }
+                notifyDataSetChanged();
+            }
+        };
     }
 
     @NonNull

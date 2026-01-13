@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +34,7 @@ public class MyPostsActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private Button btnRefresh;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class MyPostsActivity extends AppCompatActivity {
 
         initializeViews();
         setupRecyclerView();
+        setupSearch();
         setupListeners();
         loadMyPosts();
     }
@@ -51,6 +54,27 @@ public class MyPostsActivity extends AppCompatActivity {
     private void initializeViews() {
         rvMyPosts = findViewById(R.id.rvMyPosts);
         btnRefresh = findViewById(R.id.btnRefresh);
+        searchView = findViewById(R.id.searchView);
+    }
+    
+    private void setupSearch() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (adapter != null) {
+                    adapter.getFilter().filter(query);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (adapter != null) {
+                    adapter.getFilter().filter(newText);
+                }
+                return false;
+            }
+        });
     }
 
     private void setupRecyclerView() {
@@ -81,7 +105,7 @@ public class MyPostsActivity extends AppCompatActivity {
                             postList.add(post);
                         }
                     }
-                    adapter.notifyDataSetChanged();
+                    adapter.updateList(postList); // Update original list copy for filtering
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(MyPostsActivity.this, "Error loading posts: " + e.getMessage(), Toast.LENGTH_SHORT).show();
