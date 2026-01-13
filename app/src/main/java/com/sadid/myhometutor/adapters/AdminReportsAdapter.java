@@ -58,11 +58,31 @@ public class AdminReportsAdapter extends RecyclerView.Adapter<AdminReportsAdapte
     public void onBindViewHolder(@NonNull ReportViewHolder holder, int position) {
         Report report = reports.get(position);
         
-        // Report details
-        holder.tvReporterName.setText("Reporter: " + report.getReporterName());
-        holder.tvReportedUser.setText("Reported: " + report.getReportedUserName());
+        // Report details with user types
+        String reporterInfo = "Reporter: " + report.getReporterName();
+        if (report.getReporterType() != null && !report.getReporterType().isEmpty()) {
+            reporterInfo += " (" + report.getReporterType() + ")";
+        }
+        holder.tvReporterName.setText(reporterInfo);
+        
+        String reportedInfo = "Reported: " + report.getReportedUserName();
+        if (report.getReportedUserType() != null && !report.getReportedUserType().isEmpty()) {
+            reportedInfo += " (" + report.getReportedUserType() + ")";
+        }
+        holder.tvReportedUser.setText(reportedInfo);
+        
         holder.tvReportType.setText("Type: " + report.getReportType());
-        holder.tvReason.setText("Reason: " + report.getReason());
+        
+        // Show report message if available, otherwise show reason
+        String reasonText = "Reason: ";
+        if (report.getReportMessage() != null && !report.getReportMessage().isEmpty()) {
+            reasonText += report.getReportMessage();
+        } else if (report.getReason() != null) {
+            reasonText += report.getReason();
+        } else {
+            reasonText += "No details provided";
+        }
+        holder.tvReason.setText(reasonText);
         
         // Format timestamp
         if (report.getTimestamp() != null) {

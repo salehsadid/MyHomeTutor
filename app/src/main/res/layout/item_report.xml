@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    app:cardBackgroundColor="#16213e"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/card_background"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Type: User"
-                android:textColor="@color/black"
+                android:textColor="#ffffff"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Reporter: John Doe"
-            android:textColor="@color/black"
+            android:textColor="#94a3b8"
             android:textSize="14sp" />
 
         <!-- Reported user info -->
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Reported: Jane Smith"
-            android:textColor="@color/black"
+            android:textColor="#ffffff"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -76,7 +76,7 @@
             android:ellipsize="end"
             android:maxLines="3"
             android:text="Reason: Inappropriate behavior"
-            android:textColor="@color/black"
+            android:textColor="#ffffff"
             android:textSize="13sp" />
 
         <!-- Timestamp -->
@@ -86,7 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Jan 15, 2024 03:45 PM"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="#94a3b8"
             android:textSize="12sp" />
 
         <!-- Action buttons -->
@@ -102,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/button_blue_rounded"
+                android:backgroundTint="#00E5FF"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:text="View User"
@@ -114,7 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/button_green_rounded"
+                android:backgroundTint="#3CFF06"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:text="Resolve"
@@ -125,7 +125,7 @@
                 android:id="@+id/btnDelete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_red_rounded"
+                android:backgroundTint="#FF0000"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:text="Delete"

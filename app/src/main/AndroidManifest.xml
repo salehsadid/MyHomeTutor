@@ -80,6 +80,9 @@
         <activity android:name=".AdminBannedUsersActivity" />
         <activity android:name=".AdminApplicationsActivity" />
         <activity android:name=".ViewApplicationsActivity" />
+        <!-- Role-based Profile Viewing - SECURITY: Prevents privacy leaks -->
+        <activity android:name=".ViewTutorProfileActivity" />
+        <activity android:name=".ViewStudentProfileActivity" />
         <!-- UCrop Library Activity - Required by UCrop library -->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"

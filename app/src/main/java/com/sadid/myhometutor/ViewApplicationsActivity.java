@@ -219,9 +219,12 @@ public class ViewApplicationsActivity extends AppCompatActivity implements Appli
     @Override
     public void onViewProfileClick(TuitionApplication application) {
         // Student can view tutor profile to make decision
-        android.content.Intent intent = new android.content.Intent(this, AdminViewUserActivity.class);
-        intent.putExtra("userId", application.getTutorId());
-        intent.putExtra("userType", "Tutor");
+        // Use PUBLIC mode since no connection exists yet
+        android.content.Intent intent = new android.content.Intent(this, ViewTutorProfileActivity.class);
+        intent.putExtra(ProfileViewMode.EXTRA_USER_ID, application.getTutorId());
+        intent.putExtra(ProfileViewMode.EXTRA_VIEW_MODE, ProfileViewMode.VIEW_MODE_PUBLIC);
+        intent.putExtra(ProfileViewMode.EXTRA_CURRENT_USER_ID, 
+                com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid());
         startActivity(intent);
     }
 }

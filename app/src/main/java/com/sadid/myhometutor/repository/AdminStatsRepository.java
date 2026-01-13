@@ -17,8 +17,10 @@ public class AdminStatsRepository {
     private ListenerRegistration usersListener;
     private ListenerRegistration postsListener;
     private ListenerRegistration applicationsListener;
+    private ListenerRegistration reportsListener;
     
     public interface StatsListener {
+
         void onStatsUpdated(DashboardStats stats);
         void onError(Exception e);
     }
@@ -34,7 +36,8 @@ public class AdminStatsRepository {
         return Tasks.whenAllSuccess(
             db.collection("users").get(),
             db.collection("tuition_posts").get(),
-            db.collection("applications").get()
+            db.collection("applications").get(),
+            db.collection("reports").get()
         ).continueWith(task -> {
             if (!task.isSuccessful()) {
                 throw task.getException();
@@ -54,6 +57,10 @@ public class AdminStatsRepository {
             var appsSnapshot = (com.google.firebase.firestore.QuerySnapshot) task.getResult().get(2);
             calculateApplicationStats(appsSnapshot, stats);
             
+            // Calculate report statistics
+            var reportsSnapshot = (com.google.firebase.firestore.QuerySnapshot) task.getResult().get(3);
+            calculateReportStats(reportsSnapshot, stats);
+            
             return stats;
         });
     }
@@ -66,6 +73,7 @@ public class AdminStatsRepository {
         final boolean[] usersLoaded = {false};
         final boolean[] postsLoaded = {false};
         final boolean[] appsLoaded = {false};
+        final boolean[] reportsLoaded = {false};
         
         // Listen to users collection
         usersListener = db.collection("users")
@@ -77,7 +85,7 @@ public class AdminStatsRepository {
                 if (snapshot != null) {
                     calculateUserStats(snapshot, stats);
                     usersLoaded[0] = true;
-                    if (postsLoaded[0] && appsLoaded[0]) {
+                    if (postsLoaded[0] && appsLoaded[0] && reportsLoaded[0]) {
                         listener.onStatsUpdated(stats);
                     }
                 }
@@ -93,7 +101,7 @@ public class AdminStatsRepository {
                 if (snapshot != null) {
                     calculatePostStats(snapshot, stats);
                     postsLoaded[0] = true;
-                    if (usersLoaded[0] && appsLoaded[0]) {
+                    if (usersLoaded[0] && appsLoaded[0] && reportsLoaded[0]) {
                         listener.onStatsUpdated(stats);
                     }
                 }
@@ -109,7 +117,23 @@ public class AdminStatsRepository {
                 if (snapshot != null) {
                     calculateApplicationStats(snapshot, stats);
                     appsLoaded[0] = true;
-                    if (usersLoaded[0] && postsLoaded[0]) {
+                    if (usersLoaded[0] && postsLoaded[0] && reportsLoaded[0]) {
+                        listener.onStatsUpdated(stats);
+                    }
+                }
+            });
+            
+        // Listen to reports collection
+        reportsListener = db.collection("reports")
+            .addSnapshotListener((snapshot, error) -> {
+                if (error != null) {
+                    listener.onError(error);
+                    return;
+                }
+                if (snapshot != null) {
+                    calculateReportStats(snapshot, stats);
+                    reportsLoaded[0] = true;
+                    if (usersLoaded[0] && postsLoaded[0] && appsLoaded[0]) {
                         listener.onStatsUpdated(stats);
                     }
                 }
@@ -121,33 +145,57 @@ public class AdminStatsRepository {
      */
     private void calculateUserStats(com.google.firebase.firestore.QuerySnapshot snapshot, DashboardStats stats) {
         int totalUsers = snapshot.size();
+        
         int totalTutors = 0;
-        int totalStudents = 0;
         int approvedTutors = 0;
+        int pendingTutors = 0;
+        int bannedTutors = 0;
+        
+        int totalStudents = 0;
         int approvedStudents = 0;
+        int pendingStudents = 0;
+        int bannedStudents = 0;
         
         for (QueryDocumentSnapshot document : snapshot) {
             String userType = document.getString("userType");
             String approvalStatus = document.getString("approvalStatus");
+            Boolean isBanned = document.getBoolean("isBanned");
+            boolean banned = isBanned != null && isBanned;
             
             if ("Tutor".equals(userType)) {
                 totalTutors++;
-                if ("approved".equals(approvalStatus)) {
+                
+                if (banned) {
+                    bannedTutors++;
+                } else if ("approved".equals(approvalStatus)) {
                     approvedTutors++;
-                }
+                } else if ("pending".equals(approvalStatus)) {
+                    pendingTutors++;
+                } 
             } else if ("Student".equals(userType)) {
                 totalStudents++;
-                if ("approved".equals(approvalStatus)) {
+                
+                if (banned) {
+                    bannedStudents++;
+                } else if ("approved".equals(approvalStatus)) {
                     approvedStudents++;
+                } else if ("pending".equals(approvalStatus)) {
+                    pendingStudents++;
                 }
             }
         }
         
         stats.setTotalUsers(totalUsers);
+        
         stats.setTotalTutors(totalTutors);
-        stats.setTotalStudents(totalStudents);
         stats.setApprovedTutors(approvedTutors);
+        stats.setPendingTutors(pendingTutors);
+        stats.setBannedTutors(bannedTutors);
+        
+        stats.setTotalStudents(totalStudents);
         stats.setApprovedStudents(approvedStudents);
+        stats.setPendingStudents(pendingStudents);
+        stats.setBannedStudents(bannedStudents);
     }
     
     /**
@@ -204,7 +252,24 @@ public class AdminStatsRepository {
         stats.setAcceptedApplications(approved);  // This represents actual connections
         stats.setPendingApplications(pending + studentApproved);  // Total needing action
     }
-    
+
+    private void calculateReportStats(com.google.firebase.firestore.QuerySnapshot snapshot, DashboardStats stats) {
+        int pending = 0;
+        int solved = 0;
+        
+        for (QueryDocumentSnapshot document : snapshot) {
+            String status = document.getString("status");
+            if ("pending".equals(status)) {
+                pending++;
+            } else if ("resolved".equals(status)) {
+                solved++;
+            }
+        }
+        
+        stats.setPendingReports(pending);
+        stats.setSolvedReports(solved);
+    }
+
     /**
      * Remove all snapshot listeners
      */
@@ -221,5 +286,10 @@ public class AdminStatsRepository {
             applicationsListener.remove();
             applicationsListener = null;
         }
+        if (reportsListener != null) {
+            reportsListener.remove();
+            reportsListener = null;
+        }
     }
 }
+

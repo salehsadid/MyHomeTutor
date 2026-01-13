@@ -35,12 +35,12 @@ public class ConnectionRepository extends FirestoreRepository {
     
     /**
      * Listen to all connections (admin-approved applications) with real-time updates
-     * Only applications with status="approved" are considered connections
+     * Querying the connections collection directly for established connections
      */
     public ListenerRegistration listenToAllConnections(ConnectionsListener listener) {
-        Log.d(TAG, "Setting up listener for all connections (status=approved)");
-        return db.collection("applications")
-                .whereEqualTo("status", STATUS_APPROVED)
+        Log.d(TAG, "Setting up listener for all connections (from connections collection)");
+        return getConnectionsCollection()
+                .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
                 .addSnapshotListener((snapshot, error) -> {
                     if (error != null) {
                         Log.e(TAG, "Error listening to connections", error);
@@ -56,12 +56,11 @@ public class ConnectionRepository extends FirestoreRepository {
     }
     
     /**
-     * Listen to connections by student (where student's applications are approved)
+     * Listen to connections by student
      */
     public ListenerRegistration listenToConnectionsByStudent(String studentId, ConnectionsListener listener) {
         Log.d(TAG, "Setting up listener for student connections: " + studentId);
-        return db.collection("applications")
-                .whereEqualTo("status", STATUS_APPROVED)
+        return getConnectionsCollection()
                 .whereEqualTo("studentId", studentId)
                 .addSnapshotListener((snapshot, error) -> {
                     if (error != null) {
@@ -78,12 +77,11 @@ public class ConnectionRepository extends FirestoreRepository {
     }
     
     /**
-     * Listen to connections by tutor (where tutor's applications are approved)
+     * Listen to connections by tutor
      */
     public ListenerRegistration listenToConnectionsByTutor(String tutorId, ConnectionsListener listener) {
         Log.d(TAG, "Setting up listener for tutor connections: " + tutorId);
-        return db.collection("applications")
-                .whereEqualTo("status", STATUS_APPROVED)
+        return getConnectionsCollection()
                 .whereEqualTo("tutorId", tutorId)
                 .addSnapshotListener((snapshot, error) -> {
                     if (error != null) {

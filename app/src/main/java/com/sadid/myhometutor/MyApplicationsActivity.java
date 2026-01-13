@@ -95,9 +95,22 @@ public class MyApplicationsActivity extends AppCompatActivity {
 
     private void viewStudentProfile(TuitionApplication application) {
         if (application.getStudentId() != null) {
-            Intent intent = new Intent(MyApplicationsActivity.this, AdminViewUserActivity.class);
-            intent.putExtra("userId", application.getStudentId());
-            intent.putExtra("userType", "Student");
+            // Tutors view student profile based on application status
+            // If approved (connected), show contact info
+            // If pending/rejected, show limited profile
+            // NEVER show verification document to tutors
+            String viewMode = ProfileViewMode.VIEW_MODE_PUBLIC;
+            
+            // Check if this application is approved (connection established)
+            if ("approved".equals(application.getStatus())) {
+                viewMode = ProfileViewMode.VIEW_MODE_CONNECTED;
+            }
+            
+            // Use ViewStudentProfileActivity for role-based secure viewing
+            Intent intent = new Intent(MyApplicationsActivity.this, ViewStudentProfileActivity.class);
+            intent.putExtra(ProfileViewMode.EXTRA_USER_ID, application.getStudentId());
+            intent.putExtra(ProfileViewMode.EXTRA_VIEW_MODE, viewMode);
+            intent.putExtra(ProfileViewMode.EXTRA_CURRENT_USER_ID, mAuth.getCurrentUser().getUid());
             startActivity(intent);
         } else {
             Toast.makeText(this, "Student information not available", Toast.LENGTH_SHORT).show();

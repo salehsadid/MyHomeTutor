@@ -17,8 +17,11 @@ import com.sadid.myhometutor.repository.AdminStatsRepository;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
-    private TextView tvTotalPosts, tvPendingPosts, tvApprovedPosts, tvTotalConnections;
-    private TextView tvTotalStudents, tvPendingStudents, tvTotalTutors, tvPendingTutors;
+    private TextView tvTotalPosts, tvPendingPosts, tvApprovedPosts;
+    private TextView tvTotalConnections, tvPendingConnections;
+    private TextView tvTotalStudents, tvPendingStudents, tvBannedStudents;
+    private TextView tvTotalTutors, tvPendingTutors, tvBannedTutors;
+    private TextView tvPendingReports, tvSolvedReports;
     private TextView menuDashboard, menuConnections, menuTutors, menuStudents, menuTuitionPosts;
     private TextView menuReports, menuBannedUsers, menuPendingApprovals, menuLogout;
     private CardView cardTotalTutors;
@@ -47,11 +50,20 @@ public class AdminDashboardActivity extends AppCompatActivity {
         tvTotalPosts = findViewById(R.id.tvTotalPosts);
         tvPendingPosts = findViewById(R.id.tvPendingPosts);
         tvApprovedPosts = findViewById(R.id.tvApprovedPosts);
+        
         tvTotalConnections = findViewById(R.id.tvTotalConnections);
+        tvPendingConnections = findViewById(R.id.tvPendingConnections);
+        
         tvTotalStudents = findViewById(R.id.tvTotalStudents);
         tvPendingStudents = findViewById(R.id.tvPendingStudents);
+        tvBannedStudents = findViewById(R.id.tvBannedStudents);
+        
         tvTotalTutors = findViewById(R.id.tvTotalTutors);
         tvPendingTutors = findViewById(R.id.tvPendingTutors);
+        tvBannedTutors = findViewById(R.id.tvBannedTutors);
+        
+        tvPendingReports = findViewById(R.id.tvPendingReports);
+        tvSolvedReports = findViewById(R.id.tvSolvedReports);
 
         // Menu items
         menuDashboard = findViewById(R.id.menuDashboard);
@@ -150,19 +162,26 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private void updateDashboardUI(DashboardStats stats) {
         // Student stats
         tvTotalStudents.setText(String.valueOf(stats.getTotalStudents()));
-        tvPendingStudents.setText(String.valueOf(stats.getTotalStudents() - stats.getApprovedStudents()));
+        tvPendingStudents.setText(String.valueOf(stats.getPendingStudents()));
+        tvBannedStudents.setText(String.valueOf(stats.getBannedStudents()));
 
         // Tutor stats
         tvTotalTutors.setText(String.valueOf(stats.getTotalTutors()));
-        tvPendingTutors.setText(String.valueOf(stats.getTotalTutors() - stats.getApprovedTutors()));
+        tvPendingTutors.setText(String.valueOf(stats.getPendingTutors()));
+        tvBannedTutors.setText(String.valueOf(stats.getBannedTutors()));
 
         // Post stats
         tvTotalPosts.setText(String.valueOf(stats.getTotalPosts()));
         tvPendingPosts.setText(String.valueOf(stats.getPendingPosts()));
         tvApprovedPosts.setText(String.valueOf(stats.getActivePosts()));
 
-        // Connection stats (using accepted applications as successful connections)
+        // Connection stats
         tvTotalConnections.setText(String.valueOf(stats.getAcceptedApplications()));
+        tvPendingConnections.setText(String.valueOf(stats.getPendingApplications()));
+
+        // Report stats
+        tvPendingReports.setText(String.valueOf(stats.getPendingReports()));
+        tvSolvedReports.setText(String.valueOf(stats.getSolvedReports()));
     }
 
     /**
@@ -171,12 +190,21 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private void setDefaultValues() {
         tvTotalStudents.setText("0");
         tvPendingStudents.setText("0");
+        tvBannedStudents.setText("0");
+        
         tvTotalTutors.setText("0");
         tvPendingTutors.setText("0");
+        tvBannedTutors.setText("0");
+        
         tvTotalPosts.setText("0");
         tvPendingPosts.setText("0");
         tvApprovedPosts.setText("0");
+        
         tvTotalConnections.setText("0");
+        tvPendingConnections.setText("0");
+        
+        tvPendingReports.setText("0");
+        tvSolvedReports.setText("0");
     }
 
     private void toggleMenu() {

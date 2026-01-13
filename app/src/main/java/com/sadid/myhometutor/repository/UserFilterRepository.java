@@ -117,6 +117,13 @@ public class UserFilterRepository extends FirestoreRepository {
     }
     
     /**
+     * Get user by ID (one-time read - for any user type)
+     */
+    public Task<com.google.firebase.firestore.DocumentSnapshot> getUserById(String userId) {
+        return db.collection("users").document(userId).get();
+    }
+    
+    /**
      * Get tutor by ID (one-time read)
      */
     public Task<com.google.firebase.firestore.DocumentSnapshot> getTutor(String tutorId) {
@@ -135,5 +142,70 @@ public class UserFilterRepository extends FirestoreRepository {
      */
     public Task<Void> updateTutorStatus(String tutorId, String newStatus) {
         return db.collection("users").document(tutorId).update("approvalStatus", newStatus);
+    }
+    
+    /**
+     * Get public tutor profile (limited fields for students viewing before connection)
+     * Excludes: phone, email, documentImageBase64, documentImageUrl
+     */
+    public Task<com.google.firebase.firestore.DocumentSnapshot> getPublicTutorProfile(String tutorId) {
+        Log.d(TAG, "Fetching public tutor profile: " + tutorId);
+        return db.collection("users").document(tutorId).get();
+        // Note: Field filtering done in UI layer for Firestore document snapshots
+        // Cannot exclude fields at query level for single document reads
+    }
+    
+    /**
+     * Get connected tutor profile (includes contact info but excludes verification document)
+     * Shows: phone, email, but NOT documentImageBase64
+     */
+    public Task<com.google.firebase.firestore.DocumentSnapshot> getConnectedTutorProfile(String tutorId) {
+        Log.d(TAG, "Fetching connected tutor profile: " + tutorId);
+        return db.collection("users").document(tutorId).get();
+        // Note: Field filtering done in UI layer
+    }
+    
+    /**
+     * Get admin tutor profile (all fields including verification document)
+     */
+    public Task<com.google.firebase.firestore.DocumentSnapshot> getAdminTutorProfile(String tutorId) {
+        Log.d(TAG, "Fetching admin tutor profile: " + tutorId);
+        return db.collection("users").document(tutorId).get();
+    }
+    
+    /**
+     * STUDENT PROFILE METHODS - SECURITY CRITICAL
+     * Tutors should NEVER see student verification documents
+     */
+    
+    /**
+     * Get public student profile (limited fields for tutors viewing before connection)
+     * Excludes: phone, email, documentImageBase64, documentImageUrl
+     */
+    public Task<com.google.firebase.firestore.DocumentSnapshot> getPublicStudentProfile(String studentId) {
+        Log.d(TAG, "Fetching public student profile: " + studentId);
+        return db.collection("users").document(studentId).get();
+        // Note: Field filtering done in UI layer for Firestore document snapshots
+        // Cannot exclude fields at query level for single document reads
+    }
+    
+    /**
+     * Get connected student profile (includes contact info but EXCLUDES verification document)
+     * Shows: phone, email, but NOT documentImageBase64
+     * SECURITY: Tutors can NEVER see student verification documents
+     */
+    public Task<com.google.firebase.firestore.DocumentSnapshot> getConnectedStudentProfile(String studentId) {
+        Log.d(TAG, "Fetching connected student profile: " + studentId);
+        return db.collection("users").document(studentId).get();
+        // Note: Field filtering done in UI layer - documentImageBase64 MUST be hidden from tutors
+    }
+    
+    /**
+     * Get admin student profile (all fields including verification document)
+     * Only ADMIN can see student verification documents
+     */
+    public Task<com.google.firebase.firestore.DocumentSnapshot> getAdminStudentProfile(String studentId) {
+        Log.d(TAG, "Fetching admin student profile: " + studentId);
+        return db.collection("users").document(studentId).get();
     }
 }

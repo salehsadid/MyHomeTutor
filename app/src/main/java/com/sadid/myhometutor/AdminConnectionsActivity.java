@@ -1,5 +1,6 @@
 package com.sadid.myhometutor;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -58,6 +59,38 @@ public class AdminConnectionsActivity extends AppCompatActivity {
     private void setupRecyclerView() {
         connectionsList = new ArrayList<>();
         adapter = new ConnectionsAdapter(connectionsList);
+        
+        adapter.setOnConnectionActionListener(new ConnectionsAdapter.OnConnectionActionListener() {
+            @Override
+            public void onViewStudent(Connection connection) {
+                if (connection.getStudentId() != null) {
+                    Intent intent = new Intent(AdminConnectionsActivity.this, AdminViewUserActivity.class);
+                    intent.putExtra("userId", connection.getStudentId());
+                    intent.putExtra("userType", "Student");
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onViewTutor(Connection connection) {
+                if (connection.getTutorId() != null) {
+                    Intent intent = new Intent(AdminConnectionsActivity.this, AdminViewUserActivity.class);
+                    intent.putExtra("userId", connection.getTutorId());
+                    intent.putExtra("userType", "Tutor");
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onViewPost(Connection connection) {
+                if (connection.getTuitionId() != null) {
+                    Intent intent = new Intent(AdminConnectionsActivity.this, AdminViewTuitionPostActivity.class);
+                    intent.putExtra("postId", connection.getTuitionId());
+                    startActivity(intent);
+                }
+            }
+        });
+
         rvConnections.setLayoutManager(new LinearLayoutManager(this));
         rvConnections.setAdapter(adapter);
     }
@@ -137,9 +170,8 @@ public class AdminConnectionsActivity extends AppCompatActivity {
         } else {
             tvEmptyState.setVisibility(View.GONE);
             rvConnections.setVisibility(View.VISIBLE);
+            adapter.notifyDataSetChanged();
         }
-        
-        adapter.notifyDataSetChanged();
     }
 
     private void showEmptyState() {

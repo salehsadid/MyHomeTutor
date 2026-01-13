@@ -93,6 +93,37 @@ public class ReportRepository {
     }
     
     /**
+     * Submit a profile report (simplified method for user profile reporting)
+     * 
+     * @param reporterId ID of the user submitting the report
+     * @param reporterName Name of the user submitting the report
+     * @param reporterType Type of reporter ("Student" or "Tutor")
+     * @param reportedUserId ID of the reported user
+     * @param reportedUserName Name of the reported user
+     * @param reportedUserType Type of reported user ("Student" or "Tutor")
+     * @param reportMessage Detailed report message from the reporter
+     */
+    public Task<Void> submitProfileReport(String reporterId, String reporterName, String reporterType,
+                                          String reportedUserId, String reportedUserName, String reportedUserType,
+                                          String reportMessage) {
+        Report report = new Report(
+            reporterId,
+            reporterName,
+            reporterType,
+            reportedUserId,
+            reportedUserName,
+            reportedUserType,
+            "User", // reportType
+            reportedUserId, // reportedItemId
+            "Profile Report", // reason
+            reportMessage,
+            "pending" // status
+        );
+        
+        return addReport(report);
+    }
+    
+    /**
      * Mark a report as resolved
      */
     public Task<Void> resolveReport(String reportId) {

@@ -14,14 +14,22 @@ import com.sadid.myhometutor.adapters.AdminReportsAdapter;
 import com.sadid.myhometutor.models.Report;
 import com.sadid.myhometutor.repository.ReportRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 public class AdminReportsActivity extends AppCompatActivity implements AdminReportsAdapter.OnReportActionListener {
 
     private ImageView btnBack;
     private RecyclerView rvReports;
+    private Spinner spinnerFilter;
     private AdminReportsAdapter adapter;
     private ReportRepository reportRepository;
+    private List<Report> allReports = new ArrayList<>();
+    private String currentFilter = "All"; // "All", "Pending", "Resolved"
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +39,7 @@ public class AdminReportsActivity extends AppCompatActivity implements AdminRepo
         reportRepository = new ReportRepository();
 
         initializeViews();
+        setupSpinner();
         setupRecyclerView();
         loadReports();
     }
@@ -38,8 +47,32 @@ public class AdminReportsActivity extends AppCompatActivity implements AdminRepo
     private void initializeViews() {
         btnBack = findViewById(R.id.btnBack);
         rvReports = findViewById(R.id.rvReports);
+        spinnerFilter = findViewById(R.id.spinnerFilter);
 
         btnBack.setOnClickListener(v -> finish());
+    }
+
+    private void setupSpinner() {
+        String[] filters = {"All", "Pending", "Resolved"};
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
+                this, 
+                android.R.layout.simple_spinner_item, 
+                filters
+        );
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerFilter.setAdapter(spinnerAdapter);
+
+        spinnerFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                currentFilter = filters[position];
+                filterReports();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void setupRecyclerView() {
@@ -53,11 +86,8 @@ public class AdminReportsActivity extends AppCompatActivity implements AdminRepo
         reportRepository.listenToReports(new ReportRepository.ReportsListener() {
             @Override
             public void onReportsUpdated(List<Report> reports) {
-                adapter.setReports(reports);
-                if (reports.isEmpty()) {
-                    Toast.makeText(AdminReportsActivity.this, 
-                        "No reports found", Toast.LENGTH_SHORT).show();
-                }
+                allReports = reports;
+                filterReports();
             }
 
             @Override
@@ -66,6 +96,36 @@ public class AdminReportsActivity extends AppCompatActivity implements AdminRepo
                     "Error loading reports: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void filterReports() {
+        if (allReports == null) return;
+
+        List<Report> filteredList;
+        if ("All".equals(currentFilter)) {
+            filteredList = new ArrayList<>(allReports);
+        } else {
+            String targetStatus = currentFilter.toLowerCase();
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                filteredList = allReports.stream()
+                        .filter(r -> targetStatus.equals(r.getStatus()))
+                        .collect(java.util.stream.Collectors.toList());
+            } else {
+                filteredList = new ArrayList<>();
+                for (Report report : allReports) {
+                    if (targetStatus.equals(report.getStatus())) {
+                        filteredList.add(report);
+                    }
+                }
+            }
+        }
+        
+        adapter.setReports(filteredList);
+        
+        if (filteredList.isEmpty()) {
+            Toast.makeText(AdminReportsActivity.this, 
+                "No reports found for " + currentFilter, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

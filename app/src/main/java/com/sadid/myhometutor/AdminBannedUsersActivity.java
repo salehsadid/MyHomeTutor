@@ -38,7 +38,7 @@ public class AdminBannedUsersActivity extends AppCompatActivity {
 
         initializeViews();
         setupRecyclerView();
-        loadBannedUsers();
+        // loadBannedUsers(); // Removed to prevent duplicate loading onResume
     }
 
     private void initializeViews() {
@@ -62,12 +62,13 @@ public class AdminBannedUsersActivity extends AppCompatActivity {
     }
 
     private void loadBannedUsers() {
-        bannedUsersList.clear();
+        // bannedUsersList.clear(); // Moved inside onSuccess to prevent race conditions
         
         db.collection("users")
                 .whereEqualTo("isBanned", true)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
+                    bannedUsersList.clear(); // Clear list before adding new data
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         PendingUser user = documentToPendingUser(document);
                         if (user != null) {
