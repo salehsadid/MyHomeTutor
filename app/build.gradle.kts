@@ -62,6 +62,7 @@ dependencies {
     implementation("com.sun.mail:android-activation:1.6.7")
     implementation("com.github.yalantis:ucrop:2.2.8")
     implementation(libs.mediarouter)
+    implementation("androidx.work:work-runtime:2.9.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -11,6 +11,9 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sadid.myhometutor.repository.NotificationRepository;
+
+import com.sadid.myhometutor.utils.EmailSender;
 
 public class ChangePasswordActivity extends AppCompatActivity {
 
@@ -75,6 +78,22 @@ public class ChangePasswordActivity extends AppCompatActivity {
                             user.updatePassword(newPassword)
                                     .addOnCompleteListener(task1 -> {
                                         if (task1.isSuccessful()) {
+                                            new NotificationRepository().sendNotification(
+                                                    user.getUid(),
+                                                    "User",
+                                                    "Password Changed",
+                                                    "Your password was successfully changed.",
+                                                    NotificationRepository.TYPE_PASSWORD_CHANGED,
+                                                    ""
+                                            );
+
+                                            // EMAIL NOTIFICATION: Notify User
+                                            String body = EmailSender.getPremiumEmailTemplate(
+                                                "Security Alert: Password Changed", 
+                                                "The password for your MyHomeTutor account has been successfully changed.<br><br><b>If you did not perform this action, please reset your password immediately and contact support.</b>"
+                                            );
+                                            EmailSender.sendEmail(user.getEmail(), "Password Changed - MyHomeTutor", body);
+
                                             Toast.makeText(ChangePasswordActivity.this, "Password updated successfully", Toast.LENGTH_SHORT).show();
                                             finish();
                                         } else {

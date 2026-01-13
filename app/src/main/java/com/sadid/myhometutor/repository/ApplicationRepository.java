@@ -8,6 +8,9 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import com.sadid.myhometutor.model.Notification;
+import com.sadid.myhometutor.repository.EmailNotificationService;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +56,40 @@ public class ApplicationRepository extends FirestoreRepository {
         return getApplicationsCollection().add(applicationData).continueWith(task -> {
             if (task.isSuccessful()) {
                 Log.d(TAG, "Application created: " + task.getResult().getId());
+                
+                // NOTIFICATION: Notify Student (App Local)
+                new NotificationRepository().sendNotification(
+                        studentId, 
+                        "Student",
+                        "New Application", 
+                        "A tutor has applied for your post.",
+                        NotificationRepository.TYPE_APPLY,
+                        postId
+                );
+
+                // EMAIL: Notify Student (Real-time Email)
+                com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                    .collection("tuition_posts").document(postId).get()
+                    .addOnSuccessListener(postDoc -> {
+                        String subject = postDoc.getString("subject");
+                        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                            .collection("users").document(tutorId).get()
+                            .addOnSuccessListener(tutorDoc -> {
+                                String tName = tutorDoc.getString("name");
+                                if (tName == null) tName = tutorDoc.getString("fullName"); // Fallback
+                                final String tutorName = tName;
+                                
+                                com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                                    .collection("users").document(studentId).get()
+                                    .addOnSuccessListener(studentDoc -> {
+                                        String studentEmail = studentDoc.getString("email");
+                                        if (studentEmail != null && tutorName != null && subject != null) {
+                                            new EmailNotificationService().sendTutorApplicationNotification(studentEmail, tutorName, subject);
+                                        }
+                                    });
+                            });
+                    });
+                
                 return task.getResult().getId();
             }
             throw task.getException();
@@ -154,6 +191,52 @@ public class ApplicationRepository extends FirestoreRepository {
      */
     public Task<Void> studentApproveApplication(String applicationId) {
         Log.d(TAG, "Student approving application: " + applicationId);
+
+        // Notify Tutor (Fire and forget)
+        getApplication(applicationId).addOnSuccessListener(doc -> {
+            if (doc.exists()) {
+                String tutorId = doc.getString("tutorId");
+                String studentId = doc.getString("studentId");
+                String postId = doc.getString("postId");
+
+                if (tutorId != null) {
+                    new NotificationRepository().sendNotification(
+                            tutorId,
+                            "Tutor",
+                            "Application Accepted",
+                            "Student accepted your application.",
+                            NotificationRepository.TYPE_APPLICATION_ACCEPTED,
+                            applicationId
+                    );
+
+                    // EMAIL: Notify Tutor
+                    if (studentId != null && postId != null) {
+                         com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                            .collection("tuition_posts").document(postId).get()
+                            .addOnSuccessListener(postDoc -> {
+                                String subject = postDoc.getString("subject");
+                                com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                                    .collection("users").document(studentId).get()
+                                    .addOnSuccessListener(studentDoc -> {
+                                        String sName = studentDoc.getString("name");
+                                        if (sName == null) sName = studentDoc.getString("fullName");
+                                        final String studentName = sName;
+                                        
+                                        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                                            .collection("users").document(tutorId).get()
+                                            .addOnSuccessListener(tutorDoc -> {
+                                                String tutorEmail = tutorDoc.getString("email");
+                                                if (tutorEmail != null && studentName != null && subject != null) {
+                                                    new EmailNotificationService().sendApplicationAcceptedNotification(tutorEmail, studentName, subject);
+                                                }
+                                            });
+                                    });
+                            });
+                    }
+                }
+            }
+        });
+
         return updateApplicationStatus(applicationId, STATUS_STUDENT_APPROVED);
     }
     
@@ -162,6 +245,24 @@ public class ApplicationRepository extends FirestoreRepository {
      */
     public Task<Void> adminApproveApplication(String applicationId) {
         Log.d(TAG, "Admin approving application: " + applicationId);
+
+        // Notify Tutor (Fire and forget)
+        getApplication(applicationId).addOnSuccessListener(doc -> {
+            if (doc.exists()) {
+                String tutorId = doc.getString("tutorId");
+                if (tutorId != null) {
+                    new NotificationRepository().sendNotification(
+                            tutorId,
+                            "Tutor",
+                            "Application Approved",
+                            "Admin approved your application.",
+                            NotificationRepository.TYPE_CONNECTION_CREATED,
+                            applicationId
+                    );
+                }
+            }
+        });
+
         return updateApplicationStatus(applicationId, STATUS_APPROVED);
     }
     
@@ -178,6 +279,31 @@ public class ApplicationRepository extends FirestoreRepository {
      */
     public Task<Void> rejectApplication(String applicationId) {
         Log.d(TAG, "Student rejecting application: " + applicationId);
+
+        // EMAIL: Notify Tutor of Rejection
+        getApplication(applicationId).addOnSuccessListener(doc -> {
+            if (doc.exists()) {
+                String tutorId = doc.getString("tutorId");
+                String postId = doc.getString("postId");
+                
+                if (tutorId != null && postId != null) {
+                     com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                        .collection("tuition_posts").document(postId).get()
+                        .addOnSuccessListener(postDoc -> {
+                            String subject = postDoc.getString("subject");
+                            com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                                .collection("users").document(tutorId).get()
+                                .addOnSuccessListener(tutorDoc -> {
+                                    String tutorEmail = tutorDoc.getString("email");
+                                    if (tutorEmail != null && subject != null) {
+                                        new EmailNotificationService().sendApplicationRejectedNotification(tutorEmail, subject);
+                                    }
+                                });
+                        });
+                }
+            }
+        });
+
         return updateApplicationStatus(applicationId, STATUS_REJECTED);
     }
     

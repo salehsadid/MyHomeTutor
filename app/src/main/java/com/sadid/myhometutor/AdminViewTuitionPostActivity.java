@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.sadid.myhometutor.repository.NotificationRepository;
+import com.sadid.myhometutor.repository.PostRepository;
 
 public class AdminViewTuitionPostActivity extends AppCompatActivity {
 
@@ -20,6 +22,7 @@ public class AdminViewTuitionPostActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private String postId;
     private String studentId;
+    private PostRepository postRepo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,7 @@ public class AdminViewTuitionPostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_view_tuition_post);
 
         db = FirebaseFirestore.getInstance();
+        postRepo = new PostRepository();
         postId = getIntent().getStringExtra("postId");
 
         initializeViews();
@@ -159,8 +163,8 @@ public class AdminViewTuitionPostActivity extends AppCompatActivity {
     }
 
     private void updatePostStatus(String newStatus) {
-        db.collection("tuition_posts").document(postId)
-                .update("status", newStatus)
+        // Use PostRepository since it already includes notification logic
+        postRepo.updatePostStatus(postId, newStatus)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Post " + newStatus, Toast.LENGTH_SHORT).show();
                     loadPostDetails(); // Reload to update UI

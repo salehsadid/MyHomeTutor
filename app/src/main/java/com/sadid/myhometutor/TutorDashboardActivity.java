@@ -19,7 +19,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.sadid.myhometutor.repository.NotificationRepository;
 import com.sadid.myhometutor.utils.Base64ImageHelper;
+import com.google.firebase.firestore.ListenerRegistration;
 
 public class TutorDashboardActivity extends AppCompatActivity {
 
@@ -27,6 +29,8 @@ public class TutorDashboardActivity extends AppCompatActivity {
     private TextView tvDivision, tvDistrict, tvArea, tvGender, tvEmail, tvPhone;
     private TextView tvExperience, tvPreferredDays, tvPreferredTime, tvPrefLocation, tvPreferredFee, tvAdditionalInfo;
     private ImageView btnMenu, ivProfile;
+    private View btnNotification, viewNotificationBadge;
+    private ListenerRegistration notificationListener;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
@@ -41,9 +45,14 @@ public class TutorDashboardActivity extends AppCompatActivity {
         initializeViews();
         loadUserInfo();
         setupListeners();
+        setupNotificationListener();
     }
 
     private void initializeViews() {
+        btnNotification = findViewById(R.id.btnNotification);
+        viewNotificationBadge = findViewById(R.id.viewNotificationBadge);
+        btnNotification.setOnClickListener(v -> startActivity(new Intent(this, NotificationActivity.class)));
+
         tvName = findViewById(R.id.tvName);
         tvCollegeName = findViewById(R.id.tvCollegeName);
         tvCollegeGroupHsc = findViewById(R.id.tvCollegeGroupHsc);
@@ -211,5 +220,29 @@ public class TutorDashboardActivity extends AppCompatActivity {
                         Toast.makeText(this, "Failed to load profile: " + (task.getException() != null ? task.getException().getMessage() : "Unknown error"), Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+
+    private void setupNotificationListener() {
+        if (mAuth.getCurrentUser() != null) {
+            notificationListener = new NotificationRepository().getUnreadCountQuery(mAuth.getCurrentUser().getUid())
+                    .addSnapshotListener((snapshots, e) -> {
+                        if (e != null) return;
+                        if (viewNotificationBadge != null) {
+                            if (snapshots != null && !snapshots.isEmpty()) {
+                                viewNotificationBadge.setVisibility(View.VISIBLE);
+                            } else {
+                                viewNotificationBadge.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (notificationListener != null) {
+            notificationListener.remove();
+        }
     }
 }

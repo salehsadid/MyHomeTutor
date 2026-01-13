@@ -10,10 +10,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.sadid.myhometutor.models.DashboardStats;
 import com.sadid.myhometutor.repository.AdminStatsRepository;
+import com.sadid.myhometutor.worker.AdminDigestWorker;
+
+import java.util.concurrent.TimeUnit;
+import java.util.Calendar;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
@@ -43,6 +50,37 @@ public class AdminDashboardActivity extends AppCompatActivity {
         initializeViews();
         setupMenuListeners();
         setupRealtimeDashboard();
+
+        // Schedule Admin Digest (Every 12 Hours - 7:15 AM & 7:15 PM)
+        Calendar currentDate = Calendar.getInstance();
+        Calendar dueDate = Calendar.getInstance();
+
+        // Target 7:15 AM today
+        dueDate.set(Calendar.HOUR_OF_DAY, 7);
+        dueDate.set(Calendar.MINUTE, 15);
+        dueDate.set(Calendar.SECOND, 0);
+
+        if (dueDate.before(currentDate)) {
+            // If 7:15 AM passed, target 7:15 PM (19:15)
+            dueDate.add(Calendar.HOUR_OF_DAY, 12);
+        }
+        
+        if (dueDate.before(currentDate)) {
+            // If 7:15 PM passed, target 7:15 AM tomorrow
+            dueDate.add(Calendar.HOUR_OF_DAY, 12);
+        }
+
+        long timeDiff = dueDate.getTimeInMillis() - currentDate.getTimeInMillis();
+
+        PeriodicWorkRequest digestRequest = new PeriodicWorkRequest.Builder(
+                AdminDigestWorker.class, 12, TimeUnit.HOURS)
+                .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
+                .build();
+        
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "AdminDigestWork",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                digestRequest);
     }
 
     private void initializeViews() {

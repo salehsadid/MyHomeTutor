@@ -117,7 +117,7 @@ public class EmailSender {
                 message.setFrom(new InternetAddress(SENDER_EMAIL));
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
                 message.setSubject(subject);
-                message.setText(body);
+                message.setContent(body, "text/html; charset=utf-8");
 
                 // Send the email
                 Transport.send(message);
@@ -126,6 +126,51 @@ public class EmailSender {
                 e.printStackTrace();
             }
         });
+    }
+
+    public static String getPremiumEmailTemplate(String title, String messageContent) {
+        return "<!DOCTYPE html>" +
+                "<html>" +
+                "<head>" +
+                "<meta charset='UTF-8'>" +
+                "<meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
+                "</head>" +
+                "<body style='font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f6f9fc;'>" +
+                "    <table border='0' cellpadding='0' cellspacing='0' width='100%' style='background-color: #f6f9fc; padding: 20px;'>" +
+                "        <tr>" +
+                "            <td align='center'>" +
+                "                <table border='0' cellpadding='0' cellspacing='0' width='600' style='background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);'>" +
+                "                    <!-- Header -->" +
+                "                    <tr>" +
+                "                        <td bgcolor='#306cce' align='center' style='padding: 30px 20px;'>" +
+                "                            <h1 style='color: #ffffff; margin: 0; font-size: 24px; font-weight: bold;'>MyHomeTutor</h1>" +
+                "                        </td>" +
+                "                    </tr>" +
+                "                    <!-- Content -->" +
+                "                    <tr>" +
+                "                        <td style='padding: 40px 30px;'>" +
+                "                            <h2 style='color: #333333; margin-top: 0; margin-bottom: 20px; font-size: 20px;'>" + title + "</h2>" +
+                "                            <p style='color: #555555; font-size: 16px; line-height: 1.6; margin-bottom: 30px;'>" +
+                "                                " + messageContent +
+                "                            </p>" +
+                "                            <div style='background-color: #f8f9fa; border-left: 4px solid #306cce; padding: 15px; margin-top: 20px;'>" +
+                "                                <p style='color: #666666; margin: 0; font-size: 14px; font-style: italic;'>Current Time: " + new java.util.Date().toString() + "</p>" +
+                "                            </div>" +
+                "                        </td>" +
+                "                    </tr>" +
+                "                    <!-- Footer -->" +
+                "                    <tr>" +
+                "                        <td bgcolor='#f8f9fa' style='padding: 20px; text-align: center; border-top: 1px solid #eeeeee;'>" +
+                "                            <p style='color: #999999; font-size: 12px; margin: 0;'>© 2026 MyHomeTutor. All rights reserved.</p>" +
+                "                            <p style='color: #999999; font-size: 12px; margin: 5px 0 0 0;'>Dhaka, Bangladesh</p>" +
+                "                        </td>" +
+                "                    </tr>" +
+                "                </table>" +
+                "            </td>" +
+                "        </tr>" +
+                "    </table>" +
+                "</body>" +
+                "</html>";
     }
 }
 

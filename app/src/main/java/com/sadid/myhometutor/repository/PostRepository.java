@@ -6,9 +6,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.sadid.myhometutor.model.Notification;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.sadid.myhometutor.repository.EmailNotificationService;
 
 /**
  * Post Repository
@@ -112,6 +116,35 @@ public class PostRepository extends FirestoreRepository {
      * Update post status
      */
     public Task<Void> updatePostStatus(String postId, String newStatus) {
+        if ("approved".equals(newStatus)) {
+            getPost(postId).addOnSuccessListener(doc -> {
+                if (doc.exists()) {
+                    String studentId = doc.getString("studentId");
+                    String subject = doc.getString("subject");
+                    
+                    if (studentId != null) {
+                        new NotificationRepository().sendNotification(
+                                studentId,
+                                "Student",
+                                "Post Approved",
+                                "Your tuition post has been approved by admin.",
+                                NotificationRepository.TYPE_POST_APPROVED,
+                                postId
+                        );
+
+                        // EMAIL: Notify Student
+                        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                            .collection("users").document(studentId).get()
+                            .addOnSuccessListener(studentDoc -> {
+                                String email = studentDoc.getString("email");
+                                if (email != null && subject != null) {
+                                    new EmailNotificationService().sendPostApprovedNotification(email, subject);
+                                }
+                            });
+                    }
+                }
+            });
+        }
         return db.collection("tuition_posts").document(postId).update("status", newStatus);
     }
     
@@ -119,7 +152,23 @@ public class PostRepository extends FirestoreRepository {
      * Delete post
      */
     public Task<Void> deletePost(String postId) {
-        return db.collection("tuition_posts").document(postId).delete();
+        return getPost(postId).continueWithTask(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DocumentSnapshot doc = task.getResult();
+                String studentId = doc.getString("studentId");
+                if (studentId != null) {
+                    new NotificationRepository().sendNotification(
+                            studentId,
+                            "Student",
+                            "Post Deleted",
+                            "Your tuition post has been deleted by admin.",
+                            NotificationRepository.TYPE_POST_DELETED,
+                            postId
+                    );
+                }
+            }
+            return db.collection("tuition_posts").document(postId).delete();
+        });
     }
     
     /**

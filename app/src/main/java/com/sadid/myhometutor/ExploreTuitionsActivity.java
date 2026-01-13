@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.sadid.myhometutor.repository.ApplicationRepository;
 
 public class ExploreTuitionsActivity extends AppCompatActivity {
 
@@ -233,17 +234,11 @@ public class ExploreTuitionsActivity extends AppCompatActivity {
         String tutorId = mAuth.getCurrentUser().getUid();
         String postId = post.getId();
 
-        Map<String, Object> application = new HashMap<>();
-        application.put("tutorId", tutorId);
-        application.put("postId", postId);
-        application.put("studentId", post.getStudentId());
-        application.put("status", "pending");
-        application.put("timestamp", System.currentTimeMillis());
-
-        db.collection("applications")
-                .add(application)
-                .addOnSuccessListener(documentReference -> {
+        // Use ApplicationRepository to handle creation and notifications (email/in-app)
+        new ApplicationRepository().createApplication(postId, tutorId, post.getStudentId())
+                .addOnSuccessListener(applicationId -> {
                     Toast.makeText(ExploreTuitionsActivity.this, "Applied successfully", Toast.LENGTH_SHORT).show();
+                    // Optional: Update UI or button state
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(ExploreTuitionsActivity.this, "Error applying: " + e.getMessage(), Toast.LENGTH_SHORT).show();

@@ -124,7 +124,11 @@ public class MyApplicationAdapter extends RecyclerView.Adapter<MyApplicationAdap
         holder.tvStatus.setText(application.getStatus() != null ? application.getStatus().toUpperCase() : "UNKNOWN");
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        holder.tvAppliedOn.setText(sdf.format(new Date(application.getTimestamp())));
+        if (application.getTimestamp() != null) {
+            holder.tvAppliedOn.setText(sdf.format(application.getTimestamp()));
+        } else {
+            holder.tvAppliedOn.setText("N/A");
+        }
 
         holder.btnViewProfile.setOnClickListener(v -> {
             if (onViewProfileClickListener != null) {

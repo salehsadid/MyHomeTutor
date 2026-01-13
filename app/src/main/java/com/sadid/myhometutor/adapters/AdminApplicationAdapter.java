@@ -129,7 +129,11 @@ public class AdminApplicationAdapter extends RecyclerView.Adapter<AdminApplicati
         
         // Set applied date
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault());
-        holder.tvAppliedDate.setText("Applied: " + sdf.format(new Date(application.getTimestamp())));
+        if (application.getTimestamp() != null) {
+            holder.tvAppliedDate.setText("Applied: " + sdf.format(application.getTimestamp()));
+        } else {
+            holder.tvAppliedDate.setText("Applied: N/A");
+        }
         
         // Status badge
         holder.tvStatus.setText("AWAITING APPROVAL");

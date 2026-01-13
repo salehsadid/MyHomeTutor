@@ -7,6 +7,10 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import com.sadid.myhometutor.model.Notification;
+
+import com.sadid.myhometutor.utils.EmailSender;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -112,6 +116,29 @@ public class ConnectionRepository extends FirestoreRepository {
         return getConnectionsCollection().add(connectionData).continueWith(task -> {
             if (task.isSuccessful()) {
                 Log.d(TAG, "Connection created: " + task.getResult().getId());
+
+                // Notify Tutor
+                new NotificationRepository().sendNotification(
+                        tutorId,
+                        "Tutor",
+                        "Application Approved",
+                        "Admin approved your application. You can now see student contact details.",
+                        NotificationRepository.TYPE_CONNECTION_CREATED,
+                        applicationId
+                );
+
+                // EMAIL NOTIFICATION: Notify Tutor
+                db.collection("users").document(tutorId).get().addOnSuccessListener(doc -> {
+                    String email = doc.getString("email");
+                    if (email != null) {
+                        String body = EmailSender.getPremiumEmailTemplate(
+                            "Application Approved!", 
+                            "Congratulations! Your application has been approved by both the student and the admin.<br><br>You can now see the student's contact details and proceed with the tuition."
+                        );
+                        EmailSender.sendEmail(email, "Application Approved - MyHomeTutor", body);
+                    }
+                });
+
                 return task.getResult().getId();
             }
             throw task.getException();

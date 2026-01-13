@@ -1,6 +1,7 @@
 package com.sadid.myhometutor;
 
 import com.google.firebase.firestore.Exclude;
+import java.util.Date;
 
 public class TuitionApplication {
     private String applicationId;
@@ -8,7 +9,7 @@ public class TuitionApplication {
     private String postId;
     private String studentId;
     private String status;
-    private long timestamp;
+    private Date timestamp;
     private TuitionPost tuitionPost;
     
     // Transient fields for Admin Search
@@ -37,8 +38,8 @@ public class TuitionApplication {
     public void setStudentId(String studentId) { this.studentId = studentId; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
-    public long getTimestamp() { return timestamp; }
-    public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+    public Date getTimestamp() { return timestamp; }
+    public void setTimestamp(Date timestamp) { this.timestamp = timestamp; }
     public TuitionPost getTuitionPost() { return tuitionPost; }
     public void setTuitionPost(TuitionPost tuitionPost) { this.tuitionPost = tuitionPost; }
 }

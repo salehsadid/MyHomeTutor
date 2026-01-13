@@ -85,45 +85,22 @@ public class EmailNotificationService {
      * Send tutor application notification to student
      */
     public void sendTutorApplicationNotification(String studentEmail, String tutorName, String subject) {
-        String emailSubject = "New Tutor Application - MyHomeTutor";
-        String emailBody = "<!DOCTYPE html>" +
-            "<html>" +
-            "<head>" +
-            "<style>" +
-            "body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }" +
-            ".container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; }" +
-            ".header { background-color: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }" +
-            ".content { background-color: white; padding: 30px; border-radius: 0 0 5px 5px; }" +
-            ".info-box { background-color: #e8f5e9; padding: 15px; margin: 20px 0; border-left: 4px solid #4CAF50; }" +
-            ".button { display: inline-block; padding: 12px 30px; margin: 20px 0; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; }" +
-            ".footer { text-align: center; margin-top: 20px; color: #777; font-size: 12px; }" +
-            "</style>" +
-            "</head>" +
-            "<body>" +
-            "<div class='container'>" +
-            "<div class='header'>" +
-            "<h2>New Tutor Application</h2>" +
-            "</div>" +
-            "<div class='content'>" +
-            "<p>Dear Student,</p>" +
-            "<p>You have received a new tutor application on MyHomeTutor!</p>" +
-            "<div class='info-box'>" +
-            "<strong>📚 Application Details:</strong><br>" +
-            "<strong>Tutor Name:</strong> " + tutorName + "<br>" +
-            "<strong>Subject:</strong> " + subject +
-            "</div>" +
-            "<p>Please review this application and take appropriate action.</p>" +
-            "<center>" +
-            "<a href='#' class='button'>Review Application</a>" +
-            "</center>" +
-            "<p>Best regards,<br><strong>MyHomeTutor Team</strong></p>" +
-            "</div>" +
-            "<div class='footer'>" +
-            "<p>This is an automated message from MyHomeTutor. Please do not reply to this email.</p>" +
-            "</div>" +
-            "</div>" +
-            "</body>" +
-            "</html>";
+        String emailSubject = "📚 New Tutor Application - MyHomeTutor";
+        String emailBody = buildPremiumEmailTemplate(
+            "#2196F3",
+            "New Tutor Application",
+            "📚 Application Received",
+            "Dear Student,",
+            "You have received a new tutor application on MyHomeTutor!",
+            new String[][]{
+                {"Tutor Name", tutorName},
+                {"Subject", subject},
+                {"Status", "⏳ Pending Review"}
+            },
+            "Please review this application.",
+            null,
+            "Connect with the best tutors for your needs."
+        );
         
         sendEmailAsync(studentEmail, emailSubject, emailBody, new EmailCallback() {
             @Override
@@ -143,47 +120,22 @@ public class EmailNotificationService {
      * Send application accepted notification to tutor
      */
     public void sendApplicationAcceptedNotification(String tutorEmail, String studentName, String subject) {
-        String emailSubject = "Application Accepted - MyHomeTutor";
-        String emailBody = "<!DOCTYPE html>" +
-            "<html>" +
-            "<head>" +
-            "<style>" +
-            "body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }" +
-            ".container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; }" +
-            ".header { background-color: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }" +
-            ".content { background-color: white; padding: 30px; border-radius: 0 0 5px 5px; }" +
-            ".success-box { background-color: #e8f5e9; padding: 15px; margin: 20px 0; border-left: 4px solid #4CAF50; }" +
-            ".congratulations { font-size: 24px; color: #4CAF50; text-align: center; margin: 20px 0; }" +
-            ".button { display: inline-block; padding: 12px 30px; margin: 20px 0; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; }" +
-            ".footer { text-align: center; margin-top: 20px; color: #777; font-size: 12px; }" +
-            "</style>" +
-            "</head>" +
-            "<body>" +
-            "<div class='container'>" +
-            "<div class='header'>" +
-            "<h2>Application Accepted!</h2>" +
-            "</div>" +
-            "<div class='content'>" +
-            "<p class='congratulations'>🎉 Congratulations!</p>" +
-            "<p>Dear Tutor,</p>" +
-            "<p>We are pleased to inform you that your application has been <strong>accepted</strong>!</p>" +
-            "<div class='success-box'>" +
-            "<strong>📋 Application Details:</strong><br>" +
-            "<strong>Student Name:</strong> " + studentName + "<br>" +
-            "<strong>Subject:</strong> " + subject +
-            "</div>" +
-            "<p>You can now view the student's contact information in your connections section.</p>" +
-            "<center>" +
-            "<a href='#' class='button'>View Connection</a>" +
-            "</center>" +
-            "<p>Best regards,<br><strong>MyHomeTutor Team</strong></p>" +
-            "</div>" +
-            "<div class='footer'>" +
-            "<p>This is an automated message from MyHomeTutor. Please do not reply to this email.</p>" +
-            "</div>" +
-            "</div>" +
-            "</body>" +
-            "</html>";
+        String emailSubject = "🎉 Application Accepted - MyHomeTutor";
+        String emailBody = buildPremiumEmailTemplate(
+            "#4CAF50",
+            "Application Accepted!",
+            "🎉 Congratulations!",
+            "Dear Tutor,",
+            "We are pleased to inform you that your application has been accepted!",
+            new String[][]{
+                {"Student Name", studentName},
+                {"Subject", subject},
+                {"Status", "✅ Accepted"}
+            },
+            "You can now view the student's contact information in your connections section.",
+            null,
+            "Start preparing for your new tuition class!"
+        );
         
         sendEmailAsync(tutorEmail, emailSubject, emailBody, null);
     }
@@ -193,44 +145,20 @@ public class EmailNotificationService {
      */
     public void sendApplicationRejectedNotification(String tutorEmail, String subject) {
         String emailSubject = "Application Update - MyHomeTutor";
-        String emailBody = "<!DOCTYPE html>" +
-            "<html>" +
-            "<head>" +
-            "<style>" +
-            "body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }" +
-            ".container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; }" +
-            ".header { background-color: #f44336; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }" +
-            ".content { background-color: white; padding: 30px; border-radius: 0 0 5px 5px; }" +
-            ".info-box { background-color: #ffebee; padding: 15px; margin: 20px 0; border-left: 4px solid #f44336; }" +
-            ".button { display: inline-block; padding: 12px 30px; margin: 20px 0; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; }" +
-            ".footer { text-align: center; margin-top: 20px; color: #777; font-size: 12px; }" +
-            "</style>" +
-            "</head>" +
-            "<body>" +
-            "<div class='container'>" +
-            "<div class='header'>" +
-            "<h2>Application Update</h2>" +
-            "</div>" +
-            "<div class='content'>" +
-            "<p>Dear Tutor,</p>" +
-            "<p>Thank you for your interest in teaching on MyHomeTutor.</p>" +
-            "<div class='info-box'>" +
-            "<strong>📋 Application Status:</strong><br>" +
-            "<strong>Subject:</strong> " + subject + "<br>" +
-            "<strong>Status:</strong> Not Accepted" +
-            "</div>" +
-            "<p>We regret to inform you that your application was not successful this time. However, don't be discouraged! There are many more opportunities available on MyHomeTutor.</p>" +
-            "<center>" +
-            "<a href='#' class='button'>Browse More Opportunities</a>" +
-            "</center>" +
-            "<p>Best regards,<br><strong>MyHomeTutor Team</strong></p>" +
-            "</div>" +
-            "<div class='footer'>" +
-            "<p>This is an automated message from MyHomeTutor. Please do not reply to this email.</p>" +
-            "</div>" +
-            "</div>" +
-            "</body>" +
-            "</html>";
+        String emailBody = buildPremiumEmailTemplate(
+            "#f44336",
+            "Application Update",
+            "📋 Application Status",
+            "Dear Tutor,",
+            "Thank you for your interest in teaching on MyHomeTutor. We regret to inform you that your application was not successful this time.",
+            new String[][]{
+                {"Subject", subject},
+                {"Status", "❌ Not Accepted"}
+            },
+            "Don't be discouraged! There are many more opportunities available on MyHomeTutor.",
+            null,
+            "Keep applying to other suitable posts."
+        );
         
         sendEmailAsync(tutorEmail, emailSubject, emailBody, null);
     }
@@ -239,48 +167,22 @@ public class EmailNotificationService {
      * Send account approved notification
      */
     public void sendAccountApprovedNotification(String userEmail, String userType) {
-        String emailSubject = "Account Approved - MyHomeTutor";
-        String emailBody = "<!DOCTYPE html>" +
-            "<html>" +
-            "<head>" +
-            "<style>" +
-            "body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }" +
-            ".container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; }" +
-            ".header { background-color: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }" +
-            ".content { background-color: white; padding: 30px; border-radius: 0 0 5px 5px; }" +
-            ".success-box { background-color: #e8f5e9; padding: 15px; margin: 20px 0; border-left: 4px solid #4CAF50; }" +
-            ".congratulations { font-size: 24px; color: #4CAF50; text-align: center; margin: 20px 0; }" +
-            ".button { display: inline-block; padding: 12px 30px; margin: 20px 0; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; }" +
-            ".footer { text-align: center; margin-top: 20px; color: #777; font-size: 12px; }" +
-            "</style>" +
-            "</head>" +
-            "<body>" +
-            "<div class='container'>" +
-            "<div class='header'>" +
-            "<h2>Account Approved!</h2>" +
-            "</div>" +
-            "<div class='content'>" +
-            "<p class='congratulations'>🎉 Welcome to MyHomeTutor!</p>" +
-            "<p>Dear " + userType + ",</p>" +
-            "<p>Great news! Your MyHomeTutor account has been <strong>approved</strong> by our admin team.</p>" +
-            "<div class='success-box'>" +
-            "<strong>✅ What's Next?</strong><br>" +
-            "• Log in to your account<br>" +
-            "• Complete your profile<br>" +
-            "• Start connecting with " + (userType.equalsIgnoreCase("Student") ? "tutors" : "students") +
-            "</div>" +
-            "<p>You can now access all features of the platform and begin your learning journey!</p>" +
-            "<center>" +
-            "<a href='intent://login#Intent;scheme=myhometutor;package=com.sadid.myhometutor;end' class='button'>Login Now</a>" +
-            "</center>" +
-            "<p>Best regards,<br><strong>MyHomeTutor Team</strong></p>" +
-            "</div>" +
-            "<div class='footer'>" +
-            "<p>This is an automated message from MyHomeTutor. Please do not reply to this email.</p>" +
-            "</div>" +
-            "</div>" +
-            "</body>" +
-            "</html>";
+        String emailSubject = "✅ Account Approved - MyHomeTutor";
+        String emailBody = buildPremiumEmailTemplate(
+            "#4CAF50",
+            "Account Approved!",
+            "🎉 Welcome Aboard!",
+            "Dear " + userType + ",",
+            "Great news! Your MyHomeTutor account has been approved by our admin team.",
+            new String[][]{
+                {"Account Type", userType},
+                {"Status", "✅ Active"},
+                {"Access", "Full Access Granted"}
+            },
+            "You can now login and start exploring all features of the platform.",
+            null,
+            "We wish you a great journey with MyHomeTutor!"
+        );
         
         sendEmailAsync(userEmail, emailSubject, emailBody, null);
     }
@@ -301,7 +203,7 @@ public class EmailNotificationService {
                 {"Reason", "Did not meet requirements"}
             },
             "If you believe this is an error or have questions, please contact our support team for clarification.",
-            "Contact Support",
+            null,
             "We appreciate your interest in MyHomeTutor."
         );
         
@@ -312,47 +214,22 @@ public class EmailNotificationService {
      * Send post approved notification to student
      */
     public void sendPostApprovedNotification(String studentEmail, String subject) {
-        String emailSubject = "Tuition Post Approved - MyHomeTutor";
-        String emailBody = "<!DOCTYPE html>" +
-            "<html>" +
-            "<head>" +
-            "<style>" +
-            "body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }" +
-            ".container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; }" +
-            ".header { background-color: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }" +
-            ".content { background-color: white; padding: 30px; border-radius: 0 0 5px 5px; }" +
-            ".success-box { background-color: #e8f5e9; padding: 15px; margin: 20px 0; border-left: 4px solid #4CAF50; }" +
-            ".congratulations { font-size: 24px; color: #4CAF50; text-align: center; margin: 20px 0; }" +
-            ".button { display: inline-block; padding: 12px 30px; margin: 20px 0; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; }" +
-            ".footer { text-align: center; margin-top: 20px; color: #777; font-size: 12px; }" +
-            "</style>" +
-            "</head>" +
-            "<body>" +
-            "<div class='container'>" +
-            "<div class='header'>" +
-            "<h2>Tuition Post Approved!</h2>" +
-            "</div>" +
-            "<div class='content'>" +
-            "<p class='congratulations'>🎉 Great News!</p>" +
-            "<p>Dear Student,</p>" +
-            "<p>Your tuition post has been <strong>approved</strong> by our admin team and is now live!</p>" +
-            "<div class='success-box'>" +
-            "<strong>📚 Post Details:</strong><br>" +
-            "<strong>Subject:</strong> " + subject + "<br>" +
-            "<strong>Status:</strong> Active and Visible to Tutors" +
-            "</div>" +
-            "<p>Your post is now visible to qualified tutors on the platform. You may start receiving applications soon!</p>" +
-            "<center>" +
-            "<a href='#' class='button'>View My Post</a>" +
-            "</center>" +
-            "<p>Best regards,<br><strong>MyHomeTutor Team</strong></p>" +
-            "</div>" +
-            "<div class='footer'>" +
-            "<p>This is an automated message from MyHomeTutor. Please do not reply to this email.</p>" +
-            "</div>" +
-            "</div>" +
-            "</body>" +
-            "</html>";
+        String emailSubject = "✅ Tuition Post Approved - MyHomeTutor";
+        String emailBody = buildPremiumEmailTemplate(
+            "#4CAF50",
+            "Tuition Post Approved",
+            "🎉 Great News!",
+            "Dear Student,",
+            "Your tuition post has been approved by our admin team and is now live!",
+            new String[][]{
+                {"Subject", subject},
+                {"Status", "✅ Active & Visible"},
+                {"Visibility", "Seen by Tutors"}
+            },
+            "Your post is now visible to qualified tutors on the platform. Expect some applications soon!",
+            null,
+            "We wish you finding the best tutor!"
+        );
         
         sendEmailAsync(studentEmail, emailSubject, emailBody, null);
     }
@@ -374,7 +251,7 @@ public class EmailNotificationService {
                 {"Status", "✅ Approved"}
             },
             "You can now view the student's contact information in your Connections section and coordinate your tutoring sessions.",
-            "View Connection Details",
+            null,
             "This is great news! Start planning your lessons."
         );
         sendEmailAsync(tutorEmail, emailSubject, emailBody, null);
@@ -397,7 +274,7 @@ public class EmailNotificationService {
                 {"Action Required", "Contact support"}
             },
             "If you believe this is a mistake, please contact our support team immediately to resolve this issue.",
-            "Contact Support",
+            null,
             "We take account security seriously."
         );
         sendEmailAsync(userEmail, emailSubject, emailBody, null);
@@ -419,7 +296,7 @@ public class EmailNotificationService {
                 {"Access", "Full access restored"}
             },
             "Thank you for your patience. You can now log in and continue using MyHomeTutor.",
-            "Login to Account",
+            null,
             "Welcome back to MyHomeTutor!"
         );
         sendEmailAsync(userEmail, emailSubject, emailBody, null);
@@ -466,7 +343,7 @@ public class EmailNotificationService {
             "<strong style='color: #f44336;'>⚠️ If this was you, you can safely ignore this email.</strong><br><br>" +
             "<strong style='color: #f44336;'>⚠️ If you did NOT change your password, your account may be compromised!</strong> " +
             "Please reset your password immediately and contact support.",
-            "Reset Password",
+            null,
             "Keep your account secure. Never share your password."
         );
         sendEmailAsync(userEmail, emailSubject, emailBody, null);
@@ -489,7 +366,7 @@ public class EmailNotificationService {
                 {"Status", "⏳ Pending Your Review"}
             },
             "Please review this application and decide whether to accept or reject it. Log in to view the tutor's profile and credentials.",
-            "Review Application",
+            null,
             "Respond to applications promptly for best results!"
         );
         sendEmailAsync(studentEmail, emailSubject, emailBody, null);
@@ -529,7 +406,7 @@ public class EmailNotificationService {
             "</div>" +
             "<div class='content'>" +
             "<p style='font-size: 16px; color: #495057;'><strong>Hello Admin,</strong></p>" +
-            "<p style='color: #6c757d;'>Here's your bi-hourly summary of platform activity:</p>" +
+            "<p style='color: #6c757d;'>Here's your twice-daily summary of platform activity:</p>" +
             "<div class='stats-grid'>" +
             "<div class='stat-card'>" +
             "<p class='stat-number'>" + newRegistrations + "</p>" +
@@ -551,9 +428,6 @@ public class EmailNotificationService {
             "• <strong>" + newConnections + "</strong> connection application(s) requiring admin approval" +
             "</div>" +
             "<p style='color: #6c757d;'>Please review and take necessary actions to keep the platform running smoothly.</p>" +
-            "<center>" +
-            "<a href='#' class='button'>Go to Admin Dashboard</a>" +
-            "</center>" +
             "</div>" +
             "<div class='footer'>" +
             "<p>This is an automated digest sent every 12 hours.<br>" +
@@ -563,7 +437,7 @@ public class EmailNotificationService {
             "</div>" +
             "</body>" +
             "</html>";
-        sendEmailAsync(adminEmail, emailSubject, emailBody, null);
+        sendEmailAsync("salehsadid16@gmail.com", emailSubject, emailBody, null);
     }
 
     /**

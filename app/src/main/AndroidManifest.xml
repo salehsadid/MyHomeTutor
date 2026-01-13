@@ -93,6 +93,7 @@
             android:name=".CustomUCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
+        <activity android:name=".NotificationActivity" />
     </application>
 
 </manifest>
