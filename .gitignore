@@ -22,3 +22,7 @@ signing.properties
 # Release APKs (use GitHub Releases instead)
 *.apk
 *.aab
+
+PROJECT_REPORT.md
+PROJECT_PRESENTATION_SLIDE.md
+PROJECT_COMPLETE_ANALYSIS.md

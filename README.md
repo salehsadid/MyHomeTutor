@@ -26,7 +26,7 @@
 ### Quick Install (Recommended)
 
 <p align="center">
-  <a href="https://github.com/salehsadid/MyHomeTutor/releases/latest/download/MyHomeTutor-v1.0.0.apk">
+  <a href="https://github.com/salehsadid/MyHomeTutor/releases/tag/v1.0">
     <img src="https://img.shields.io/badge/Download%20APK-Latest%20Release-brightgreen?style=for-the-badge&logo=android&logoColor=white&labelColor=3DDC84" alt="Download APK">
   </a>
 </p>
