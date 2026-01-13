@@ -1,6 +1,8 @@
 package com.sadid.myhometutor;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.PropertyName;
 import java.util.Date;
 
 public class TuitionApplication {
@@ -38,9 +40,36 @@ public class TuitionApplication {
     public void setStudentId(String studentId) { this.studentId = studentId; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    
+    @Exclude
     public Date getTimestamp() { return timestamp; }
+    
+    @Exclude
     public void setTimestamp(Date timestamp) { this.timestamp = timestamp; }
+    
+    // Custom getter/setter to handle both Long and Timestamp from Firestore
+    @PropertyName("timestamp")
+    public Object getTimestampForFirestore() {
+        return timestamp;
+    }
+    
+    @PropertyName("timestamp")
+    public void setTimestampFromFirestore(Object value) {
+        if (value instanceof Timestamp) {
+            this.timestamp = ((Timestamp) value).toDate();
+        } else if (value instanceof Long) {
+            this.timestamp = new Date((Long) value);
+        } else if (value instanceof Date) {
+            this.timestamp = (Date) value;
+        } else {
+            this.timestamp = null;
+        }
+    }
+    
+    @Exclude
     public TuitionPost getTuitionPost() { return tuitionPost; }
+    
+    @Exclude
     public void setTuitionPost(TuitionPost tuitionPost) { this.tuitionPost = tuitionPost; }
 }
 
