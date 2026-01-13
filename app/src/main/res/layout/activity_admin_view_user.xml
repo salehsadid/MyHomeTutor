@@ -9,7 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="40dp">
 
         <!-- Header with Profile Image -->
         <RelativeLayout
@@ -439,11 +440,12 @@
                 android:id="@+id/btnApprove"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:backgroundTint="#20FF07"
                 android:text="Approve"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnReject"
@@ -452,17 +454,19 @@
                 android:layout_weight="1"
                 android:backgroundTint="#F60A0A"
                 android:text="Reject"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnClose"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 android:backgroundTint="#64748b"
                 android:text="Close"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"
+                android:textSize="12sp" />
 
         </LinearLayout>
         
@@ -473,9 +477,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:backgroundTint="@android:color/holo_red_dark"
-            android:text="Ban User"
+            android:text="🚷 Ban User"
             android:textColor="#ffffff"
-            android:textStyle="bold"/>
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

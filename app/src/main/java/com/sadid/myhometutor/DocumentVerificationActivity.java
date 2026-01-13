@@ -135,7 +135,9 @@ public class DocumentVerificationActivity extends AppCompatActivity {
         uCrop.withAspectRatio(16, 9);  // Document aspect ratio
         uCrop.withMaxResultSize(1920, 1080);
         uCrop.withOptions(getDocumentCropOptions());
-        uCrop.start(this);
+        Intent intent = uCrop.getIntent(this);
+        intent.setClass(this, CustomUCropActivity.class);
+        startActivityForResult(intent, UCrop.REQUEST_CROP);
     }
 
     private UCrop.Options getDocumentCropOptions() {

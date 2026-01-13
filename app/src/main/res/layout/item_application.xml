@@ -89,11 +89,11 @@
                 android:id="@+id/btnViewProfile"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:text="View Profile"
+                android:layout_marginEnd="8dp"
                 android:backgroundTint="@color/teal_button"
+                android:text="View Profile"
                 android:textColor="@color/white"
-                android:textSize="12sp"
-                android:layout_marginEnd="8dp"/>
+                android:textSize="10sp" />
 
             <Button
                 android:id="@+id/btnReject"
@@ -103,7 +103,7 @@
                 android:backgroundTint="#F60A0A"
                 android:text="Reject"
                 android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
 
             <Button
                 android:id="@+id/btnAccept"
@@ -112,7 +112,7 @@
                 android:backgroundTint="#20FF07"
                 android:text="Accept"
                 android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:textSize="10sp" />
 
         </LinearLayout>
 

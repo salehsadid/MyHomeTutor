@@ -271,7 +271,7 @@ public class EmailNotificationService {
             "</div>" +
             "<p>You can now access all features of the platform and begin your learning journey!</p>" +
             "<center>" +
-            "<a href='#' class='button'>Login Now</a>" +
+            "<a href='intent://login#Intent;scheme=myhometutor;package=com.sadid.myhometutor;end' class='button'>Login Now</a>" +
             "</center>" +
             "<p>Best regards,<br><strong>MyHomeTutor Team</strong></p>" +
             "</div>" +

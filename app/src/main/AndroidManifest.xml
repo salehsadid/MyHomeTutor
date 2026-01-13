@@ -36,16 +36,34 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            
+            <!-- Deep link for email login button -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="myhometutor" android:host="login" />
+            </intent-filter>
         </activity>
         <activity android:name=".TestActivity" />
-        <activity android:name=".StudentRegistrationActivity" />
-        <activity android:name=".TutorRegistrationActivity" />
-        <activity android:name=".GoogleProfileCompletionActivity" />
-        <activity android:name=".DocumentVerificationActivity" />
+        <activity 
+            android:name=".StudentRegistrationActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity 
+            android:name=".TutorRegistrationActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity 
+            android:name=".GoogleProfileCompletionActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity 
+            android:name=".DocumentVerificationActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".StudentDashboardActivity" />
         <activity android:name=".PostTuitionActivity" />
         <activity android:name=".ExploreTuitionsActivity" />
-        <activity android:name=".EditProfileActivity" />
+        <activity 
+            android:name=".EditProfileActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ChangePasswordActivity" />
         <activity android:name=".MyPostsActivity" />
         <activity android:name=".MyApplicationsActivity" />
@@ -62,6 +80,12 @@
         <activity android:name=".AdminBannedUsersActivity" />
         <activity android:name=".AdminApplicationsActivity" />
         <activity android:name=".ViewApplicationsActivity" />
+        <!-- UCrop Library Activity - Required by UCrop library -->
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
+        <!-- Custom UCrop Activity with WindowInsets handling -->
         <activity
             android:name=".CustomUCropActivity"
             android:screenOrientation="portrait"

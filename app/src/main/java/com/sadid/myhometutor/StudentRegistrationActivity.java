@@ -437,7 +437,9 @@ public class StudentRegistrationActivity extends AppCompatActivity {
         uCrop.withAspectRatio(1, 1);
         uCrop.withMaxResultSize(450, 450);
         uCrop.withOptions(getCropOptions());
-        uCrop.start(this);
+        Intent intent = uCrop.getIntent(this);
+        intent.setClass(this, CustomUCropActivity.class);
+        startActivityForResult(intent, UCrop.REQUEST_CROP);
     }
 
     private UCrop.Options getCropOptions() {

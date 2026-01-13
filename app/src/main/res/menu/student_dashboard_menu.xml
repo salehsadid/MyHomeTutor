@@ -18,6 +18,7 @@
     <item
         android:id="@+id/action_logout"
         android:title="Logout"
-        android:titleCondensed="Logout" />
+        android:titleCondensed="Logout"
+        android:titleTextColor="@color/red"/>
 </menu>
 

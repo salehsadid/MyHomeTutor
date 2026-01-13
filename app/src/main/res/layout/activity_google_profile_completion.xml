@@ -10,9 +10,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="24dp"
+        android:paddingTop="40dp">
 
         <!-- Header -->
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="10dp">
+
+        </FrameLayout>
+
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
@@ -47,8 +55,8 @@
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:src="@drawable/ic_person"
-                app:civ_border_width="2dp"
-                app:civ_border_color="@color/teal_button"/>
+                app:civ_border_color="@color/text_primary"
+                app:civ_border_width="2dp" />
 
             <TextView
                 android:id="@+id/tvUploadPhoto"
@@ -76,16 +84,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:boxBackgroundColor="@color/white"
-            app:boxStrokeColor="@color/teal_button">
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="@color/teal_button"
+            app:hintEnabled="true">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etFullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Full Name *"
                 android:inputType="textPersonName"
-                android:padding="12dp"/>
+                android:padding="12dp"
+                android:textColor="@color/text_primary" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Phone -->
@@ -93,16 +103,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:boxBackgroundColor="@color/white"
-            app:boxStrokeColor="@color/teal_button">
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="@color/teal_button"
+            app:hintEnabled="true">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Phone Number *"
                 android:inputType="phone"
-                android:padding="12dp"/>
+                android:padding="12dp"
+                android:textColor="@color/text_primary" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Gender -->
@@ -112,6 +124,7 @@
             android:text="Gender *"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:textColor="@color/text_primary"
             android:layout_marginBottom="8dp"/>
 
         <RadioGroup
@@ -143,15 +156,16 @@
             android:text="Division *"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:textColor="@color/text_primary"
             android:layout_marginBottom="8dp"/>
 
         <Spinner
             android:id="@+id/spDivision"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@drawable/bg_spinner_dropdown"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:background="@color/input_background"
+            android:padding="12dp" />
 
         <!-- District -->
         <TextView
@@ -160,15 +174,17 @@
             android:text="District *"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:textColor="@color/text_primary"
             android:layout_marginBottom="8dp"/>
 
         <Spinner
             android:id="@+id/spDistrict"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@drawable/bg_spinner_dropdown"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:background="@color/input_background"
+            android:backgroundTint="@color/input_background"
+            android:padding="12dp" />
 
         <!-- Area -->
         <TextView
@@ -177,35 +193,39 @@
             android:text="Area *"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:textColor="@color/text_primary"
             android:layout_marginBottom="8dp"/>
 
         <Spinner
             android:id="@+id/spArea"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@drawable/bg_spinner_dropdown"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:background="@color/input_background"
+            android:padding="12dp" />
 
         <!-- Institute -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:boxBackgroundColor="@color/white"
-            app:boxStrokeColor="@color/teal_button">
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="@color/teal_button"
+            app:hintEnabled="true">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etInstitute"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="School/College Name"
+                android:hint="Institution"
                 android:inputType="text"
-                android:padding="12dp"/>
+                android:padding="12dp"
+                android:textColor="@color/text_primary" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Class (for students) -->
         <TextView
+            android:id="@+id/tvClassLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Class"
@@ -217,12 +237,13 @@
             android:id="@+id/spClass"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@drawable/bg_spinner_dropdown"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:background="@color/input_background"
+            android:padding="12dp" />
 
         <!-- Group (for students) -->
         <TextView
+            android:id="@+id/tvGroupLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Group"
@@ -234,9 +255,9 @@
             android:id="@+id/spGroup"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@drawable/bg_spinner_dropdown"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:background="@color/input_background"
+            android:padding="12dp" />
 
         <!-- About -->
         <com.google.android.material.textfield.TextInputLayout
@@ -250,10 +271,11 @@
                 android:id="@+id/etAbout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/input_background"
                 android:hint="About (Optional)"
                 android:inputType="textMultiLine"
                 android:lines="3"
-                android:padding="12dp"/>
+                android:padding="12dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Password Section -->
@@ -279,49 +301,100 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:boxBackgroundColor="@color/white"
+            android:layout_marginBottom="8dp"
+            app:boxBackgroundMode="outline"
             app:boxStrokeColor="@color/teal_button"
-            app:passwordToggleEnabled="true">
+            app:passwordToggleEnabled="true"
+            app:hintEnabled="true">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Password (min 6 characters) *"
+                android:hint="Password *"
                 android:inputType="textPassword"
-                android:padding="12dp"/>
+                android:padding="12dp"
+                android:textColor="@color/text_primary" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Password Constraints -->
+        <TextView
+            android:id="@+id/tvConstraintLength"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✕ Minimum 8 characters"
+            android:textColor="#FF5252"
+            android:textSize="12sp"/>
+        <TextView
+            android:id="@+id/tvConstraintAlpha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✕ Contains alphabet"
+            android:textColor="#FF5252"
+            android:textSize="12sp"/>
+        <TextView
+            android:id="@+id/tvConstraintNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✕ Contains number"
+            android:textColor="#FF5252"
+            android:textSize="12sp"/>
+        <TextView
+            android:id="@+id/tvConstraintCase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✕ Mixed case (upper &amp; lower)"
+            android:textColor="#FF5252"
+            android:textSize="12sp"/>
+        <TextView
+            android:id="@+id/tvConstraintSymbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✕ Contains symbol"
+            android:textColor="#FF5252"
+            android:textSize="12sp"
+            android:layout_marginBottom="16dp"/>
 
         <!-- Confirm Password -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            app:boxBackgroundColor="@color/white"
+            android:layout_marginBottom="8dp"
+            app:boxBackgroundMode="outline"
             app:boxStrokeColor="@color/teal_button"
-            app:passwordToggleEnabled="true">
+            app:passwordToggleEnabled="true"
+            app:hintEnabled="true">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etConfirmPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Confirm Password *"
                 android:inputType="textPassword"
-                android:padding="12dp"/>
+                android:padding="12dp"
+                android:textColor="@color/text_primary" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/tvPasswordMatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="12sp"
+            android:layout_marginBottom="24dp"/>
 
         <!-- Next Button -->
         <Button
             android:id="@+id/btnNext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/button_green_rounded"
+            android:backgroundTint="@color/teal_button"
+            android:padding="16dp"
             android:text="Next: Document Verification"
             android:textColor="@color/white"
-            android:background="@drawable/button_green_rounded"
-            android:padding="16dp"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
     </LinearLayout>
 </ScrollView>

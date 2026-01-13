@@ -3,6 +3,8 @@ package com.sadid.myhometutor;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,6 +15,8 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.regex.Pattern;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -51,8 +55,11 @@ public class GoogleProfileCompletionActivity extends AppCompatActivity {
 
     private CircleImageView ivProfilePhoto;
     private TextView tvUploadPhoto, tvTitle, tvInstruction;
+    private TextView tvClassLabel, tvGroupLabel;
     private EditText etFullName, etPhone, etInstitute, etAbout;
     private EditText etPassword, etConfirmPassword;
+    private TextView tvConstraintLength, tvConstraintAlpha, tvConstraintNumber, tvConstraintCase, tvConstraintSymbol;
+    private TextView tvPasswordMatch;
     private Spinner spDivision, spDistrict, spArea, spClass, spGroup;
     private RadioGroup rgGender;
     private Button btnNext, btnSkipPhoto;
@@ -118,17 +125,49 @@ public class GoogleProfileCompletionActivity extends AppCompatActivity {
         etAbout = findViewById(R.id.etAbout);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
+        
+        // Password constraint TextViews
+        tvConstraintLength = findViewById(R.id.tvConstraintLength);
+        tvConstraintAlpha = findViewById(R.id.tvConstraintAlpha);
+        tvConstraintNumber = findViewById(R.id.tvConstraintNumber);
+        tvConstraintCase = findViewById(R.id.tvConstraintCase);
+        tvConstraintSymbol = findViewById(R.id.tvConstraintSymbol);
+        tvPasswordMatch = findViewById(R.id.tvPasswordMatch);
+        
         spDivision = findViewById(R.id.spDivision);
         spDistrict = findViewById(R.id.spDistrict);
         spArea = findViewById(R.id.spArea);
         spClass = findViewById(R.id.spClass);
         spGroup = findViewById(R.id.spGroup);
+        tvClassLabel = findViewById(R.id.tvClassLabel);
+        tvGroupLabel = findViewById(R.id.tvGroupLabel);
         rgGender = findViewById(R.id.rgGender);
         btnNext = findViewById(R.id.btnNext);
         btnSkipPhoto = findViewById(R.id.btnSkipPhoto);
 
         tvTitle.setText("Complete Your Profile");
         tvInstruction.setText("You signed in with Google. Please complete your profile and set a password for security.");
+        
+        // Show/hide Class and Group fields based on user type
+        configureFieldsForUserType();
+        
+        setupPasswordValidation();
+    }
+
+    private void configureFieldsForUserType() {
+        if ("Tutor".equals(userType)) {
+            // Hide Class and Group for Tutors
+            if (tvClassLabel != null) tvClassLabel.setVisibility(View.GONE);
+            if (spClass != null) spClass.setVisibility(View.GONE);
+            if (tvGroupLabel != null) tvGroupLabel.setVisibility(View.GONE);
+            if (spGroup != null) spGroup.setVisibility(View.GONE);
+        } else {
+            // Show Class and Group for Students
+            if (tvClassLabel != null) tvClassLabel.setVisibility(View.VISIBLE);
+            if (spClass != null) spClass.setVisibility(View.VISIBLE);
+            if (tvGroupLabel != null) tvGroupLabel.setVisibility(View.VISIBLE);
+            if (spGroup != null) spGroup.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setupSpinners() {
@@ -269,7 +308,9 @@ public class GoogleProfileCompletionActivity extends AppCompatActivity {
         uCrop.withAspectRatio(1, 1);
         uCrop.withMaxResultSize(450, 450);
         uCrop.withOptions(getCropOptions());
-        uCrop.start(this);
+        Intent intent = uCrop.getIntent(this);
+        intent.setClass(this, CustomUCropActivity.class);
+        startActivityForResult(intent, UCrop.REQUEST_CROP);
     }
 
     private UCrop.Options getCropOptions() {
@@ -330,8 +371,21 @@ public class GoogleProfileCompletionActivity extends AppCompatActivity {
             return;
         }
 
-        if (password.length() < 6) {
-            etPassword.setError("Password must be at least 6 characters");
+        if (password.length() < 8) {
+            etPassword.setError("Password must be at least 8 characters");
+            etPassword.requestFocus();
+            return;
+        }
+
+        // Validate all password constraints
+        boolean alphaValid = Pattern.compile("[a-zA-Z]").matcher(password).find();
+        boolean numberValid = Pattern.compile("[0-9]").matcher(password).find();
+        boolean caseValid = Pattern.compile("[a-z]").matcher(password).find() && 
+                           Pattern.compile("[A-Z]").matcher(password).find();
+        boolean symbolValid = Pattern.compile("[^a-zA-Z0-9]").matcher(password).find();
+
+        if (!alphaValid || !numberValid || !caseValid || !symbolValid) {
+            etPassword.setError("Password must meet all requirements");
             etPassword.requestFocus();
             return;
         }
@@ -345,8 +399,14 @@ public class GoogleProfileCompletionActivity extends AppCompatActivity {
         String division = spDivision.getSelectedItem().toString();
         String district = spDistrict.getSelectedItem().toString();
         String area = spArea.getSelectedItem().toString();
-        String studentClass = spClass.getSelectedItem().toString();
-        String group = spGroup.getSelectedItem().toString();
+        
+        // Only get Class and Group for Students
+        String studentClass = "";
+        String group = "";
+        if ("Student".equals(userType)) {
+            studentClass = spClass.getSelectedItem().toString();
+            group = spGroup.getSelectedItem().toString();
+        }
 
         if (division.equals("Select Division")) {
             Toast.makeText(this, "Please select division", Toast.LENGTH_SHORT).show();
@@ -447,4 +507,78 @@ public class GoogleProfileCompletionActivity extends AppCompatActivity {
                     Toast.makeText(this, "Failed to save profile: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
+    private void setupPasswordValidation() {
+        etPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                validatePassword(s.toString());
+                checkPasswordMatch();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        etConfirmPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                checkPasswordMatch();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+    }
+
+    private void validatePassword(String password) {
+        boolean lengthValid = password.length() >= 8;
+        boolean alphaValid = Pattern.compile("[a-zA-Z]").matcher(password).find();
+        boolean numberValid = Pattern.compile("[0-9]").matcher(password).find();
+        boolean caseValid = Pattern.compile("[a-z]").matcher(password).find() && 
+                           Pattern.compile("[A-Z]").matcher(password).find();
+        boolean symbolValid = Pattern.compile("[^a-zA-Z0-9]").matcher(password).find();
+
+        updateConstraintUI(tvConstraintLength, lengthValid);
+        updateConstraintUI(tvConstraintAlpha, alphaValid);
+        updateConstraintUI(tvConstraintNumber, numberValid);
+        updateConstraintUI(tvConstraintCase, caseValid);
+        updateConstraintUI(tvConstraintSymbol, symbolValid);
+    }
+
+    private void updateConstraintUI(TextView textView, boolean isValid) {
+        String text = textView.getText().toString();
+        if (isValid) {
+            textView.setText(text.replaceFirst("✕", "✓"));
+            textView.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_dark));
+        } else {
+            textView.setText(text.replaceFirst("✓", "✕"));
+            textView.setTextColor(ContextCompat.getColor(this, R.color.red));
+        }
+    }
+
+    private void checkPasswordMatch() {
+        String password = etPassword.getText().toString();
+        String confirmPassword = etConfirmPassword.getText().toString();
+
+        if (confirmPassword.isEmpty()) {
+            tvPasswordMatch.setText("");
+            return;
+        }
+
+        if (password.equals(confirmPassword)) {
+            tvPasswordMatch.setText("✓ Passwords match");
+            tvPasswordMatch.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_dark));
+        } else {
+            tvPasswordMatch.setText("✕ Passwords do not match");
+            tvPasswordMatch.setTextColor(ContextCompat.getColor(this, R.color.red));
+        }
+    }
 }
+
