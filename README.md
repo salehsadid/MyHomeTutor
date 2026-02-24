@@ -1,7 +1,7 @@
 # 🎓 MyHomeTutor
 
 <p align="center">
-  <img src="app/src/main/res/drawable/logo1.png" alt="MyHomeTutor Logo" width="120" height="120">
+  <img src="app/src/main/res/drawable/logo1.png" alt="MyHomeTutor Logo" width="200" height="200">
 </p>
 
 <p align="center">
@@ -53,25 +53,25 @@
 
 ## ✨ Features
 
-### 👨‍🎓 For Students
-- 📝 Post tuition requirements with detailed specifications
-- 🔍 Receive applications from qualified tutors
-- ✅ Accept/Reject tutor applications
-- 📱 Get instant notifications
-- 👤 Manage profile and settings
+###  For Students
+-  Post tuition requirements with detailed specifications
+-  Receive applications from qualified tutors
+-  Accept/Reject tutor applications
+-  Get instant notifications
+-  Manage profile and settings
 
-### 👨‍🏫 For Tutors
-- 🔎 Browse available tuition posts
-- 📋 Apply to tuitions matching your expertise
-- 📊 Track application status in real-time
-- 🤝 Connect with students directly
-- 💼 Showcase your qualifications
+###  For Tutors
+-  Browse available tuition posts
+-  Apply to tuitions matching your expertise
+-  Track application status in real-time
+-  Connect with students directly
+-  Showcase your qualifications
 
-### 👨‍💼 For Administrators
-- 📈 Real-time dashboard with statistics
-- ✔️ Verify and approve user registrations
-- 🛡️ Moderate tuition posts
-- 📊 Monitor all platform activities
+###  For Administrators
+-  Real-time dashboard with statistics
+-  Verify and approve user registrations
+-  Moderate tuition posts
+-  Monitor all platform activities
 
 ---
 
@@ -130,7 +130,7 @@ Having issues? Here's how to get help:
 |---------|------|
 | 🐛 **Report Bug** | [Open an Issue](https://github.com/salehsadid/MyHomeTutor/issues/new?template=bug_report.md) |
 | 💡 **Request Feature** | [Feature Request](https://github.com/salehsadid/MyHomeTutor/issues/new?template=feature_request.md) |
-| 📧 **Email** | salehsadid@example.com |
+| 📧 **Email** | salehsadid16@gmail.com |
 
 ---
 
@@ -142,7 +142,7 @@ Having issues? Here's how to get help:
   <strong>Saleh Sadid</strong>
   <br>
   <a href="https://github.com/salehsadid">GitHub</a> •
-  <a href="https://linkedin.com/in/salehsadid">LinkedIn</a>
+  <a href="www.linkedin.com/in/saleh-sadid-mir-749146281">LinkedIn</a>
 </p>
 
 ---
