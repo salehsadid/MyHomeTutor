@@ -136,7 +136,7 @@
 <td align="center" width="33%">
   <img src="Screenshots/tuition%20post%20list.jpeg" height="450" style="border-radius: 10px;"><br>
   <sub><b>Tuition Posts</b></sub><br>
-  <sub>Browse all available posts</sub>
+  <sub>Keep track of every posts from admin wing</sub>
 </td>
 <td align="center" width="33%">
   <img src="Screenshots/applicant.jpeg" height="450" style="border-radius: 10px;"><br>
@@ -182,7 +182,7 @@
 <td align="center" width="33%">
   <img src="Screenshots/connection%20list.jpeg" height="450" style="border-radius: 10px;"><br>
   <sub><b>Connection List</b></sub><br>
-  <sub>Your connections & matches</sub>
+  <sub>Connections & matches from admin wing</sub>
 </td>
 <td align="center" width="33%">
   <img src="Screenshots/user%20report.jpeg" height="450" style="border-radius: 10px;"><br>
