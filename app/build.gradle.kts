@@ -75,6 +75,8 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
+    implementation("com.google.firebase:firebase-appcheck-playintegrity:18.0.0")
+    implementation("com.google.firebase:firebase-appcheck-debug:18.0.0")
     implementation(libs.glide)
     implementation(libs.picasso)
     implementation(libs.play.services.auth)

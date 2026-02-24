@@ -77,12 +77,122 @@
 
 ## 🖼️ Screenshots
 
-<p align="center">
-  <img src="docs/screenshots/login.png" width="200" alt="Login Screen">
-  <img src="docs/screenshots/dashboard.png" width="200" alt="Dashboard">
-  <img src="docs/screenshots/explore.png" width="200" alt="Explore Tuitions">
-  <img src="docs/screenshots/profile.png" width="200" alt="Profile">
-</p>
+<div align="center">
+
+### 🔐 **Authentication**
+<table>
+<tr>
+<td align="center" width="33%">
+  <img src="Screenshots/login.jpeg" height="450" style="border-radius: 10px;"><br>
+  <sub><b>User Login</b></sub><br>
+  <sub>Secure email authentication</sub>
+</td>
+<td align="center" width="33%">
+  <img src="Screenshots/registration.jpeg" height="450" style="border-radius: 10px;"><br>
+  <sub><b>User Registration</b></sub><br>
+  <sub>Quick & easy signup</sub>
+</td>
+<td align="center" width="33%">
+  <img src="Screenshots/admin%20login.jpeg" height="450" style="border-radius: 10px;"><br>
+  <sub><b>Admin Login</b></sub><br>
+  <sub>Secure admin access</sub>
+</td>
+</tr>
+</table>
+
+---
+
+### 📊 **Dashboards & Profiles**
+<table>
+<tr>
+<td align="center" width="33%">
+  <img src="Screenshots/profile.jpeg" height="450" style="border-radius: 10px;"><br>
+  <sub><b>User Dashboard</b></sub><br>
+  <sub>Personalized home screen</sub>
+</td>
+<td align="center" width="33%">
+  <img src="Screenshots/admin%20dashboard.jpeg" height="450" style="border-radius: 10px;"><br>
+  <sub><b>Admin Dashboard</b></sub><br>
+  <sub>Real-time statistics & controls</sub>
+</td>
+<td align="center" width="33%">
+  <img src="Screenshots/profile%20view.jpeg" height="450" style="border-radius: 10px;"><br>
+  <sub><b>Profile View</b></sub><br>
+  <sub>View tutor/student profiles</sub>
+</td>
+</tr>
+</table>
+
+---
+
+### 🔍 **Explore & Browse**
+<table>
+<tr>
+<td align="center" width="33%">
+  <img src="Screenshots/explore.jpeg" height="450" style="border-radius: 10px;"><br>
+  <sub><b>Explore Page</b></sub><br>
+  <sub>Discover tuition opportunities</sub>
+</td>
+<td align="center" width="33%">
+  <img src="Screenshots/tuition%20post%20list.jpeg" height="450" style="border-radius: 10px;"><br>
+  <sub><b>Tuition Posts</b></sub><br>
+  <sub>Browse all available posts</sub>
+</td>
+<td align="center" width="33%">
+  <img src="Screenshots/applicant.jpeg" height="450" style="border-radius: 10px;"><br>
+  <sub><b>Applicant List</b></sub><br>
+  <sub>View tutor applications</sub>
+</td>
+</tr>
+</table>
+
+---
+
+### 📝 **Posts & Applications**
+<table>
+<tr>
+<td align="center" width="33%">
+  <img src="Screenshots/post%20tuition.jpeg" height="450" style="border-radius: 10px;"><br>
+  <sub><b>Post Tuition</b></sub><br>
+  <sub>Create new tuition requirement</sub>
+</td>
+<td align="center" width="33%">
+  <img src="Screenshots/mypost.jpeg" height="450" style="border-radius: 10px;"><br>
+  <sub><b>My Posts</b></sub><br>
+  <sub>Manage your tuition posts</sub>
+</td>
+<td align="center" width="33%">
+  <img src="Screenshots/Application.jpeg" height="450" style="border-radius: 10px;"><br>
+  <sub><b>My Applications</b></sub><br>
+  <sub>Track application status</sub>
+</td>
+</tr>
+</table>
+
+---
+
+### 🔔 **Notifications & More**
+<table>
+<tr>
+<td align="center" width="33%">
+  <img src="Screenshots/notification.jpeg" height="450" style="border-radius: 10px;"><br>
+  <sub><b>Notifications</b></sub><br>
+  <sub>Real-time updates & alerts</sub>
+</td>
+<td align="center" width="33%">
+  <img src="Screenshots/connection%20list.jpeg" height="450" style="border-radius: 10px;"><br>
+  <sub><b>Connection List</b></sub><br>
+  <sub>Your connections & matches</sub>
+</td>
+<td align="center" width="33%">
+  <img src="Screenshots/user%20report.jpeg" height="450" style="border-radius: 10px;"><br>
+  <sub><b>User Reports</b></sub><br>
+  <sub>Admin moderation & reports</sub>
+</td>
+</tr>
+</table>
+
+</div>
 
 ---
 
